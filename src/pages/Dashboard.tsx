@@ -17,7 +17,7 @@ const Dashboard = () => {
 
           <div className={styles.widgetContainer}>
             <div className={styles.widgetBox}><PowerWidget /></div>
-            <div className={styles.widgetBox}><ThermostatWidget /></div>
+            <div className={styles.widgetBox}><ThermostatWidget/></div>
             <div className={styles.widgetBox}><HumidityWidget /></div>
           </div>
         </div>

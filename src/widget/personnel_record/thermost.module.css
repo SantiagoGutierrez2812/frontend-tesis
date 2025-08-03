@@ -1,13 +1,13 @@
 .card {
-position: relative;
-    width: 224px;
-    height: 240px;
-    border-radius: 16px;
+    position: relative;
+    width: 100%;
+    height: 26vh;
+    border-radius: 20px;
     border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgb(0 0 0 / 62%);
-    /* box-shadow: inset 0 0 50px rgb(255 255 255 / 70%), 0 0 40px rgb(255 255 255 / 71%); */
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.4), rgba(30, 30, 30, 0.7));
+    box-shadow: inset 0 0 40px rgba(255, 255, 255, 0.05), 0 0 40px rgba(255, 255, 255, 0.08), 0 0 20px rgba(255, 255, 255, 0.1);
     overflow: hidden;
-    backdrop-filter: blur(8px);
+    backdrop-filter: blur(10px);
 }
 
 .text {
@@ -16,35 +16,34 @@ position: relative;
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
-  color: white;
+  color: #fff;
 }
 
 .views {
-  font-size: 48px;
-  font-weight: 600;
+  font-size: 40px;
+  font-weight: 700;
+  letter-spacing: 1px;
 }
 
 .label {
-  font-size: 18px;
-  opacity: 0.7;
+  font-size: 16px;
+  opacity: 0.8;
 }
 
-/* Animating dot */
-.glowDot {
+.orb {
   position: absolute;
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
   background: white;
   border-radius: 50%;
-  box-shadow: 0 0 8px white;
-  animation: moveAround 6s linear infinite;
+  box-shadow: 0 0 12px 4px rgba(255, 255, 255, 0.7);
+  animation: followPath 8s ease-in-out infinite;
 }
 
-/* Define the path around the border */
-@keyframes moveAround {
+@keyframes followPath {
   0%   { top: 0; left: 0; }
-  25%  { top: 0; left: 100%; transform: translateX(-100%); }
+  25%  { top: 0; left: 100%; transform: translate(-100%, 0); }
   50%  { top: 100%; left: 100%; transform: translate(-100%, -100%); }
-  75%  { top: 100%; left: 0; transform: translateY(-100%); }
-  100% { top: 0; left: 0; }
+  75%  { top: 100%; left: 0; transform: translate(0, -100%); }
+  100% { top: 0; left: 0; transform: translate(0, 0); }
 }
