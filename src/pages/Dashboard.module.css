@@ -1,0 +1,65 @@
+.backgroundWrapper {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+
+.backgroundBlur {
+  background-color: rgba(74, 75, 77, 0.534);
+  background-image: url('../assets/house-1477041_1920.jpg');
+  background-size: cover;
+  background-position: center;
+  filter: blur(1px);
+
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+
+.dashboardContent {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.dashboardBox {
+    background-color: rgb(235 225 225 / 93%);
+    border-radius: 20px;
+    padding: 40px;
+    width: 100%;
+    max-width: 900px;
+    box-shadow: 1px 1px 20px rgb(220, 221, 198);
+}
+
+
+
+
+.widgetContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.widgetBox {
+  flex: 1 1 30%;
+  min-width: 200px;
+  background-color: #f3f4f6;
+  padding: 20px;
+  border-radius: 10px;
+}
+.goldTitle {
+     display: flex;
+    justify-content: center;
+    padding: 2%;
+    flex-direction: column;
+    align-items: center;
+}

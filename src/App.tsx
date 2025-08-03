@@ -1,35 +1,28 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+
+
+import './App.css'; // Tu CSS específico para App, si lo tienes
+// Importa otros componentes que quieras renderizar aquí, por ejemplo:
+// import Navbar from './components/Navbar/Navbar'; // Si tienes un componente Navbar
+// import Dashboard from './pages/Dashboard'; // Si quieres mostrar el Dashboard
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className="App">
+      {/* Puedes renderizar componentes aquí directamente */}
+      {/* <Navbar /> */} 
+      {/* <Dashboard /> */}
+
+      {/* Para empezar, puedes poner algo simple para ver si renderiza */}
+      <h1>¡Hola desde React!</h1> 
+
+      {/* Si usas React Router, aquí iría el <Routes> y <Route> */}
+      {/* O si tienes un layout que usa <Outlet /> */}
+      {/* <Routes>
+        <Route path="/" element={<Dashboard />} />
+        // ... otras rutas
+      </Routes> */}
+    </div>
+  );
 }
 
-export default App
+export default App;
