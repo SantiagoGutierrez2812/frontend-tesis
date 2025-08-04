@@ -1,10 +1,10 @@
-// import React from "react";
-import "./Home.css"; // Importa el CSS local
+
+import "./Home.css"; 
 
 export default function Home() {
   return (
     <div className="container">
-      {/* Header */}
+
       <header className="header">
         <div className="header-content">
           <a href="/login" className="login-link">
@@ -16,7 +16,6 @@ export default function Home() {
         <p className="subtitle">Inventario</p>
       </header>
 
-      {/* Tablas */}
       <main className="main-content">
         <div className="tables">
           {["Tienda Norte", "Tienda Sur", "Tienda Centro"].map((tienda, index) => (
