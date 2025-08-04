@@ -1,9 +1,14 @@
 /* rank.module.css */
 .text {
   display: flex;
-  justify-content: center;
+  flex-direction: column;  /* pone los elementos en columna (uno debajo del otro) */
+  align-items: center;     /* los centra horizontalmente */
+  justify-content: center; /* opcional: centra verticalmente si hay altura */
+  text-align: center;
   font-size: 100%;
+  gap: 10px; /* espacio entre texto e imagen */
 }
+
 .scene {
   position: relative;
   width: 300px;
@@ -15,4 +20,13 @@
   border-radius: 12px;
 }
 
+
+.image {
+   
+max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+  /* filter : drop-shadow(1px 1px 5px rgb(177, 83, 111)) */
+}
 

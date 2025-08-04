@@ -10,8 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
     "react-tsparticles": "^2.12.2",
     "styled-components": "^6.1.19",
     "tsparticles": "^3.8.1"
