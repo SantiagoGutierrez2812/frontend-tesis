@@ -1,27 +1,22 @@
-
-
-import './App.css'; // Tu CSS específico para App, si lo tienes
-// Importa otros componentes que quieras renderizar aquí, por ejemplo:
-// import Navbar from './components/Navbar/Navbar'; // Si tienes un componente Navbar
-// import Dashboard from './pages/Dashboard'; // Si quieres mostrar el Dashboard
+// src/App.tsx
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Sidebar from './Registration_and_materials/Sidebar';
+import PowerWidget from './widget/stores/PowerWidget';
+import MaterialForm from './Registration_and_materials/MaterialForm';
 
 function App() {
   return (
-    <div className="App">
-      {/* Puedes renderizar componentes aquí directamente */}
-      {/* <Navbar /> */} 
-      {/* <Dashboard /> */}
-
-      {/* Para empezar, puedes poner algo simple para ver si renderiza */}
-      <h1>¡Hola desde React!</h1> 
-
-      {/* Si usas React Router, aquí iría el <Routes> y <Route> */}
-      {/* O si tienes un layout que usa <Outlet /> */}
-      {/* <Routes>
-        <Route path="/" element={<Dashboard />} />
-        // ... otras rutas
-      </Routes> */}
-    </div>
+    <Router>
+      <div className="app-container">
+        <Sidebar />
+        <main style={{ flexGrow: 1, padding: '20px' }}>
+          <Routes>
+            <Route path="/" element={<PowerWidget />} />
+            <Route path="/registro" element={<MaterialForm />} />
+          </Routes>
+        </main>
+      </div>
+    </Router>
   );
 }
 

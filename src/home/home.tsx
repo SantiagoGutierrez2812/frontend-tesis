@@ -1,15 +1,17 @@
-
-import "./Home.css"; 
+import { useState } from "react";
+import "./Home.css";
+import Modal from "../components/Login/Modal";
 
 export default function Home() {
+  const [mostrarModal, setMostrarModal] = useState(false);
+
   return (
     <div className="container">
-
       <header className="header">
         <div className="header-content">
-          <a href="/login" className="login-link">
+          <button className="login-link" onClick={() => setMostrarModal(true)}>
             Login
-          </a>
+          </button>
           <h1 className="title">Improexprees</h1>
           <div className="spacer" />
         </div>
@@ -43,6 +45,28 @@ export default function Home() {
           ))}
         </div>
       </main>
+
+      {/* Modal */}
+      {mostrarModal && (
+        <Modal cerrar={() => setMostrarModal(false)}>
+          <div className="style_container">
+            <h2>Iniciar sesión</h2>
+            <input type="text" name="password" id="" placeholder="Usuario" />
+            <input
+              type="password"
+              name="password"
+              placeholder="Password" />
+            <div className="button_styles">
+              <button type="submit">
+                Iniciar sesión
+              </button>
+              <button onClick={() => setMostrarModal(false)}>Cerrar</button>
+            </div>
+
+      
+          </div>
+        </Modal>
+      )}
     </div>
   );
 }

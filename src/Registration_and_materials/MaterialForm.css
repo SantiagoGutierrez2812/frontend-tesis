@@ -1,0 +1,42 @@
+.material-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  flex: 1;
+  max-width: 600px;
+  margin: 2rem auto;
+}
+
+.material-form input,
+.material-form select {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  outline: none;
+  transition: 0.2s;
+}
+
+.material-form input:focus,
+.material-form select:focus {
+  border-color: #4f46e5;
+}
+
+.material-form button {
+  background-color: #3b82f6;
+  color: white;
+  padding: 14px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.material-form button:hover {
+  background-color: #2563eb;
+}

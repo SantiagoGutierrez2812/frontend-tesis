@@ -118,3 +118,90 @@
 .table tbody tr:hover {
   background-color: #f9fafb; /* hover suave */
 }
+
+
+/* .style_container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+} */
+
+.style_container {
+  max-width: 320px;
+  background-color: #1f2937; /* gris oscuro */
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  color: #f9fafb;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.style_container h2 {
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+  font-size: 1.75rem;
+  text-align: center;
+  color: #3B82F6; /* lila claro */
+}
+
+/* Inputs */
+.style_container input[type="text"],
+.style_container input[type="password"] {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  border: 1.5px solid #374151; /* gris medio */
+  border-radius: 6px;
+  background-color: #111827; /* gris muy oscuro */
+  color: #f9fafb;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.style_container input[type="text"]:focus,
+.style_container input[type="password"]:focus {
+  border-color: #a78bfa; /* lila */
+  outline: none;
+  box-shadow: 0 0 8px #a78bfa;
+}
+
+/* Botones */
+.button_styles {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.button_styles button {
+  flex: 1;
+  padding: 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  color: #111827; /* texto oscuro para contraste */
+}
+
+/* Botón submit */
+.button_styles button[type="submit"] {
+  background-color: #36609A;
+}
+
+.button_styles button[type="submit"]:hover {
+  background-color: #7c3aed; /* lila más oscuro */
+  color: white;
+}
+
+/* Botón cerrar */
+.button_styles button:nth-child(2) {
+  background-color: #ef4444; /* rojo */
+  color: white;
+}
+
+.button_styles button:nth-child(2):hover {
+  background-color: #b91c1c; /* rojo oscuro */
+}
+
