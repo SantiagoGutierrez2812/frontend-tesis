@@ -5,19 +5,19 @@
 }
 
 
-.backgroundBlur {
-  background-color: rgba(74, 75, 77, 0.534);
-  background-image: url('../assets/house-1477041_1920.jpg');
-  background-size: cover;
-  background-position: center;
-  filter: blur(1px);
 
+.backgroundBlur {
+  background-image: url('../assets/people-2589168_1920.jpg');
+  background-position: center;
+  background-repeat: no-repeat; 
+  filter: blur(5px);
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   z-index: 0;
+  background-color: black; 
 }
 
 
@@ -31,7 +31,7 @@
 }
 
 .dashboardBox {
-    background-color: rgb(235 225 225 / 93%);
+    background-color: rgb(245 242 242 / 51%);
     border-radius: 20px;
     padding: 40px;
     width: 100%;
@@ -52,7 +52,7 @@
 .widgetBox {
   flex: 1 1 30%;
   min-width: 200px;
-  background-color: #f3f4f6;
+  background-color: #f3f4f69d;
   padding: 20px;
   border-radius: 10px;
 }

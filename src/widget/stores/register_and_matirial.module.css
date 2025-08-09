@@ -1,7 +1,7 @@
 .card {
     position: relative;
     width: 100%;
-    height: 26vh;
+    height: 33vh;
     border-radius: 20px;
     border: 1px solid rgba(255, 255, 255, 0.1);
     background: linear-gradient(135deg, rgba(0, 0, 0, 0.4), rgba(30, 30, 30, 0.7));
@@ -21,8 +21,6 @@
 
 .views {
   font-size: 30px;
-  /* font-weight: 700;
-  letter-spacing: 1px; */
 }
 
 .label {

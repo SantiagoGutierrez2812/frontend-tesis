@@ -1,20 +1,20 @@
-// src/App.tsx
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Sidebar from './Registration_and_materials/Sidebar';
-import PowerWidget from './widget/stores/PowerWidget';
+  // import PowerWidget from './widget/stores/PowerWidget';
 import MaterialForm from './Registration_and_materials/MaterialForm';
-
+// import HumidityWidget from './widget/rank/HumidityWidget';
+import MapaFondo from './map/map';
+import Dashboard from './pages/Dashboard';
+import Home from './home/home'
 function App() {
   return (
     <Router>
-      <div className="app-container">
-        <Sidebar />
-        <main style={{ flexGrow: 1, padding: '20px' }}>
+      <div className="app-container" >
           <Routes>
-            <Route path="/" element={<PowerWidget />} />
+             <Route path="/" element={<Home/>} />
+            <Route path="/Dashboard" element={<Dashboard />} />
             <Route path="/registro" element={<MaterialForm />} />
+            <Route path="/mapa" element={<MapaFondo />} />
           </Routes>
-        </main>
       </div>
     </Router>
   );

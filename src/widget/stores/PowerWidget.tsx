@@ -4,7 +4,6 @@ import materialImg from '../../assets/material/pngwing.com (1).png';
 
 const PowerWidget = () => {
   return (
-    // <Link to="/registro" className={styles.cardLink}>
       <div className={styles.card}>
         <div className={styles.orb}></div>
         <div className={styles.text}>
@@ -13,7 +12,6 @@ const PowerWidget = () => {
           <img src={materialImg} alt="Material" className={styles.image} />
         </div>
       </div>
-    // </Link>
   );
 };
 

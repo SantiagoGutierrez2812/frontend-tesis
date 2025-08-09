@@ -1,0 +1,184 @@
+/* Colores y Variables */
+:root {
+  --background-dark: #1e1e2d;
+  --header-bg: #272739;
+  --card-bg: #2d2d3e;
+  --card-norte-accent: #6a82fb; /* Azul */
+  --card-sur-accent: #f2994a;   /* Naranja */
+  --card-centro-accent: #27ae60; /* Verde */
+  --text-light: #f0f0f5;
+  --table-header-bg: #3c3c52;
+  --social-icon-color: #9292ab;
+}
+
+/* Estilos Generales */
+.pageContainer {
+  background-color: var(--background-dark);
+  color: var(--text-light);
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+/* Encabezado */
+.header {
+width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 3rem;
+    margin-bottom: 2rem;
+
+}
+
+.logoContainer {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.logo {
+  /* Placeholder para tu logo SVG o imagen */
+  width: 40px;
+  height: 40px;
+  background-color: #fff;
+  border-radius: 8px;
+}
+
+.companyName {
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.loginButton {
+  background-color: transparent;
+  color: var(--text-light);
+  border: 2px solid var(--text-light);
+  padding: 0.7rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.loginButton:hover {
+  background-color: var(--text-light);
+  color: var(--header-bg);
+}
+
+/* Contenido Principal */
+.mainContent {
+  width: 100%;
+  max-width: 1200px;
+  text-align: center;
+}
+
+.mainTitle {
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.cardsContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  width: 100%;
+}
+
+/* Tarjetas */
+.card {
+  background-color: var(--card-bg);
+  border-radius: 16px;
+  box-shadow: 0 8px 25px rgba(154, 156, 216, 0.3);
+  padding: 1.5rem;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+.cardTitle {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.tableContainer {
+  flex-grow: 1;
+}
+
+.inventoryTable {
+  color: wheat;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1rem;
+}
+
+.inventoryTable th,
+.inventoryTable td {
+  padding: 12px 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.inventoryTable th {
+  text-align: left;
+  background-color: var(--table-header-bg);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* Acentos de Color en las Tarjetas */
+.cardNorte { border-top: 5px solid var(--card-norte-accent); }
+.cardSur { border-top: 5px solid var(--card-sur-accent); }
+.cardCentro { border-top: 5px solid var(--card-centro-accent); }
+
+/* Pie de Página */
+.footer {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.socialIcons {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.icon {
+  font-size: 1.8rem;
+  color: var(--social-icon-color);
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.icon:hover {
+  color: var(--text-light);
+}
+
+/* Media Queries para Responsividad */
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+  .loginButton {
+    width: 100%;
+  }
+  .mainTitle {
+    font-size: 2rem;
+  }
+}

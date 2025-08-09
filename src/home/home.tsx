@@ -1,29 +1,42 @@
-import { useState } from "react";
-import "./Home.css";
-import Modal from "../components/Login/Modal";
+import styles from './InventarioDashboard.module.css'; 
+import { FaInstagram, FaFacebook, FaTwitter } from 'react-icons/fa';
+
+const inventoryData = {
+  norte: [
+    { material: 'Cemento', cantidad: 50 },
+    { material: 'Arena', cantidad: 120 },
+    { material: 'Madera', cantidad: 80 },
+  ],
+  sur: [
+    { material: 'Ladrillos', cantidad: 300 },
+    { material: 'Pintura', cantidad: 75 },
+    { material: 'Tubos', cantidad: 45 },
+  ],
+  centro: [
+    { material: 'Tornillos', cantidad: 500 },
+    { material: 'Clavos', cantidad: 800 },
+    { material: 'Vidrio', cantidad: 20 },
+  ],
+};
 
 export default function Home() {
-  const [mostrarModal, setMostrarModal] = useState(false);
-
   return (
-    <div className="container">
-      <header className="header">
-        <div className="header-content">
-          <button className="login-link" onClick={() => setMostrarModal(true)}>
-            Login
-          </button>
-          <h1 className="title">Improexprees</h1>
-          <div className="spacer" />
+    <div className={styles.pageContainer}>
+      <header className={styles.header}>
+        <div className={styles.logoContainer}>
+          <span className={styles.companyName}>Improexprees</span>
         </div>
-        <p className="subtitle">Inventario</p>
+        <button className={styles.loginButton}>Login</button>
       </header>
 
-      <main className="main-content">
-        <div className="tables">
-          {["Tienda Norte", "Tienda Sur", "Tienda Centro"].map((tienda, index) => (
-            <div key={index} className="table-card">
-              <h2 className="table-title">{tienda}</h2>
-              <table className="table">
+      <main className={styles.mainContent}>
+        <h1 className={styles.mainTitle}>Inventario</h1>
+        <div className={styles.cardsContainer}>
+          {/* Tarjeta 1: Tienda Norte */}
+          <div className={`${styles.card} ${styles.cardNorte}`}>
+            <h2 className={styles.cardTitle}>Tienda Norte</h2>
+            <div className={styles.tableContainer}>
+              <table className={styles.inventoryTable}>
                 <thead>
                   <tr>
                     <th>Material</th>
@@ -31,42 +44,72 @@ export default function Home() {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>Cemento</td>
-                    <td>50</td>
-                  </tr>
-                  <tr>
-                    <td>Arena</td>
-                    <td>120</td>
-                  </tr>
+                  {inventoryData.norte.map((item, index) => (
+                    <tr key={index}>
+                      <td>{item.material}</td>
+                      <td>{item.cantidad}</td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
-          ))}
+          </div>
+
+          {/* Tarjeta 2: Tienda Sur */}
+          <div className={`${styles.card} ${styles.cardSur}`}>
+            <h2 className={styles.cardTitle}>Tienda Sur</h2>
+            <div className={styles.tableContainer}>
+              <table className={styles.inventoryTable}>
+                <thead>
+                  <tr>
+                    <th>Material</th>
+                    <th>Cantidad</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {inventoryData.sur.map((item, index) => (
+                    <tr key={index}>
+                      <td>{item.material}</td>
+                      <td>{item.cantidad}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Tarjeta 3: Tienda Centro */}
+          <div className={`${styles.card} ${styles.cardCentro}`}>
+            <h2 className={styles.cardTitle}>Tienda Centro</h2>
+            <div className={styles.tableContainer}>
+              <table className={styles.inventoryTable}>
+                <thead>
+                  <tr>
+                    <th>Material</th>
+                    <th>Cantidad</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {inventoryData.centro.map((item, index) => (
+                    <tr key={index}>
+                      <td>{item.material}</td>
+                      <td>{item.cantidad}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </main>
 
-      {/* Modal */}
-      {mostrarModal && (
-        <Modal cerrar={() => setMostrarModal(false)}>
-          <div className="style_container">
-            <h2>Iniciar sesión</h2>
-            <input type="text" name="password" id="" placeholder="Usuario" />
-            <input
-              type="password"
-              name="password"
-              placeholder="Password" />
-            <div className="button_styles">
-              <button type="submit">
-                Iniciar sesión
-              </button>
-              <button onClick={() => setMostrarModal(false)}>Cerrar</button>
-            </div>
-
-      
-          </div>
-        </Modal>
-      )}
+      <footer className={styles.footer}>
+        <div className={styles.socialIcons}>
+          <FaFacebook className={styles.icon} />
+          <FaTwitter className={styles.icon} />
+          <FaInstagram className={styles.icon} />
+        </div>
+      </footer>
     </div>
   );
 }
