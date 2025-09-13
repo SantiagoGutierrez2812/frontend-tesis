@@ -1,0 +1,133 @@
+/* Contenedor principal */
+.titulo{
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  font-size: 500%;
+}
+.container {
+  background-color: #1E1E2D;
+  color: white;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0px 20px;
+  box-sizing: border-box;
+}
+
+/* Barra de navegación */
+.navbar {
+  width: 100%;
+  max-width: 600px;
+  /* display: flex; */
+  justify-content: center;
+  gap: 20px;
+  padding: 10px;
+  /* background-color: #2A2A3D; */
+  border-radius: 8px;
+  margin-bottom: 40px;
+  box-shadow: 0 8px 25px rgba(226, 193, 193, 0.4);
+}
+
+.navButton {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 8px 15px;
+  border-radius: 6px;
+  transition: background-color 0.3s ease;
+}
+
+.navButton:hover {
+  background-color: #3e3e5a;
+}
+
+/* Tarjeta de contenido principal */
+.contentCard {
+  width: 100%;
+  max-width: 1000px;
+  background-color: #2A2A3D;
+  border-radius: 15px;
+  padding: 30px;
+  box-shadow: 0 8px 25px rgba(226, 193, 193, 0.4);
+}
+
+/* Título */
+.title {
+  font-size: 2.5rem;
+  text-align: center;
+  margin-bottom: 30px;
+  color: #fff;
+}
+
+/* Contenedor de la tabla */
+.tableWrapper {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 10px;
+}
+
+/* Estilos de la tabla */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #2A2A3D;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.table th, .table td {
+  border: none;
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #444;
+}
+
+.table th {
+  background-color: #3E3E5A;
+  font-weight: 600;
+  color: #c0c0c0;
+  text-transform: uppercase;
+}
+
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+.table tbody tr:hover {
+  background-color: #33334d;
+}
+
+.text{
+    color: #d7d8cd;
+}
+.nameperson {
+  padding: 30px;
+  font-size: 300%;
+  animation: shadowPulse 2s infinite ease-in-out;
+}
+
+@keyframes shadowPulse {
+  0% {
+    filter: drop-shadow(1px 1px 10px rgba(255, 255, 0, 0.8));
+  }
+  50% {
+    filter: drop-shadow(4px 4px 20px rgb(255, 119, 0));
+  }
+  100% {
+    filter: drop-shadow(1px 1px 10px rgba(46, 159, 246, 0.8));
+  }
+}
+
+.person{
+    border-radius: 90px;
+    border: 10px;}
+
+.Welcome{
+  font-size: 200%;
+} 

@@ -1,10 +1,10 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-  // import PowerWidget from './widget/stores/PowerWidget';
 import MaterialForm from './Registration_and_materials/MaterialForm';
-// import HumidityWidget from './widget/rank/HumidityWidget';
 import MapaFondo from './map/map';
 import Dashboard from './pages/Dashboard';
 import Home from './home/home'
+import Headquarters from './headquarters/headquarters'
+
 function App() {
   return (
     <Router>
@@ -14,6 +14,7 @@ function App() {
             <Route path="/Dashboard" element={<Dashboard />} />
             <Route path="/registro" element={<MaterialForm />} />
             <Route path="/mapa" element={<MapaFondo />} />
+            <Route path="/headquarters" element={<Headquarters />} />
           </Routes>
       </div>
     </Router>

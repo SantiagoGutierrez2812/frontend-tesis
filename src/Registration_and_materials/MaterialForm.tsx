@@ -1,25 +1,55 @@
-
-import "./MaterialForm.css";
+import React, { useState } from 'react';
+import Modal from './Modal/Modal';
+import AddProductForm from './AddProduct/AddProductForm';
+import './MaterialForm.css';
 
 export default function MaterialForm() {
+  const [showModal, setShowModal] = useState(false);
+
   return (
-    <form className="material-form">
-      <input type="text" placeholder="Nombre de material" />
-      <input type="text" placeholder="Tamaño de material" />
-      <input type="text" placeholder="Nombre de la persona que insertó el material" />
-      <select>
-        <option>Cantidad de material</option>
-        <option>10</option>
-        <option>20</option>
-        <option>50</option>
-      </select>
-      <select>
-        <option>Opecevciones</option>
-        <option>Observación 1</option>
-        <option>Observación 2</option>
-      </select>
-      <input type="text" placeholder="Costo de material" />
-      <button type="submit">Botón de guardar todo</button>
-    </form>
+    <div className="Overview">
+      <div className="content">
+        <div className="titele">INVENTARIO</div>
+        <div className="header-content">
+          <button className="add-button" onClick={() => setShowModal(true)}>+ Agregar productos</button>
+        </div>
+        <table className="products-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Material</th>
+              <th>Cantidad</th>
+              <th>Costo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>Laptop</td>
+              <td>50</td>
+              <td>$1,500</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>Teclado</td>
+              <td>120</td>
+              <td>$75</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>Mouse</td>
+              <td>200</td>
+              <td>$45</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      {showModal && (
+        <Modal onClose={() => setShowModal(false)}>
+          <AddProductForm />
+        </Modal>
+      )}
+    </div>
   );
 }

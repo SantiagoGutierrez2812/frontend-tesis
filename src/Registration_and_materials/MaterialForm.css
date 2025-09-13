@@ -1,42 +1,78 @@
-.material-form {
+.Overview {
+  background-color: #1E1E2D;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.content {
+  border-radius: 20px;
+  background-color: rgb(245, 245, 245);
+  height: auto;
+  width: 80%;
+  max-width: 1000px;
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  background-color: #fff;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  flex: 1;
-  max-width: 600px;
-  margin: 2rem auto;
+  gap: 20px;
 }
 
-.material-form input,
-.material-form select {
-  padding: 12px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 16px;
-  outline: none;
-  transition: 0.2s;
+.titele {
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+  color: #333;
 }
 
-.material-form input:focus,
-.material-form select:focus {
-  border-color: #4f46e5;
+.header-content {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
 }
 
-.material-form button {
-  background-color: #3b82f6;
+.add-button {
+  background-color: #4CAF50;
   color: white;
-  padding: 14px;
   border: none;
-  border-radius: 8px;
-  font-size: 16px;
+  padding: 10px 20px;
+  border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  font-size: 1rem;
+  font-weight: bold;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.material-form button:hover {
-  background-color: #2563eb;
+.add-button:hover {
+  background-color: #45a049;
+  transform: translateY(-2px);
+}
+
+.products-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.products-table th, .products-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.products-table th {
+  background-color: #f2f2f2;
+  color: #555;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.products-table tbody tr:hover {
+  background-color: #e9e9e9;
+}
+
+.products-table tbody tr:last-child td {
+  border-bottom: none;
 }
