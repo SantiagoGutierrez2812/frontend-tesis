@@ -14,7 +14,7 @@
   width: 80%;
   max-width: 1000px;
   padding: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0px 30px rgb(189 212 229 / 54%);
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -42,7 +42,7 @@
   cursor: pointer;
   font-size: 1rem;
   font-weight: bold;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 10px rgb(108 207 75 / 84%);
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
 

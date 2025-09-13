@@ -4,11 +4,15 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.7); /* oscurece el fondo */
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
+
+  /* desenfoque al fondo */
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px); /* soporte en Safari */
 }
 
 .modal-content {
