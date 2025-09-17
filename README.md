@@ -68,3 +68,7 @@ export default tseslint.config([
 ])
 <!-- ```
 npm run dev -->
+
+#AYUDAS VISUALES
+instalado para correr el proyecto 
+1) npm install recharts

@@ -1,20 +1,21 @@
 .Overview {
-  background-color: #1E1E2D;
-  width: 100%;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+    background-color: #1E1E2D;
+    width: 100%;
+    min-height: 100vh;
+    display: flex
+;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 0;
 }
 
 .content {
-  border-radius: 20px;
-  background-color: rgb(245, 245, 245);
-  height: auto;
-  width: 80%;
-  max-width: 1000px;
-  padding: 20px;
-  box-shadow: 0 0px 30px rgb(189 212 229 / 54%);
+  border-radius: 12px;
+  background-color: white;
+  width: 85%;
+  max-width: 1100px;
+  padding: 30px;
+  box-shadow: 0 4px 25px rgba(0,0,0,0.15);
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -24,55 +25,126 @@
   font-size: 2rem;
   font-weight: bold;
   text-align: center;
-  color: #333;
+  color: #2c3e50;
+  margin-bottom: 10px;
 }
 
-.header-content {
+.kpi-container {
   display: flex;
-  justify-content: flex-end;
-  width: 100%;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.kpi-card {
+  flex: 1;
+  background: #f5f7fa;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: inset 0 0 8px rgba(0,0,0,0.05);
+}
+
+.kpi-card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 5px;
+  color: #007bff;
+}
+
+.kpi-card p {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.inventory-header {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 12px;
+}
+
+.search-input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+.filter-select {
+  padding: 10px 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  background: white;
+  cursor: pointer;
 }
 
 .add-button {
-  background-color: #4CAF50;
+  background-color: #007bff;
   color: white;
   border: none;
   padding: 10px 20px;
-  border-radius: 5px;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: bold;
-  box-shadow: 0 4px 10px rgb(108 207 75 / 84%);
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  transition: background-color 0.3s ease;
 }
 
 .add-button:hover {
-  background-color: #45a049;
-  transform: translateY(-2px);
+  background-color: #0069d9;
 }
 
 .products-table {
   width: 100%;
   border-collapse: collapse;
+  margin-top: 10px;
 }
 
-.products-table th, .products-table td {
+.products-table th,
+.products-table td {
   padding: 12px 15px;
   text-align: left;
   border-bottom: 1px solid #ddd;
 }
 
 .products-table th {
-  background-color: #f2f2f2;
-  color: #555;
+  background-color: #6c8497;
+  color: white;
   font-weight: 600;
   text-transform: uppercase;
+  font-size: 0.85rem;
 }
 
 .products-table tbody tr:hover {
-  background-color: #e9e9e9;
+  background-color: #f8f9fa;
 }
 
-.products-table tbody tr:last-child td {
-  border-bottom: none;
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.edit-btn, .delete-btn {
+  border: none;
+  background: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.edit-btn {
+  color: #007bff;
+}
+
+.edit-btn:hover {
+  transform: scale(1.2);
+}
+
+.delete-btn {
+  color: #dc3545;
+}
+
+.delete-btn:hover {
+  transform: scale(1.2);
 }
