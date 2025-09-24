@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Modal from './Modal/Modal';
 import AddProductForm from './AddProduct/AddProductForm';
 import './MaterialForm.css';
-
+import TopControl from "../TopControl/TopControl";
 export default function MaterialForm() {
   const [showModal, setShowModal] = useState(false);
   const [search, setSearch] = useState('');
@@ -35,6 +35,7 @@ export default function MaterialForm() {
 
   return (
     <div className="Overview">
+            <TopControl title="🚀 Panel de Administración" />
       <div className="content">
         <div className="titele">Registro de Inventario</div>
 

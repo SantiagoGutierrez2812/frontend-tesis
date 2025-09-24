@@ -1,5 +1,5 @@
 .Overview {
-    background-color: #1E1E2D;
+background-color: #2E295C;
     width: 100%;
     min-height: 100vh;
     display: flex
@@ -7,6 +7,7 @@
     justify-content: center;
     align-items: center;
     padding: 40px 0;
+    flex-wrap: wrap;
 }
 
 .content {

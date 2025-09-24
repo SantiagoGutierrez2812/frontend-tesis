@@ -13,7 +13,7 @@ export default function TopControl({ title = "Panel", onBack, onLogout }: TopCon
   const [menuOpen, setMenuOpen] = useState(false);
 
   const handleBack = () => (onBack ? onBack() : navigate(-1));
-  const handleLogout = () => (onLogout ? onLogout() : navigate("/login"));
+  const handleLogout = () => (onLogout ? onLogout() : navigate("/"));
 
   return (
     <>
@@ -26,7 +26,7 @@ export default function TopControl({ title = "Panel", onBack, onLogout }: TopCon
           ☰
         </button>
       </div>
-
+    
       {menuOpen && (
         <div className="top-menu-overlay">
           <div className="menu-content">

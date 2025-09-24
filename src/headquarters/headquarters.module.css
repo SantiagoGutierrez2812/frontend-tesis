@@ -81,7 +81,7 @@
   padding-left: 10px;
 }
 
-/* TABLA INVENTARIO */
+/* TABLA */
 .table {
   color: wheat;
   width: 100%;
@@ -137,4 +137,46 @@
 }
 .topList li:hover {
   transform: translateX(5px);
+}
+
+/* EMPLEADOS */
+.employeeBlock {
+  grid-column: span 2;
+}
+.employeeList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.employeeItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.barContainer {
+  flex: 1;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.bar {
+  height: 100%;
+  background: linear-gradient(90deg, #00eaff, #ff00cc);
+  border-radius: 8px;
+}
+.percent {
+  min-width: 40px;
+  text-align: right;
+  font-size: 14px;
+}
+
+/* MATERIALES ELIMINADOS */
+.deletedBlock {
+  grid-column: span 2; /* ocupa ancho completo al fondo */
+}
+.deletedBlock table th {
+  background: rgba(255, 100, 100, 0.2);
+  color: #ff6b6b;
 }

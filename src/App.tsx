@@ -5,6 +5,7 @@ import Dashboard from './pages/Dashboard';
 import Home from './home/home';
 import Headquarters from './headquarters/headquarters';
 import AdminLogs from './AdminLogs/AdminLogs';
+import VisualStaff from './staff/visual_staff';
 
 
 function App() {
@@ -17,8 +18,8 @@ function App() {
           <Route path="/registro" element={<MaterialForm />} />
           <Route path="/mapa" element={<MapaFondo />} />
           <Route path="/headquarters" element={<Headquarters />} />
-            <Route path="/adminLogs" element={<AdminLogs />} />
-          
+          <Route path="/adminLogs" element={<AdminLogs />} />
+          <Route path="/registro_personal" element={<VisualStaff />} />
   
         </Routes>
       </div>

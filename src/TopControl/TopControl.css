@@ -1,4 +1,5 @@
 .top-control {
+ 
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -34,6 +35,7 @@
 
 /* Overlay del menú */
 .top-menu-overlay {
+  border-radius: 10%;
   position: fixed;
   top: 0;
   left: 0;

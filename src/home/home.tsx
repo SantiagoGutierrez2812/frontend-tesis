@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import styles from './InventarioDashboard.module.css'; 
 import { FaInstagram, FaFacebook, FaTwitter } from 'react-icons/fa';
 
@@ -20,86 +21,57 @@ const inventoryData = {
 };
 
 export default function Home() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isRecovery, setIsRecovery] = useState(false);
+
   return (
+    
     <div className={styles.pageContainer}>
+
       <header className={styles.header}>
         <div className={styles.logoContainer}>
           <span className={styles.companyName}>Improexprees</span>
         </div>
-        <button className={styles.loginButton}>Login</button>
+        <button 
+          className={styles.loginButton} 
+          onClick={() => setIsModalOpen(true)}
+        >
+          Login
+        </button>
       </header>
 
       <main className={styles.mainContent}>
         <h1 className={styles.mainTitle}>Inventario</h1>
         <div className={styles.cardsContainer}>
-          {/* Tarjeta 1: Tienda Norte */}
-          <div className={`${styles.card} ${styles.cardNorte}`}>
-            <h2 className={styles.cardTitle}>Tienda Norte</h2>
-            <div className={styles.tableContainer}>
-              <table className={styles.inventoryTable}>
-                <thead>
-                  <tr>
-                    <th>Material</th>
-                    <th>Cantidad</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {inventoryData.norte.map((item, index) => (
-                    <tr key={index}>
-                      <td>{item.material}</td>
-                      <td>{item.cantidad}</td>
+          {/* Tarjetas del inventario */}
+          {Object.entries(inventoryData).map(([zona, items], idx) => (
+            <div 
+              key={idx} 
+              className={`${styles.card} ${styles[`card${zona.charAt(0).toUpperCase() + zona.slice(1)}`]}`}
+            >
+              <h2 className={styles.cardTitle}>
+                Tienda {zona.charAt(0).toUpperCase() + zona.slice(1)}
+              </h2>
+              <div className={styles.tableContainer}>
+                <table className={styles.inventoryTable}>
+                  <thead>
+                    <tr>
+                      <th>Material</th>
+                      <th>Cantidad</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {items.map((item, index) => (
+                      <tr key={index}>
+                        <td>{item.material}</td>
+                        <td>{item.cantidad}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
-
-          {/* Tarjeta 2: Tienda Sur */}
-          <div className={`${styles.card} ${styles.cardSur}`}>
-            <h2 className={styles.cardTitle}>Tienda Sur</h2>
-            <div className={styles.tableContainer}>
-              <table className={styles.inventoryTable}>
-                <thead>
-                  <tr>
-                    <th>Material</th>
-                    <th>Cantidad</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {inventoryData.sur.map((item, index) => (
-                    <tr key={index}>
-                      <td>{item.material}</td>
-                      <td>{item.cantidad}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          {/* Tarjeta 3: Tienda Centro */}
-          <div className={`${styles.card} ${styles.cardCentro}`}>
-            <h2 className={styles.cardTitle}>Tienda Centro</h2>
-            <div className={styles.tableContainer}>
-              <table className={styles.inventoryTable}>
-                <thead>
-                  <tr>
-                    <th>Material</th>
-                    <th>Cantidad</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {inventoryData.centro.map((item, index) => (
-                    <tr key={index}>
-                      <td>{item.material}</td>
-                      <td>{item.cantidad}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
+          ))}
         </div>
       </main>
 
@@ -110,6 +82,60 @@ export default function Home() {
           <FaInstagram className={styles.icon} />
         </div>
       </footer>
+
+      {/* Modal */}
+      {isModalOpen && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            {!isRecovery ? (
+              <>
+                <h2>Iniciar Sesión</h2>
+                <input 
+                  type="text" 
+                  placeholder="Usuario" 
+                  className={styles.inputField} 
+                />
+                <input 
+                  type="password" 
+                  placeholder="Contraseña" 
+                  className={styles.inputField} 
+                />
+                <button className={styles.primaryButton}>Entrar</button>
+                <button 
+                  className={styles.linkButton} 
+                  onClick={() => setIsRecovery(true)}
+                >
+                  ¿Olvidaste tu contraseña?
+                </button>
+                <button 
+                  className={styles.closeButton} 
+                  onClick={() => setIsModalOpen(false)}
+                >
+                  Cerrar
+                </button>
+              </>
+            ) : (
+              <>
+                <h2>Recuperar Contraseña</h2>
+                <input 
+                  type="email" 
+                  placeholder="Correo electrónico" 
+                  className={styles.inputField} 
+                />
+                <button className={styles.primaryButton}>
+                  Enviar enlace
+                </button>
+                <button 
+                  className={styles.linkButton} 
+                  onClick={() => setIsRecovery(false)}
+                >
+                  Volver al login
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

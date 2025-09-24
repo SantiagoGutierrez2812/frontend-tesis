@@ -26,27 +26,18 @@
 
 /* Encabezado */
 .header {
-width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.5rem 3rem;
-    margin-bottom: 2rem;
-
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 3rem;
+  margin-bottom: 2rem;
 }
 
 .logoContainer {
   display: flex;
   align-items: center;
   gap: 1rem;
-}
-
-.logo {
-  /* Placeholder para tu logo SVG o imagen */
-  width: 40px;
-  height: 40px;
-  background-color: #fff;
-  border-radius: 8px;
 }
 
 .companyName {
@@ -168,7 +159,7 @@ width: 100%;
   color: var(--text-light);
 }
 
-/* Media Queries para Responsividad */
+/* Media Queries */
 @media (max-width: 768px) {
   .header {
     flex-direction: column;
@@ -181,4 +172,80 @@ width: 100%;
   .mainTitle {
     font-size: 2rem;
   }
+}
+
+/* 🔹 Modal */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  background: var(--card-bg);
+  padding: 2rem;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.inputField {
+  width: 100%;
+  padding: 0.8rem;
+  margin: 0.8rem 0;
+  border-radius: 8px;
+  border: 1px solid #555;
+  background: #1e1e2d;
+  color: var(--text-light);
+}
+
+.primaryButton {
+  width: 100%;
+  padding: 0.8rem;
+  background: var(--card-norte-accent);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  margin-top: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.primaryButton:hover {
+  background: #556af7;
+}
+
+.linkButton {
+  margin-top: 1rem;
+  background: none;
+  border: none;
+  color: var(--card-norte-accent);
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.closeButton {
+  margin-top: 1rem;
+  width: 100%;
+  padding: 0.7rem;
+  border: none;
+  border-radius: 8px;
+  background: #444;
+  color: white;
+  cursor: pointer;
 }

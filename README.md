@@ -72,3 +72,4 @@ npm run dev -->
 #AYUDAS VISUALES
 instalado para correr el proyecto 
 1) npm install recharts
+"2) npm install three @react-three/fiber @react-three/drei"

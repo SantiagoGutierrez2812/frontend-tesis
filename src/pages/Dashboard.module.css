@@ -23,12 +23,14 @@
 
 
 .dashboardContent {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    flex-wrap: nowrap;
+    flex-direction: column;
 }
 
 .dashboardBox {
@@ -71,4 +73,52 @@
 
 .inventoryTable{
   color: aliceblue;
+}
+
+/* ...existing CSS code... */
+
+/* New CSS for the menu box */
+.dashboardMenuBox {
+    /* Replicate the styles from .dashboardBox */
+    background-color: rgb(245 242 242 / 51%);
+    border-radius: 20px;
+    padding: 10px;
+    width: 100%;
+    max-width: 900px;
+    box-shadow: 1px 1px 20px rgb(220, 221, 198);
+    
+    /* Add spacing below the main box */
+    margin-top: 20px; 
+    
+    /* Use flexbox to lay out the menu items horizontally */
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 15px;
+}
+
+.menuItem {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 15px;
+    background-color: rgba(243, 244, 246, 0.6);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.menuItem:hover {
+    background-color: rgba(243, 244, 246, 0.8);
+    transform: translateY(-2px);
+}
+
+.menuIcon {
+    font-size: 1.5rem;
+}
+
+.menuText {
+    font-size: 1rem;
+    color: #444340;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
