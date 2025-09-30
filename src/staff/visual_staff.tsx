@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import styles from "./RegisterForm.module.css";
 import TopControl from "../TopControl/TopControl";
-import { get_users, type UserTransformed } from "../services/apiService";
+import { get_users, type UserTransformed } from "../services/services/apiService";
 
 interface PersonalData extends UserTransformed {
   direccion: string; fechaIngreso: string; password: string;

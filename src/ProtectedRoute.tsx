@@ -10,11 +10,11 @@ export default function ProtectedRoute({ roles, children }: ProtectedRouteProps)
   const role = Number(localStorage.getItem("role"));
 
   if (!token) {
-    return <Navigate to="/" replace />; // si no está logueado → redirigir al Home
+    return <Navigate to="/" replace />; 
   }
 
   if (!roles.includes(role)) {
-    return <Navigate to="/" replace />; // si no tiene permisos → redirigir al Home
+    return <Navigate to="/" replace />; 
   }
 
   return <>{children}</>;
