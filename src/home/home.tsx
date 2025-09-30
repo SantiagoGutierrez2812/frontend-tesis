@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { login } from "../services/authService";
-import { useNavigate } from "react-router-dom"; // 👈 importar
+import { useNavigate } from "react-router-dom";
 import styles from "./InventarioDashboard.module.css";
 
 export default function Home() {
@@ -9,25 +9,25 @@ export default function Home() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const navigate = useNavigate(); // 👈 inicializar
+  const navigate = useNavigate();
 
   const handleLogin = async () => {
     try {
       const data = await login(username, password);
-
       if (data.access_token) {
+        // Guardamos token y rol
         localStorage.setItem("token", data.access_token);
-        if (data.role) localStorage.setItem("role", data.role.toString());
+        localStorage.setItem("role", String(data.role));
 
-        setError("");
-        setIsModalOpen(false);
-
-        // 👇 Redirigir según el rol
+        // Redirigimos según el rol
         if (data.role === 1) {
           navigate("/dashboard");
         } else if (data.role === 2) {
           navigate("/registro");
         }
+
+        setError("");
+        setIsModalOpen(false);
       } else {
         setError("Respuesta inesperada del servidor");
       }
@@ -54,7 +54,7 @@ export default function Home() {
         <h1 className={styles.mainTitle}>Inventario</h1>
       </main>
 
-      {/* Modal */}
+      {/* Modal de login */}
       {isModalOpen && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>

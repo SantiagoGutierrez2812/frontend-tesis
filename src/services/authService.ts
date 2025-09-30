@@ -12,5 +12,4 @@ export async function login(username: string, password: string) {
     throw new Error(errorText || "Error en login");
   }
 
-  return res.json();
-}
+  return res.json();}

@@ -1,21 +1,27 @@
+// src/components/PrivateRoute.tsx
 import { Navigate } from "react-router-dom";
 import { isLoggedIn, getRole } from "../utils/auth";
 import type { JSX } from "react";
 
 interface PrivateRouteProps {
-  children: JSX.Element;
-  roles?: number[]; // ej: [1] solo admin, [1,2] admin y empleados
+    children: JSX.Element;
+
+    roles?: number[];
 }
 
 export default function PrivateRoute({ children, roles }: PrivateRouteProps) {
-  if (!isLoggedIn()) {
-    return <Navigate to="/" replace />;
-  }
+    if (!isLoggedIn()) {
+        return <Navigate to="/" replace />;
+    }
 
-  const role = Number(getRole());
-  if (roles && !roles.includes(role)) {
-    return <Navigate to="/no-autorizado" replace />;
-  }
+    const role = getRole();
+    if (roles && role !== null && !roles.includes(role)) {
+        if (role === 2) {
 
-  return children;
+            return <Navigate to="/registro" replace />;
+        }
+
+        return <Navigate to="/no-autorizado" replace />;
+    }
+    return children;
 }
