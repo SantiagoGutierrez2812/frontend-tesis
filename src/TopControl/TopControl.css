@@ -35,7 +35,7 @@
 
 /* Overlay del menú */
 .top-menu-overlay {
-  border-radius: 10%;
+  /* border-radius: 10%; */
   position: fixed;
   top: 0;
   left: 0;

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import styles from "./RegisterForm.module.css";
-
+import TopControl from "../TopControl/TopControl";
 interface PersonalData {
   nombre: string;
   documento: string;
@@ -72,7 +72,9 @@ const Personal = () => {
   };
 
   return (
+    
     <div className={styles.page}>
+      <TopControl title="🚀 Panel de Administración" />
       <div className={styles.container}>
         <h2 className={styles.title}>👥 Empleados Registrados</h2>
         {records.length === 0 ? (

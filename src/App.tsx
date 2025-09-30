@@ -1,31 +1,57 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import MaterialForm from './Registration_and_materials/MaterialForm';
-import MapaFondo from './map/map';
-import Dashboard from './pages/Dashboard';
-import Home from './home/home';
-import Headquarters from './headquarters/headquarters';
-import AdminLogs from './AdminLogs/AdminLogs';
-import VisualStaff from './staff/visual_staff';
-
-
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Home from "./home/home";
+import Dashboard from "./pages/Dashboard";
+import AdminLogs from "./AdminLogs/AdminLogs";
+import PrivateRoute from "./components/PrivateRoute";
+import MaterialForm from "./Registration_and_materials/MaterialForm";
+import MapaFondo from "./map/map";
 function App() {
   return (
     <Router>
-      <div className="app-container">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/Dashboard" element={<Dashboard />} />
-          <Route path="/registro" element={<MaterialForm />} />
-          <Route path="/mapa" element={<MapaFondo />} />
-          <Route path="/headquarters" element={<Headquarters />} />
-          <Route path="/adminLogs" element={<AdminLogs />} />
-          <Route path="/registro_personal" element={<VisualStaff />} />
-  
-        </Routes>
-      </div>
+      <Routes>
+        {/* Página pública */}
+        <Route path="/" element={<Home />} />
+
+        {/* Solo administradores (role 1) */}
+        <Route
+          path="/dashboard"
+          element={
+            <PrivateRoute roles={[1]}>
+              <Dashboard />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/adminLogs"
+          element={
+            <PrivateRoute roles={[1]}>
+              <AdminLogs />
+            </PrivateRoute>
+          }
+        />
+
+        {/* Solo empleados (role 2) */}
+        <Route
+          path="/registro"
+          element={
+            <PrivateRoute roles={[1,2]}>
+              <MaterialForm />
+            </PrivateRoute>
+          }
+        />
+         <Route
+          path="/map"
+          element={
+            <PrivateRoute roles={[1]}>
+              <MapaFondo />
+            </PrivateRoute>
+          }
+        />
+        {/* Página si no tiene permisos */}
+        <Route path="/" element={<h1>No tienes permisos 🚫</h1>} />
+      </Routes>
     </Router>
   );
 }
 
 export default App;
-

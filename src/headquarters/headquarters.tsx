@@ -61,7 +61,6 @@ export default function Headquarters() {
     <div className={styles.container}>
        <TopControl title="🚀 Panel de Administración" />
 
-       buton = conf
       {/* HEADER PRINCIPAL */}
       <header className={styles.header}>
         <h1 className={styles.titleInventory}>📦 Inventario</h1>
