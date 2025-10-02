@@ -6,6 +6,7 @@ import ThermostatWidget from '../widget/personnel_record/ThermostatWidget';
 import HumidityWidget from '../widget/rank/HumidityWidget';
 import styles from './Dashboard.module.css';
 import ConfiWidget from '../widget/conf/confi'
+import Loader from '../widget/supplier/supplier'
 
 const Dashboard = () => {
     const userName = "Juan Pérez"; 
@@ -28,6 +29,7 @@ const Dashboard = () => {
                         <div className={styles.widgetBox}><ThermostatWidget /></div>
                         <div className={styles.widgetBox}><HumidityWidget /></div>
                         <div className={styles.widgetBox}><ConfiWidget /></div>
+                        <div className={styles.widgetBox}><Loader /></div>
                     </div>
                 </div>
                 {/* Contenedor para el menú de opciones */}

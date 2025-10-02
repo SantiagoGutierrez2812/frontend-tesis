@@ -1,4 +1,3 @@
-
 export interface Inventory {
   product_name: string;
   quantity: number;

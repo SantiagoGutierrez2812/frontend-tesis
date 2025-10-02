@@ -1,4 +1,5 @@
 .backgroundWrapper {
+  
   position: relative;
   min-height: 100vh;
   overflow: hidden;
@@ -7,8 +8,8 @@
 
 
 .backgroundBlur {
-  /* background-color: black; */
-  background-image: url('../assets/house-1477041_1920.jpg');
+  background-image: url('../assets/15273953_5559261.jpg');
+  background-color: #1E1E2D;
   background-position: center;
   background-repeat: no-repeat; 
   filter: blur(5px);
@@ -34,13 +35,12 @@
 }
 
 .dashboardBox {
-    background-color: rgb(245 242 242 / 51%);
-    border-radius: 20px;
-    padding:10px;
+    padding: 10px;
     width: 100%;
     max-width: 900px;
-    box-shadow: 1px 1px 20px rgb(220, 221, 198);
 }
+
+
 
 
 
@@ -75,22 +75,14 @@
   color: aliceblue;
 }
 
-/* ...existing CSS code... */
-
-/* New CSS for the menu box */
 .dashboardMenuBox {
-    /* Replicate the styles from .dashboardBox */
     background-color: rgb(245 242 242 / 51%);
     border-radius: 20px;
     padding: 10px;
     width: 100%;
     max-width: 900px;
     box-shadow: 1px 1px 20px rgb(220, 221, 198);
-    
-    /* Add spacing below the main box */
     margin-top: 20px; 
-    
-    /* Use flexbox to lay out the menu items horizontally */
     display: flex;
     justify-content: space-around;
     align-items: center;

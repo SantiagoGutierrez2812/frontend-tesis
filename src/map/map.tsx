@@ -22,10 +22,7 @@ export default function MapaFondo() {
         draggable={false}
       />
 
-      <div className={`${styles.epicTitle} ${styles.flagContainer}`}>
-        <div className={styles.logo}>Sedes Improexprees</div>
-      </div>
-
+     
       {/* Puntos */}
       {markers.map((m) => (
         <div

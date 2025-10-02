@@ -4,14 +4,18 @@ import TopControl from "../TopControl/TopControl";
 import { get_users, type UserTransformed } from "../services/services/apiService";
 
 interface PersonalData extends UserTransformed {
-  direccion: string; fechaIngreso: string; password: string;
+  direccion: string;
+  fechaIngreso: string;
+  password: string;
 }
-
 
 const Personal = () => {
   const [records, setRecords] = useState<PersonalData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // 🔍 estado para buscador
+  const [search, setSearch] = useState("");
 
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState<PersonalData>({
@@ -35,9 +39,9 @@ const Personal = () => {
 
         const processedData: PersonalData[] = data.map(user => ({
           ...user,
-          direccion: 'N/A',
-          fechaIngreso: 'N/A',
-          password: '',
+          direccion: "N/A",
+          fechaIngreso: "N/A",
+          password: "",
         }));
 
         setRecords(processedData);
@@ -71,8 +75,15 @@ const Personal = () => {
     }
 
     setFormData({
-      name: "", document_id: "", email: "", phone_number: "", cargo: "", role: "2",
-      direccion: "", fechaIngreso: "", password: "",
+      name: "",
+      document_id: "",
+      email: "",
+      phone_number: "",
+      cargo: "",
+      role: "2",
+      direccion: "",
+      fechaIngreso: "",
+      password: "",
     });
     setShowModal(false);
   };
@@ -87,17 +98,34 @@ const Personal = () => {
     setShowModal(true);
   };
 
+  // 🔍 Filtrar registros por nombre, documento o teléfono
+  const filteredRecords = records.filter(
+    rec =>
+      rec.name.toLowerCase().includes(search.toLowerCase()) ||
+      rec.document_id.toLowerCase().includes(search.toLowerCase()) ||
+      rec.phone_number.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <div className={styles.page}>
       <TopControl title="🚀 Panel de Administración" />
       <div className={styles.container}>
         <h2 className={styles.title}>👥 Empleados Registrados</h2>
 
-        {loading && <p className={styles.empty}>Cargando registros de la base de datos...</p>}
-        {error && <p className={styles.empty} style={{ color: 'red' }}>⚠️ Error: {error}</p>}
+        {/* 🔍 Input de búsqueda */}
+        <input
+          type="text"
+          placeholder="Buscar por nombre, documento o teléfono..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className={styles.searchInput}
+        />
 
-        {!loading && !error && records.length === 0 ? (
-          <p className={styles.empty}>No hay registros aún.</p>
+        {loading && <p className={styles.empty}>Cargando registros de la base de datos...</p>}
+        {error && <p className={styles.empty} style={{ color: "red" }}>⚠️ Error: {error}</p>}
+
+        {!loading && !error && filteredRecords.length === 0 ? (
+          <p className={styles.empty}>No se encontraron coincidencias.</p>
         ) : (
           <table className={styles.table}>
             <thead>
@@ -111,7 +139,7 @@ const Personal = () => {
               </tr>
             </thead>
             <tbody>
-              {records.map((rec, i) => (
+              {filteredRecords.map((rec, i) => (
                 <tr key={i}>
                   <td>{rec.name}</td>
                   <td>{rec.document_id}</td>

@@ -9,7 +9,6 @@
   align-items: center;
 }
 
-/* HEADER PRINCIPAL */
 .header {
   width: 100%;
   text-align: center;
@@ -27,7 +26,7 @@
   -webkit-text-fill-color: transparent;
   animation: gradientFlow 6s infinite linear;
   text-shadow: 0px 0px 20px rgba(0, 255, 255, 0.7),
-               0px 0px 40px rgba(255, 0, 200, 0.6);
+    0px 0px 40px rgba(255, 0, 200, 0.6);
   position: relative;
   display: inline-block;
 }
@@ -45,86 +44,160 @@
 }
 
 @keyframes gradientFlow {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
-/* GRID DE BLOQUES */
+/* --- ESTILOS MODIFICADOS PARA LA CUADRÍCULA --- */
 .secondary_container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); /* antes 300px */
-  gap: 20px; /* un poco menos de espacio entre cartas */
+  /* Nueva cuadrícula de 4 columnas. Ajuste para que los bloques pequeños sean más estrechos. */
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
   width: 100%;
-  max-width: 1390px;/* más compacto */
+  max-width: 1390px;
 }
 
-/* BLOQUES */
+/* Modificadores de columna para nueva disposición */
+.block:nth-child(1),
+/* Resumen Inventario */
+.block:nth-child(4) {
+  /* Top Materiales */
+  grid-column: span 2;
+  /* Para que ocupen la mitad cada uno en una fila de 4 */
+}
+
+/* Bloque Estadísticas y Dinero Invertido (Ahora también se distribuyen) */
+.block:nth-child(2),
+/* Estadísticas */
+.block:nth-child(3) {
+  /* Dinero Invertido */
+  grid-column: span 2;
+  /* Para que ocupen la mitad cada uno en una fila de 4 */
+}
+
+.employeeBlock {
+  grid-column: 1 / -1;
+  /* Ocupa el 100% del ancho (todas las 4 columnas) */
+}
+
+.deletedBlock {
+  grid-column: 1 / -1;
+  /* Ocupa el 100% del ancho (todas las 4 columnas) */
+}
+
+/* Media query para dispositivos más pequeños (mismo comportamiento que el original, pero usando la nueva estructura de 4 columnas) */
+@media (max-width: 1024px) {
+  .secondary_container {
+    grid-template-columns: repeat(2, 1fr);
+    /* 2 columnas en pantallas medianas */
+  }
+
+  .block:nth-child(1),
+  .block:nth-child(4),
+  .block:nth-child(2),
+  .block:nth-child(3) {
+    grid-column: span 1;
+    /* Vuelven a ocupar 1 columna de 2 */
+  }
+
+  .employeeBlock,
+  .deletedBlock {
+    grid-column: span 2;
+    /* Ocupa 2 columnas de 2 (100% del ancho) */
+  }
+}
+
+@media (max-width: 600px) {
+  .secondary_container {
+    grid-template-columns: 1fr;
+    /* 1 columna en pantallas pequeñas */
+  }
+
+  .block {
+    grid-column: 1 / -1;
+    /* Todos los bloques ocupan el 100% del ancho */
+  }
+}
+
+/* --- FIN ESTILOS MODIFICADOS --- */
+
+
 .block {
   background: rgba(255, 255, 255, 0.05);
-  padding: 16px; /* más chico que 20px */
-  border-radius: 14px; /* menos redondeo */
-  box-shadow: 0px 3px 12px rgba(0,0,0,0.4);
+  padding: 16px;
+  border-radius: 14px;
+  box-shadow: 0px 3px 12px rgba(0, 0, 0, 0.4);
   transition: transform 0.3s ease;
 }
+
 .block:hover {
   transform: translateY(-4px);
 }
 
-/* TITULOS DE SECCIONES */
 .sectionTitle {
-  font-size: 1.15rem; /* más compacto */
+  font-size: 1.15rem;
   margin-bottom: 12px;
   color: #00eaff;
   border-left: 3px solid #ff00cc;
   padding-left: 8px;
 }
 
-/* TABLA */
 .table {
   color: wheat;
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.95rem; /* más compacto */
+  font-size: 0.95rem;
 }
+
 .table th {
   background: rgba(255, 255, 255, 0.1);
   color: #00eaff;
   padding: 6px;
   text-align: left;
 }
+
 .table td {
   padding: 6px;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* CARDS DE DINERO */
 .moneyCards {
   display: flex;
-  gap: 12px; /* menos espacio entre cards */
+  gap: 12px;
   flex-wrap: wrap;
 }
+
 .moneyCard {
   flex: 1;
   min-width: 90px;
-  padding: 12px; /* más pequeño */
+  padding: 12px;
   border-radius: 10px;
   background: linear-gradient(135deg, #7928ca, #ff0080);
   color: white;
   text-align: center;
   font-weight: bold;
   font-size: 0.95rem;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.35);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35);
   transition: transform 0.3s ease;
 }
+
 .moneyCard:hover {
   transform: scale(1.04);
 }
 
-/* LISTA TOP SELLING */
 .topList li {
-  background: rgba(255,255,255,0.1);
-  padding: 8px 12px; /* más compacto */
+  background: rgba(255, 255, 255, 0.1);
+  padding: 8px 12px;
   border-radius: 7px;
   margin-bottom: 8px;
   font-size: 0.95rem;
@@ -132,14 +205,11 @@
   justify-content: space-between;
   transition: transform 0.3s ease;
 }
+
 .topList li:hover {
   transform: translateX(4px);
 }
 
-/* EMPLEADOS */
-.employeeBlock {
-  grid-column: span 2;
-}
 .employeeItem {
   display: flex;
   align-items: center;
@@ -147,29 +217,322 @@
   margin-bottom: 10px;
   font-size: 0.95rem;
 }
+
 .barContainer {
   flex: 1;
-  height: 8px; /* más delgado */
+  height: 8px;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 6px;
   overflow: hidden;
 }
+
 .bar {
   height: 100%;
   background: linear-gradient(90deg, #00eaff, #ff00cc);
   border-radius: 6px;
 }
+
 .percent {
   min-width: 35px;
   text-align: right;
   font-size: 13px;
 }
 
-/* MATERIALES ELIMINADOS */
-.deletedBlock {
-  grid-column: span 2;
-}
 .deletedBlock table th {
   background: rgba(255, 100, 100, 0.2);
   color: #ff6b6b;
 }
+
+.searchInput {
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #444;
+  background: #1c1c1c;
+  color: #fff;
+  transition: all 0.3s ease;
+  min-width: 180px;
+  flex-shrink: 0;
+}
+
+.searchInput::placeholder {
+  color: #aaa;
+  font-style: italic;
+}
+
+.dateInput {
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  border: 1px solid #444;
+  background: #1c1c1c;
+  color: #fff;
+  transition: all 0.3s ease;
+}
+
+.filterBar {
+  margin-top: 0.5rem;
+  margin-bottom: 0.8rem;
+  padding: 1rem;
+  border-radius: 12px;
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-start;
+  align-items: center;
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: thin;
+  scrollbar-color: #00eaff #1c1c1c;
+}
+
+.filterBar::-webkit-scrollbar {
+  height: 8px;
+}
+
+.filterBar::-webkit-scrollbar-track {
+  background: #1c1c1c;
+  border-radius: 10px;
+}
+
+.filterBar::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, #00eaff, #ff00ff);
+  border-radius: 10px;
+}
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.modalContent {
+  background: #111;
+  padding: 24px;
+  border-radius: 12px;
+  min-width: 300px;
+  max-width: 90%;
+  color: #fff;
+  position: relative;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.modalClose {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #fff;
+  cursor: pointer;
+}
+
+/* Animación tipo gradient y entrada */
+@keyframes gradientFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes fadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Bloques con animación */
+.block {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 16px;
+  border-radius: 14px;
+  box-shadow: 0px 3px 12px rgba(0, 0, 0, 0.4);
+  transition: transform 0.3s ease;
+  animation: fadeUp 0.6s ease forwards;
+}
+
+/* Animación al hacer hover */
+.block:hover {
+  transform: translateY(-4px);
+}
+
+/* Cards de dinero con animación de gradiente */
+.moneyCard {
+  flex: 1;
+  min-width: 90px;
+  padding: 12px;
+  border-radius: 10px;
+  background-size: 300% 300%;
+  color: white;
+  text-align: center;
+  font-weight: bold;
+  font-size: 0.95rem;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35);
+  transition: transform 0.3s ease;
+  animation: gradientFlow 5s infinite linear, fadeUp 0.6s ease forwards;
+}
+
+.moneyCard:hover {
+  transform: scale(1.04);
+}
+
+
+.topList li {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 8px 12px;
+  border-radius: 7px;
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+  display: flex;
+  justify-content: space-between;
+  transition: transform 0.3s ease;
+  animation: fadeUp 0.6s ease forwards;
+}
+
+
+.bar {
+  height: 100%;
+  background: linear-gradient(90deg, #00eaff, #ff00cc, #ffcd00, #00ffea);
+  border-radius: 6px;
+  animation: gradientFlow 5s infinite linear;
+}
+
+
+.searchInput:focus,
+.dateInput:focus {
+  border-color: #00eaff;
+  outline: none;
+  box-shadow: 0 0 10px rgba(0, 234, 255, 0.15);
+  animation: fadeUp 0.3s ease forwards;
+}
+
+
+.modalContent {
+  background: #111;
+  padding: 24px;
+  border-radius: 12px;
+  min-width: 300px;
+  max-width: 90%;
+  color: #fff;
+  position: relative;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  animation: fadeUp 0.4s ease forwards;
+}
+
+/* Nuevo estilo para los botones de filtro */
+.filterButton {
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #444;
+  background: #1c1c1c;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 120px;
+  flex-shrink: 0;
+  text-align: center;
+}
+
+/* Estilo para el botón activo */
+.activeFilter {
+  border-color: #00eaff;
+  background: linear-gradient(90deg, #302b63, #0f0c29);
+  color: #00eaff;
+  box-shadow: 0 0 10px rgba(0, 234, 255, 0.3);
+  font-weight: bold;
+}
+
+.filterButton:hover {
+  background: #2a2a2a;
+}
+
+
+/* --- ESTILOS MODIFICADOS PARA LA CUADRÍCULA --- */
+.secondary_container {
+  display: grid;
+  /* Nueva cuadrícula de 6 columnas para hacer los bloques más pequeños */
+  grid-template-columns: repeat(6, 1fr);
+  gap: 20px;
+  width: 100%;
+  max-width: 1390px;
+}
+
+/* Disposición con 6 columnas (6/6 = 100%):
+- Inventario: 3/6 (50%)
+- Top Materiales: 3/6 (50%)
+- Estadísticas: 3/6 (50%)
+- Dinero Invertido: 3/6 (50%)
+- Empleados y Eliminados: 6/6 (100%)
+*/
+
+/* Resumen Inventario y Top Materiales (Ahora ocupan 3 de 6 columnas) */
+.block:nth-child(1),
+/* Resumen Inventario */
+.block:nth-child(2),
+/* Top Materiales (reordenado en el JSX) */
+.block:nth-child(3),
+/* Estadísticas */
+.block:nth-child(4) {
+  /* Dinero Invertido */
+  grid-column: span 3;
+}
+
+/* Empleados y Materiales Eliminados (Ahora ocupan 6 de 6 columnas) */
+.employeeBlock,
+.deletedBlock {
+  grid-column: span 6;
+}
+
+/* Media query para dispositivos más pequeños */
+@media (max-width: 1024px) {
+  .secondary_container {
+    grid-template-columns: repeat(2, 1fr);
+    /* 2 columnas en pantallas medianas */
+  }
+
+  .block:nth-child(1),
+  .block:nth-child(2),
+  .block:nth-child(3),
+  .block:nth-child(4) {
+    grid-column: span 1;
+    /* Vuelven a ocupar 1 columna de 2 */
+  }
+
+  .employeeBlock,
+  .deletedBlock {
+    grid-column: span 2;
+    /* Ocupa 2 columnas de 2 (100% del ancho) */
+  }
+}
+
+@media (max-width: 600px) {
+  .secondary_container {
+    grid-template-columns: 1fr;
+    /* 1 columna en pantallas pequeñas */
+  }
+
+  .block {
+    grid-column: 1 / -1;
+    /* Todos los bloques ocupan el 100% del ancho */
+  }
+}
+
+/* --- FIN ESTILOS MODIFICADOS --- */

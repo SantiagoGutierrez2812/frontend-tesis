@@ -15,6 +15,6 @@ const HumidityWidget = () => {
       <img src={materialImg} alt="Material" className={styles.image} />
     </div>
   );
-};
+};  
 
 export default HumidityWidget;
