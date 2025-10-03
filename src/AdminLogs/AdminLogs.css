@@ -189,9 +189,10 @@ body {
     animation: overlayFade 0.4s ease;
 }
 
+
 .modalContent {
     background: linear-gradient(145deg, #1a1a2e, #162447);
-    border: 2px solid #00eaff;
+    /* border: 2px solid #00eaff; */
     padding: 30px;
     border-radius: 20px;
     min-width: 350px;

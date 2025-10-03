@@ -2,11 +2,9 @@
   --size: 150px; /* Cambia este valor para hacer el cubo más grande o más pequeño */
 }
 
-h2 {
-  border-radius:  10px;
-  box-shadow: 2px 2px 10px #666;
-  padding: 0.25em;
-}
+/* h2 {
+  
+} */
 
 div.espacio3D {
   width: var(--size);

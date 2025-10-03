@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "./headquarters.module.css";
 import TopControl from "../TopControl/TopControl";
 import {
@@ -12,13 +12,13 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-// --- Data Definitions (Same as original) ---
-const inventoryData = [
-  { nombre: "Acero Laminado", cantidad: 120, tamaño: "2m x 1m" },
-  { nombre: "Cemento Portland", cantidad: 75, tamaño: "50kg c/u" },
-  { nombre: "Madera Pino", cantidad: 40, tamaño: "2.5m x 20cm" },
-];
+// Asegúrate de que esta ruta sea correcta para tu archivo de tipos
+import type { InventoryDisplayItem } from "../services/types/types"; 
+// Ajusta la ruta a tu servicio
+import { fetchAndTransformInventories } from "../services/inventory/app_inventario"; 
 
+
+// --- Data Definitions (Mocks) ---
 const statisticsData = [
   { name: "Ene", ventas: 400, fecha: "2025-01-15" },
   { name: "Feb", ventas: 300, fecha: "2025-02-12" },
@@ -51,6 +51,13 @@ const deletedMaterialsData = [
   { nombre: "Ladrillos", eliminadoPor: "Ana Gómez", fecha: "2025-09-19" },
 ];
 
+const stockLevelData = [
+  { nombre: "Acero Laminado", nivel: 75 },
+  { nombre: "Cemento Portland", nivel: 50 },
+  { nombre: "Madera Pino", nivel: 30 },
+  { nombre: "Arena Fina", nivel: 10 },
+];
+
 const monthlyDetails = {
   Ene: [
     { nombre: "Cemento Portland", cantidad: 120 },
@@ -70,18 +77,23 @@ const monthlyDetails = {
   ],
 };
 
-// Definición de los filtros disponibles (Same as original)
+// --- Filtros disponibles ---
 const filters = [
-    { value: "all", label: "🌐 Ver Todo" },
-    { value: "inventory", label: "📦 Inventario" },
-    { value: "stats", label: "📊 Estadísticas" },
-    { value: "money", label: "💰 Inversión" },
-    { value: "top", label: "🔥 Top Materiales" },
-    { value: "employees", label: "👨‍💼 Empleados" },
-    { value: "deleted", label: "🗑️ Eliminados" },
+  { value: "inventory", label: "📦 Inventario" },
+  { value: "stats", label: "📊 Estadísticas" },
+  { value: "money", label: "💰 Inversión" },
+  { value: "top", label: "🔥 Top Materiales" },
+  { value: "employees", label: "👨‍💼 Empleados" },
+  { value: "deleted", label: "🗑️ Eliminados" },
+  { value: "stock", label: "📉 Nivel de Stock" },
 ];
 
 export default function Headquarters() {
+  // Estados para la carga de datos del Inventario
+  const [inventoryData, setInventoryData] = useState<InventoryDisplayItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   const [activeFilters, setActiveFilters] = useState<string[]>(["all"]);
   const [search, setSearch] = useState("");
   const [startDate, setStartDate] = useState("");
@@ -89,6 +101,30 @@ export default function Headquarters() {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState<any>(null);
 
+  // Lógica de carga de datos del inventario
+  useEffect(() => {
+    const fetchInventory = async () => {
+      try {
+        const data = await fetchAndTransformInventories(); 
+        
+        setInventoryData(data);
+        setError(null);
+      } catch (e) {
+        if (e instanceof Error) {
+          setError(`Error de carga: ${e.message}. Asegúrate que el servidor esté activo.`);
+        } else {
+          setError("Ocurrió un error desconocido al cargar el inventario.");
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchInventory();
+  }, []);
+
+
+  // Funciones de filtrado
   const filterBySearch = <T extends { nombre?: string }>(data: T[]) => {
     if (!search) return data;
     return data.filter((item) =>
@@ -128,41 +164,36 @@ export default function Headquarters() {
   };
 
   const toggleFilter = (value: string) => {
-    if (value === 'all') {
-        // 'Ver Todo' siempre debe ser exclusivo, a menos que ya esté activo
-        setActiveFilters(activeFilters.includes('all') ? [] : ['all']);
-        return;
+    if (value === "all") {
+      setActiveFilters(activeFilters.includes("all") ? [] : ["all"]);
+      return;
     }
-
-    const currentFilters = activeFilters.filter(f => f !== 'all');
-
+    const currentFilters = activeFilters.filter((f) => f !== "all");
     if (currentFilters.includes(value)) {
-        // Remover el filtro
-        const newFilters = currentFilters.filter(f => f !== value);
-        // Si no quedan filtros, activar 'all' por defecto
-        setActiveFilters(newFilters.length === 0 ? ['all'] : newFilters);
+      const newFilters = currentFilters.filter((f) => f !== value);
+      setActiveFilters(newFilters.length === 0 ? ["all"] : newFilters);
     } else {
-        // Añadir el filtro
-        setActiveFilters([...currentFilters, value]);
+      setActiveFilters([...currentFilters, value]);
     }
-};
+  };
 
-const filterIsActive = (value: string) => activeFilters.includes('all') || activeFilters.includes(value);
+  const filterIsActive = (value: string) =>
+    activeFilters.includes("all") || activeFilters.includes(value);
 
   return (
     <div className={styles.container}>
-      <TopControl title="🚀 Panel de Administración" />
+      <TopControl title="🚀 Panel de Inventario" />
 
       <div className={styles.filterBar}>
-        {/* Usamos botones para la selección múltiple */}
         {filters.map((filter) => (
-            <button
-                key={filter.value}
-                className={`${styles.filterButton} ${activeFilters.includes(filter.value) || (filter.value !== 'all' && activeFilters.length === 0 && filter.value === 'all') ? styles.activeFilter : ''}`}
-                onClick={() => toggleFilter(filter.value)}
-            >
-                {filter.label}
-            </button>
+          <button
+            key={filter.value}
+            className={`${styles.filterButton} ${activeFilters.includes(filter.value) ? styles.activeFilter : ""
+              }`}
+            onClick={() => toggleFilter(filter.value)}
+          >
+            {filter.label}
+          </button>
         ))}
 
         <input
@@ -188,31 +219,49 @@ const filterIsActive = (value: string) => activeFilters.includes('all') || activ
       </div>
 
       <div className={styles.secondary_container}>
-        {/* NUEVA DISPOSICIÓN: Fila 1 - Inventario y Top Materiales */}
+        {/* 📦 Inventario - Solución de Doble Tabla para Scroll y Fixed Header */}
         {filterIsActive("inventory") && (
-          <div className={styles.block}>
+          <div className={`${styles.block} ${styles.inventoryTableContainer}`}>
             <h2 className={styles.sectionTitle}>📋 Resumen Inventario</h2>
-            <table className={styles.table}>
-              <thead>
-                <tr>
-                  <th>Nombre</th>
-                  <th>Cantidad</th>
-                  <th>Tamaño</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filterBySearch(inventoryData).map((item, i) => (
-                  <tr key={i}>
-                    <td>{item.nombre}</td>
-                    <td>{item.cantidad}</td>
-                    <td>{item.tamaño}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+
+            {loading && <p className={styles.loadingMessage}>Cargando inventario...</p>}
+            {error && <p className={styles.errorMessage}>{error}</p>}
+
+            {!loading && !error && (
+              <>
+                {/* 1. CABECERA FIJA (Tabla separada) */}
+                <table className={`${styles.table} ${styles.tableHeader}`}>
+                  <thead>
+                    <tr>
+                      <th>Nombre</th>
+                      <th>Cantidad</th>
+                      <th>Tamaño</th>
+                    </tr>
+                  </thead>
+                </table>
+
+                {/* 2. CUERPO SCROLLABLE (Contenedor con scroll) */}
+                <div className={styles.tableBodyScroll}>
+                  {/* 3. CUERPO DE LA TABLA (Tabla interior) */}
+                  <table className={styles.table}>
+                    <tbody>
+                        {/* Importante: Mapeo sin espacios entre <tr> y <td> */}
+                      {filterBySearch(inventoryData).map((item, i) => (
+                        <tr key={i}>
+                          <td>{item.nombre}</td>
+                          <td>{item.cantidad}</td>
+                          <td>{item.tamaño}</td> 
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </>
+            )}
           </div>
         )}
 
+        {/* 🔥 Top Materiales */}
         {filterIsActive("top") && (
           <div className={styles.block}>
             <h2 className={styles.sectionTitle}>🔥 Materiales Más Vendidos</h2>
@@ -232,8 +281,8 @@ const filterIsActive = (value: string) => activeFilters.includes('all') || activ
             </ul>
           </div>
         )}
-        
-        {/* Fila 2 - Estadísticas y Dinero Invertido */}
+
+        {/* 📊 Estadísticas */}
         {filterIsActive("stats") && (
           <div className={`${styles.block} ${styles.statsBlock}`}>
             <h2 className={styles.sectionTitle}>📊 Estadísticas</h2>
@@ -263,6 +312,7 @@ const filterIsActive = (value: string) => activeFilters.includes('all') || activ
           </div>
         )}
 
+        {/* 💰 Dinero Invertido */}
         {filterIsActive("money") && (
           <div className={styles.block}>
             <h2 className={styles.sectionTitle}>💰 Dinero Invertido</h2>
@@ -281,8 +331,8 @@ const filterIsActive = (value: string) => activeFilters.includes('all') || activ
             </div>
           </div>
         )}
-        
-        {/* Fila 3 y 4 - Empleados y Materiales Eliminados ocupan ahora toda la fila (span 4 en la nueva grid) */}
+
+        {/* 👨‍💼 Empleados */}
         {filterIsActive("employees") && (
           <div className={`${styles.block} ${styles.employeeBlock}`}>
             <h2 className={styles.sectionTitle}>👨‍💼 Empleados y Productividad</h2>
@@ -303,6 +353,7 @@ const filterIsActive = (value: string) => activeFilters.includes('all') || activ
           </div>
         )}
 
+        {/* 🗑️ Eliminados */}
         {filterIsActive("deleted") && (
           <div className={`${styles.block} ${styles.deletedBlock}`}>
             <h2 className={styles.sectionTitle}>🗑️ Materiales Eliminados</h2>
@@ -328,23 +379,57 @@ const filterIsActive = (value: string) => activeFilters.includes('all') || activ
             </table>
           </div>
         )}
+
+        {/* 📉 Nivel de Stock */}
+        {filterIsActive("stock") && (
+          <div className={styles.block}>
+            <h2 className={styles.sectionTitle}>📉 Nivel de Stock</h2>
+            <ul className={styles.employeeList}>
+              {filterBySearch(stockLevelData).map((item, i) => (
+                <li key={i} className={styles.employeeItem}>
+                  <span>{item.nombre}</span>
+                  <div className={styles.barContainer}>
+                    <div
+                      className={styles.bar}
+                      style={{
+                        width: `${item.nivel}%`,
+                        background: item.nivel < 20 ? "red" : "limegreen",
+                      }}
+                    ></div>
+                  </div>
+                  <span className={styles.percent}>{item.nivel}%</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
 
+      {/* Modal */}
       {modalOpen && (
         <div className={styles.modalOverlay} onClick={closeModal}>
-          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-            <button className={styles.modalClose} onClick={closeModal}>&times;</button>
+          <div
+            className={styles.modalContent}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button className={styles.modalClose} onClick={closeModal}>
+              &times;
+            </button>
             <h2>{modalContent?.nombre}</h2>
             {modalContent?.detalle?.length > 0 ? (
               <ul>
                 {modalContent.detalle.map((item: any, i: number) => (
-                  <li key={i}>{item.nombre}: {item.cantidad} unidades</li>
+                  <li key={i}>
+                    {item.nombre}: {item.cantidad} unidades
+                  </li>
                 ))}
               </ul>
             ) : (
               <>
                 {modalContent?.ventas && <p>Ventas: {modalContent.ventas}</p>}
-                {modalContent?.valor && <p>Valor: ${modalContent.valor.toLocaleString()}</p>}
+                {modalContent?.valor && (
+                  <p>Valor: ${modalContent.valor.toLocaleString()}</p>
+                )}
                 {modalContent?.fecha && <p>Fecha: {modalContent.fecha}</p>}
               </>
             )}

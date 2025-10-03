@@ -1,13 +1,15 @@
 .top-control {
- 
   display: flex;
   justify-content: space-between;
   align-items: center;
   background: #1e1e2d;
   padding: 14px 20px;
   color: white;
-  position: sticky;
+  position: sticky; 
   top: 0;
+  left: 0;
+  width: 100%; /* ocupa todo el ancho */
+  height: 60px; /* 👈 define una altura fija */
   z-index: 1000;
   box-shadow: 0 2px 10px rgba(0,0,0,0.3);
 }
@@ -31,6 +33,18 @@
 
 .top-btn:hover {
   transform: scale(1.2);
+}
+body {
+  margin: 0;
+  padding: 0;
+  background: #12122b;
+  color: #fff;
+  font-family: sans-serif;
+}
+
+/* Espacio reservado para el TopControl */
+.page-content {
+  padding-top:100%; /* 👈 misma altura del TopControl */
 }
 
 /* Overlay del menú */

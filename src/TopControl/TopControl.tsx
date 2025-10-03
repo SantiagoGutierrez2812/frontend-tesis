@@ -3,53 +3,66 @@ import { useNavigate } from "react-router-dom";
 import { logout } from "../utils/auth";
 import "./TopControl.css";
 
-interface TopControlProps {
-    title?: string;
-    onBack?: () => void;
-    onLogout?: () => void;
+export interface MenuOption {
+  label: string;
+  icon?: string;
+  onClick?: () => void; // acción dinámica
 }
 
-export default function TopControl({ title = "Panel", onBack, onLogout }: TopControlProps) {
-    const navigate = useNavigate();
-    const [menuOpen, setMenuOpen] = useState(false);
+interface TopControlProps {
+  title?: string;
+  options?: MenuOption[]; // 👈 opciones que recibe cada vista
+}
 
-    const handleLogout = () => {
-        if (onLogout) {
-            onLogout();
-        } else {
-            logout();
-            navigate("/");
-        }
-    };
-    const handleBack = () => {
-        if (onBack) {
-            onBack();
-        } else {
-            navigate(-1);
-        }
-    };
-    return (
-        <>
-            <div className="top-control">
-                <button className="top-btn back" onClick={handleBack}>
-                    ⬅
-                </button>
-                <h2 className="top-title">{title}</h2>
-                <button className="top-btn menu" onClick={() => setMenuOpen(!menuOpen)}>
-                    ☰
-                </button>
-            </div>
+export default function TopControl({ title = "Panel", options = [] }: TopControlProps) {
+  const navigate = useNavigate();
+  const [menuOpen, setMenuOpen] = useState(false);
 
-            {menuOpen && (
-                <div className="top-menu-overlay">
-                    <div className="menu-content">
-                        <button onClick={() => setMenuOpen(false)}>❌ Cerrar</button>
-                        <button onClick={() => alert("⚙ Configuración")}>⚙ Configuración</button>
-                        <button onClick={() => alert("👤 Perfil")}>👤 Perfil</button>
-                        <button onClick={handleLogout}>🚪 Salir</button>
-                    </div>
-                </div>
-            )}
-        </>
-    );
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
+
+  const handleBack = () => {
+    navigate(-1);
+  };
+
+
+  const defaultOptions: MenuOption[] = [
+    { label: "⬅ Regresar", onClick: handleBack },
+    { label: "🚪 Cerrar Sesión", onClick: handleLogout },
+  ];
+
+
+  const finalOptions = [...options, ...defaultOptions];
+
+  return (
+    <>
+      <div className="top-control">
+        <h2 className="top-title">{title}</h2>
+        <button className="top-btn menu" onClick={() => setMenuOpen(!menuOpen)}>
+          ☰
+        </button>
+      </div>
+
+      {menuOpen && (
+        <div className="top-menu-overlay">
+          <div className="menu-content">
+            <button onClick={() => setMenuOpen(false)}>❌ Cerrar Menú</button>
+            {finalOptions.map((opt, i) => (
+              <button
+                key={i}
+                onClick={async () => {
+                  setMenuOpen(false);
+                  if (opt.onClick) await opt.onClick(); 
+                }}
+              >
+                {opt.icon} {opt.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+    </>
+  );
 }
