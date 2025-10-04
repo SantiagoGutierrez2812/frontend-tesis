@@ -7,6 +7,7 @@ import HumidityWidget from '../widget/rank/HumidityWidget';
 import styles from './Dashboard.module.css';
 import ConfiWidget from '../widget/conf/confi'
 import Loader from '../widget/supplier/supplier'
+import MaterialWidget from '../widget/material/material'
 
 const Dashboard = () => {
     const userName = "Juan Pérez"; 
@@ -30,6 +31,7 @@ const Dashboard = () => {
                         <div className={styles.widgetBox}><HumidityWidget /></div>
                         <div className={styles.widgetBox}><ConfiWidget /></div>
                         <div className={styles.widgetBox}><Loader /></div>
+                        <div className={styles.widgetBox}><MaterialWidget /></div>
                     </div>
                 </div>
                 {/* Contenedor para el menú de opciones */}
@@ -38,15 +40,6 @@ const Dashboard = () => {
                         <span className={styles.menuIcon}>👤</span>
                         <span className={styles.menuText}>{userName}</span>
                     </div>
-                    {/* Opción de Configuración (solo placeholder) */}
-                    <div 
-                        className={styles.menuItem}
-                        onClick={() => alert("Función de Configuración aún no implementada.")}
-                    >
-                        <span className={styles.menuIcon}>⚙️</span>
-                        <span className={styles.menuText}>Configuración</span>
-                    </div>
-           
                     <div 
                         className={styles.menuItem}
                         onClick={handleLogout}

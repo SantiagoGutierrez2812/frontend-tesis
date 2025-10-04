@@ -1,10 +1,15 @@
-
 import styled from 'styled-components';
-
+import { useNavigate } from 'react-router-dom';
 const Loader = () => {
+   const navigate = useNavigate();
+
   return (
     <StyledWrapper>
-      <div className="loader">
+      <h2 className="text1">Proveedores</h2>
+      <div className="loader"   
+      onClick={() => navigate('/gestion_proveedores')}
+      style={{ cursor: 'pointer' }}>
+
         <div className="truckWrapper">
           <div className="truckBody">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 198 93" className="trucksvg">
@@ -53,7 +58,19 @@ const StyledWrapper = styled.div`
     align-items: center;
     justify-content: center;
   }
-
+.text1 {
+   color: #000000ff;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px; /* Espacio entre el título y el loader */
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);    color: #000000ff;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px; /* Espacio entre el título y el loader */
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5); 
+}
   .truckWrapper {
     width: 200px;
     height: 100px;

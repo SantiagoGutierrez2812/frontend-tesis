@@ -11,6 +11,10 @@ import Headquarters from "./headquarters/headquarters";
 import VisualStaff from "./staff/visual_staff";
 import Personal from "./staff/visual_staff";
 import PrivateRoute from "./components/PrivateRoute";
+import Materialcreation from "./materialcreation/materialcreation"
+
+// 🚀 IMPORTAR EL NUEVO COMPONENTE DE LA TABLA DE PROVEEDORES
+import SupplierManagement from "./Suppliers/estionProveedores";
 
 function App() {
   return (
@@ -73,6 +77,24 @@ function App() {
             </PrivateRoute>
           }
         />
+        <Route
+          path="/gestion_proveedores"
+          element={
+            <PrivateRoute roles={[1]}>
+              <SupplierManagement />
+            </PrivateRoute>
+          }
+        />
+
+     <Route
+          path="/crear_material"
+          element={
+            <PrivateRoute roles={[1]}>
+              <Materialcreation />
+            </PrivateRoute>
+          }
+        />
+        
         <Route
           path="/no-autorizado"
           element={<h1>No tienes permisos para ver esta página 🚫</h1>}

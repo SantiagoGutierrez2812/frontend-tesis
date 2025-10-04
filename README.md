@@ -74,3 +74,4 @@ instalado para correr el proyecto
 1) npm install recharts
 2) npm install three @react-three/fiber @react-three/drei
 3) npm install react-toastify
+3) npm install lucide-react

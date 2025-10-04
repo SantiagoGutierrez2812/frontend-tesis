@@ -11,7 +11,7 @@ const HumidityWidget = () => {
       onClick={() => navigate('/mapa')}
       style={{ cursor: 'pointer' }}
     >
-      <h3>Mapa</h3>
+      <h3 className='text'>Mapa</h3>
       <img src={materialImg} alt="Material" className={styles.image} />
     </div>
   );

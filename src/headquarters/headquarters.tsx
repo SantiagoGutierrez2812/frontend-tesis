@@ -219,47 +219,46 @@ export default function Headquarters() {
       </div>
 
       <div className={styles.secondary_container}>
-        {/* 📦 Inventario - Solución de Doble Tabla para Scroll y Fixed Header */}
-        {filterIsActive("inventory") && (
-          <div className={`${styles.block} ${styles.inventoryTableContainer}`}>
-            <h2 className={styles.sectionTitle}>📋 Resumen Inventario</h2>
+    {/* 📦 Inventario */}
+{filterIsActive("inventory") && (
+  <div className={`${styles.block} ${styles.inventoryTableContainer}`}>
+    <h2 className={styles.sectionTitle}>📋 Resumen Inventario</h2>
 
-            {loading && <p className={styles.loadingMessage}>Cargando inventario...</p>}
-            {error && <p className={styles.errorMessage}>{error}</p>}
+    {loading && <p className={styles.loadingMessage}>Cargando inventario...</p>}
+    {error && <p className={styles.errorMessage}>{error}</p>}
 
-            {!loading && !error && (
-              <>
-                {/* 1. CABECERA FIJA (Tabla separada) */}
-                <table className={`${styles.table} ${styles.tableHeader}`}>
-                  <thead>
-                    <tr>
-                      <th>Nombre</th>
-                      <th>Cantidad</th>
-                      <th>Tamaño</th>
-                    </tr>
-                  </thead>
-                </table>
+    {!loading && !error && (
+      <>
+        {/* CABECERA FIJA */}
+        <table className={`${styles.table} ${styles.inventoryTable} ${styles.tableHeader}`}>
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Cantidad</th>
+              <th>Tamaño</th>
+            </tr>
+          </thead>
+        </table>
 
-                {/* 2. CUERPO SCROLLABLE (Contenedor con scroll) */}
-                <div className={styles.tableBodyScroll}>
-                  {/* 3. CUERPO DE LA TABLA (Tabla interior) */}
-                  <table className={styles.table}>
-                    <tbody>
-                        {/* Importante: Mapeo sin espacios entre <tr> y <td> */}
-                      {filterBySearch(inventoryData).map((item, i) => (
-                        <tr key={i}>
-                          <td>{item.nombre}</td>
-                          <td>{item.cantidad}</td>
-                          <td>{item.tamaño}</td> 
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </>
-            )}
-          </div>
-        )}
+        {/* CUERPO SCROLLABLE */}
+        <div className={styles.tableBodyScroll}>
+          <table className={`${styles.table} ${styles.inventoryTable}`}>
+            <tbody>
+              {filterBySearch(inventoryData).map((item, i) => (
+                <tr key={i}>
+                  <td>{item.nombre}</td>
+                  <td>{item.cantidad}</td>
+                  <td>{item.tamaño}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </>
+    )}
+  </div>
+)}
+
 
         {/* 🔥 Top Materiales */}
         {filterIsActive("top") && (

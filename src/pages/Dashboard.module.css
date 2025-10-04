@@ -1,5 +1,5 @@
 .backgroundWrapper {
-  
+
   position: relative;
   min-height: 100vh;
   overflow: hidden;
@@ -12,7 +12,7 @@
   background-image: url('../assets/15273953_5559261.jpg');
   background-color: #1E1E2D;
   background-position: center;
-  background-repeat: no-repeat; 
+  background-repeat: no-repeat;
   filter: blur(5px);
   position: absolute;
   top: 0;
@@ -20,30 +20,26 @@
   width: 100%;
   height: 100%;
   z-index: 0;
- 
+
 }
 
 
 .dashboardContent {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    flex-wrap: nowrap;
-    flex-direction: column;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  flex-wrap: nowrap;
+  flex-direction: column;
 }
 
 .dashboardBox {
-    padding: 10px;
-    width: 100%;
-    max-width: 900px;
+ 
+  width: 100%;
+  max-width: 900px;
 }
-
-
-
-
 
 
 .widgetContainer {
@@ -54,64 +50,66 @@
 }
 
 .widgetBox {
+  display: flex;
   flex: 1 1 30%;
   min-width: 200px;
   background-color: #f3f4f69d;
   padding: 20px;
   border-radius: 10px;
+  justify-content: center;
+  align-items: center;
 }
+
 .goldTitle {
-    display: flex;
-    justify-content: center;
-    font-size: 200%;
-    padding: 2%;
-    flex-direction: column;
-    align-items: center;
-    color: #444340;
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  display: flex;
+  justify-content: center;
+  font-size: 200%;
+  flex-direction: column;
+  align-items: center;
+  color: #444340;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 
 
-.inventoryTable{
+.inventoryTable {
   color: aliceblue;
 }
 
 .dashboardMenuBox {
-    background-color: rgb(245 242 242 / 51%);
-    border-radius: 20px;
-    padding: 10px;
-    width: 100%;
-    max-width: 900px;
-    box-shadow: 1px 1px 20px rgb(220, 221, 198);
-    margin-top: 20px; 
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    gap: 15px;
+  background-color: rgb(245 242 242 / 51%);
+  border-radius: 20px;
+  padding: 10px;
+  width: 100%;
+  max-width: 900px;
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 15px;
 }
 
 .menuItem {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 15px;
-    background-color: rgba(243, 244, 246, 0.6);
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 15px;
+  background-color: rgba(243, 244, 246, 0.6);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .menuItem:hover {
-    background-color: rgba(243, 244, 246, 0.8);
-    transform: translateY(-2px);
+  background-color: rgba(243, 244, 246, 0.8);
+  transform: translateY(-2px);
 }
 
 .menuIcon {
-    font-size: 1.5rem;
+  font-size: 1.5rem;
 }
 
 .menuText {
-    font-size: 1rem;
-    color: #444340;
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  font-size: 1rem;
+  color: #444340;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
