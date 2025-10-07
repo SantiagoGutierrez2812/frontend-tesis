@@ -1,18 +1,21 @@
 export interface Company {
-  id: number;
-  name: string;
-  nit: string;
-  created_at: string;
-  updated_at: string;
-  deleted_at: string | null;
+    id: number;
+    name: string;
+    nit: string;
+    created_at: string;
+    updated_at: string;
+    deleted_at: string | null;
 }
 
 export interface CompaniesResponse {
-  ok: boolean;
-  companies: Company[];
+    ok: boolean;
+    companies: Company[];
 }
+
+const API_URL = import.meta.env.VITE_API_URL
+
 export async function getCompanyName(): Promise<CompaniesResponse> {
-    const res = await fetch("http://127.0.0.1:5000/companies", {
+    const res = await fetch(`${API_URL}/companies`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
     });
@@ -23,14 +26,14 @@ export async function getCompanyName(): Promise<CompaniesResponse> {
     }
 
     const responseData = await res.json();
-    
+
 
     if (responseData && Array.isArray(responseData.companies)) {
         return responseData as CompaniesResponse;
-    } 
+    }
 
     if (Array.isArray(responseData)) {
-        return { ok: true, companies: responseData as Company[] }; 
+        return { ok: true, companies: responseData as Company[] };
     }
 
     throw new Error("Formato de respuesta de empresas inesperado.");

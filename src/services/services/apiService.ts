@@ -17,9 +17,11 @@ export interface UserTransformed {
 }
 
 interface ApiResponse {
-    users: UserFromAPI[]; 
+    users: UserFromAPI[];
     data: UserFromAPI[];
 }
+
+const API_URL = import.meta.env.VITE_API_URL
 
 export async function get_users(): Promise<UserTransformed[]> {
     const token = localStorage.getItem("token");
@@ -27,12 +29,12 @@ export async function get_users(): Promise<UserTransformed[]> {
     if (!token) {
         throw new Error("No hay token de autenticación disponible.");
     }
-    
-    const res = await fetch("http://127.0.0.1:5000/users", {
+
+    const res = await fetch(`${API_URL}/users`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`, 
+            "Authorization": `Bearer ${token}`,
         },
     });
 
@@ -41,23 +43,23 @@ export async function get_users(): Promise<UserTransformed[]> {
         throw new Error(errorText || "Error al obtener la lista de usuarios");
     }
 
-    const responseData: ApiResponse | UserFromAPI[] = await res.json(); 
-    
+    const responseData: ApiResponse | UserFromAPI[] = await res.json();
+
     let usersRaw: UserFromAPI[];
 
     if (Array.isArray(responseData)) {
         usersRaw = responseData as UserFromAPI[];
-    } else if (responseData && Array.isArray(responseData.users)) { 
-        usersRaw = responseData.users; 
+    } else if (responseData && Array.isArray(responseData.users)) {
+        usersRaw = responseData.users;
     } else if (responseData && Array.isArray(responseData.data)) {
         usersRaw = responseData.data;
     } else {
         throw new Error("El servidor devolvió un formato de datos inválido.");
     }
-    
+
     const usersTransformed: UserTransformed[] = usersRaw.map(user => {
         let roleName: string;
-        
+
         switch (user.role_id) {
             case 1:
                 roleName = "Administrador";
@@ -68,14 +70,14 @@ export async function get_users(): Promise<UserTransformed[]> {
             default:
                 roleName = "Desconocido";
         }
-        
+
         return {
             name: user.name,
             document_id: user.document_id,
             email: user.email,
             phone_number: user.phone_number,
             cargo: user.cargo,
-            role: roleName, 
+            role: roleName,
         };
     });
 

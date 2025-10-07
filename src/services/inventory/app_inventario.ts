@@ -1,9 +1,9 @@
 // src/services/inventoryService.ts
 
 // 🚨 CORRECCIÓN: Ajusta la ruta a tu archivo de tipos según la ubicación
-import type { InventoriesResponse, Inventory, InventoryDisplayItem } from '../types/types'; 
+import type { InventoriesResponse, Inventory, InventoryDisplayItem } from '../types/types';
 
-const API_BASE_URL = "http://127.0.0.1:5000";
+const API_URL = import.meta.env.VITE_API_URL;
 
 /**
  * Función que realiza la llamada cruda al endpoint de inventarios.
@@ -11,19 +11,19 @@ const API_BASE_URL = "http://127.0.0.1:5000";
  * @throws {Error} Si la respuesta HTTP no es satisfactoria.
  */
 export async function getInventories(): Promise<InventoriesResponse> {
-  const endpoint = `${API_BASE_URL}/inventories/`;
-  
-  const res = await fetch(endpoint, { 
-    method: "GET",
-    headers: { "Content-Type": "application/json" },
-  });
+    const endpoint = `${API_URL}/inventories/`;
 
-  if (!res.ok) {
-    // Incluye el estado HTTP en el error para facilitar la depuración
-    throw new Error(`Error al obtener inventarios. Status: ${res.status}`);
-  }
+    const res = await fetch(endpoint, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+    });
 
-  return res.json();
+    if (!res.ok) {
+        // Incluye el estado HTTP en el error para facilitar la depuración
+        throw new Error(`Error al obtener inventarios. Status: ${res.status}`);
+    }
+
+    return res.json();
 }
 
 /**
@@ -32,7 +32,7 @@ export async function getInventories(): Promise<InventoriesResponse> {
  */
 export async function fetchAndTransformInventories(): Promise<InventoryDisplayItem[]> {
     const result: InventoriesResponse = await getInventories();
-    
+
     // Si la API responde con ok: false, también lanzamos un error
     if (!result.ok) {
         throw new Error("La API devolvió un estado 'ok: false'.");
@@ -42,7 +42,7 @@ export async function fetchAndTransformInventories(): Promise<InventoryDisplayIt
     const transformedData: InventoryDisplayItem[] = result.inventories.map((item: Inventory) => ({
         nombre: item.product_name,
         cantidad: item.quantity,
-        tamaño: item.product_size, 
+        tamaño: item.product_size,
     }));
 
     return transformedData;

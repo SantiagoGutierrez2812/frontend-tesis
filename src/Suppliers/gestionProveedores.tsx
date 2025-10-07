@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   PieChart,
   Pie,
@@ -8,59 +8,68 @@ import {
 } from "recharts";
 import "./GestionProveedores.css";
 import TopControl from "../TopControl/TopControl";
+import { createSupplier, deleteSupplier, getSuppliers, updateSupplier } from "../services/supplier/supplier_service";
+import type { Proveedor } from "../interfaces/supplier_interface";
 
-interface Proveedor {
-  id: number;
-  nombre: string;
-  nit: string;
-  email: string;
-  contacto: string;
-  telefono: string;
-  direccion: string;
-  descripcion: string;
-  ciudad?: string;
+function sanitizeSupplier(supplier: Proveedor) {
+  const allowed = [
+    "name",
+    "nit",
+    "email",
+    "contact_name",
+    "phone_number",
+    "address",
+    "city",
+    "description",
+    "is_active",
+  ];
+
+  const cleaned: any = {};
+
+  for (const key of allowed) {
+    if (key in supplier) cleaned[key] = supplier[key as keyof Proveedor];
+  }
+
+  return cleaned;
 }
 
 export default function GestionProveedores() {
-  const [proveedores, setProveedores] = useState<Proveedor[]>([
-    {
-      id: 1,
-      nombre: "Acero Fuerte S.A.",
-      nit: "800.123.456-1",
-      email: "contacto@acerofuerte.com",
-      contacto: "Luis Gómez",
-      telefono: "310-555-1234",
-      direccion: "Calle 10 # 5-20, Bogotá",
-      descripcion: "Especialistas en tornillería industrial.",
-      ciudad: "Bogotá",
-    },
-    {
-      id: 2,
-      nombre: "Logística Global Ltda.",
-      nit: "900.789.012-3",
-      email: "ventas@logistg.net",
-      contacto: "María Pérez",
-      telefono: "601-234-5678",
-      direccion: "Av. Industrial # 45-10, Medellín",
-      descripcion: "Distribución de insumos industriales.",
-      ciudad: "Medellín",
-    },
-  ]);
+  const [proveedores, setProveedores] = useState<Proveedor[]>([]);
 
   const [filtro, setFiltro] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const [editando, setEditando] = useState<Proveedor | null>(null);
   const [nuevoProveedor, setNuevoProveedor] = useState<Proveedor>({
     id: 0,
-    nombre: "",
+    name: "",
     nit: "",
     email: "",
-    contacto: "",
-    telefono: "",
-    direccion: "",
-    descripcion: "",
+    contact_name: "",
+    phone_number: "",
+    address: "",
+    description: "",
+    city: ""
   });
 
+  useEffect(() => {
+
+    async function fetchSuppliers() {
+      try {
+        const data = await getSuppliers();
+
+        setProveedores(data);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+
+    fetchSuppliers();
+  }, []);
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -72,13 +81,14 @@ export default function GestionProveedores() {
     setEditando(null);
     setNuevoProveedor({
       id: 0,
-      nombre: "",
+      name: "",
       nit: "",
       email: "",
-      contacto: "",
-      telefono: "",
-      direccion: "",
-      descripcion: "",
+      contact_name: "",
+      phone_number: "",
+      address: "",
+      description: "",
+      city: ""
     });
     setShowModal(true);
   };
@@ -89,40 +99,55 @@ export default function GestionProveedores() {
     setShowModal(true);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!nuevoProveedor.nombre || !nuevoProveedor.nit) return;
+    if (!nuevoProveedor.name || !nuevoProveedor.nit) return;
 
-    if (editando) {
-      setProveedores(
-        proveedores.map((p) =>
-          p.id === editando.id ? { ...nuevoProveedor, id: editando.id } : p
-        )
-      );
-    } else {
-      const nuevo = { ...nuevoProveedor, id: proveedores.length + 1 };
-      setProveedores([...proveedores, nuevo]);
+    try {
+      if (editando) {
+
+        const updated = await updateSupplier(editando.id, sanitizeSupplier(nuevoProveedor));
+
+        setProveedores(
+          proveedores.map((p) => (p.id === editando.id ? updated : p))
+        );
+      } else {
+        const created = await createSupplier(nuevoProveedor);
+        setProveedores([...proveedores, created.supplier]);
+      }
+
+      setShowModal(false);
+      setEditando(null);
     }
+    catch (error: any) {
+      console.error("Error al crear proveedor:", error);
+      alert("Hubo un error al crear el proveedor.");
+    }
+  }
 
-    setShowModal(false);
-    setEditando(null);
-  };
-
-  const eliminarProveedor = (id: number) => {
+  const eliminarProveedor = async (id: number) => {
     if (window.confirm("¿Seguro que deseas eliminar este proveedor?")) {
-      setProveedores(proveedores.filter((p) => p.id !== id));
+      try {
+        await deleteSupplier(id);
+        setProveedores(proveedores.filter((p) => p.id !== id));
+
+      }
+      catch (error: any) {
+        console.error("Error al eliminar proveedor:", error);
+        alert("Hubo un error al eliminar el proveedor.");
+      }
     }
   };
 
   const proveedoresFiltrados = proveedores.filter((p) =>
-    p.nombre.toLowerCase().includes(filtro.toLowerCase())
+    p.name?.toLowerCase().includes(filtro.toLowerCase())
   );
 
   // Datos para el gráfico
-  const ciudades = [...new Set(proveedores.map((p) => p.ciudad))];
+  const ciudades = [...new Set(proveedores.map((p) => p.city))];
   const data = ciudades.map((c) => ({
     name: c,
-    value: proveedores.filter((p) => p.ciudad === c).length,
+    value: proveedores.filter((p) => p.city === c).length,
   }));
 
   const COLORS = ["#0070ff", "#00c49f", "#ffb400", "#e74c3c"];
@@ -151,8 +176,26 @@ export default function GestionProveedores() {
             <p>{ciudades.length}</p>
           </div>
           <div className="stat-card">
-            <h3>🧰 Industrias</h3>
-            <p>3</p>
+            <h3>Distribución por ciudad</h3>
+            <ResponsiveContainer width="100%" height={100}>
+              <PieChart>
+                <Pie
+                  data={data}
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={30}
+                  dataKey="value"
+                >
+                  {data.map((entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
           </div>
         </div>
 
@@ -165,30 +208,6 @@ export default function GestionProveedores() {
           onChange={(e) => setFiltro(e.target.value)}
         />
 
-        {/* Gráfico */}
-        <div className="chart-section">
-          <h3>Distribución por ciudad</h3>
-          <ResponsiveContainer width="100%" height={170}>
-            <PieChart>
-              <Pie
-                data={data}
-                cx="50%"
-                cy="50%"
-                outerRadius={70}
-                dataKey="value"
-              >
-                {data.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={COLORS[index % COLORS.length]}
-                  />
-                ))}
-              </Pie>
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
-
         {/* Tabla */}
         <div className="tabla-container">
           <table className="tabla-proveedores">
@@ -198,7 +217,7 @@ export default function GestionProveedores() {
                 <th>Nombre</th>
                 <th>NIT</th>
                 <th>Email</th>
-                <th>Contacto</th>
+                <th>Nombre de contacto</th>
                 <th>Teléfono</th>
                 <th>Dirección</th>
                 <th>Descripción</th>
@@ -209,13 +228,13 @@ export default function GestionProveedores() {
               {proveedoresFiltrados.map((p) => (
                 <tr key={p.id}>
                   <td>{p.id}</td>
-                  <td>{p.nombre}</td>
+                  <td>{p.name}</td>
                   <td>{p.nit}</td>
                   <td>{p.email}</td>
-                  <td>{p.contacto}</td>
-                  <td>{p.telefono}</td>
-                  <td>{p.direccion}</td>
-                  <td>{p.descripcion}</td>
+                  <td>{p.contact_name}</td>
+                  <td>{p.phone_number}</td>
+                  <td>{p.address}</td>
+                  <td>{p.description}</td>
                   <td className="acciones">
                     <button
                       className="btn-editar"
@@ -245,19 +264,17 @@ export default function GestionProveedores() {
             <form onSubmit={handleSubmit}>
               <label>Nombre</label>
               <input
-                name="nombre"
-                value={nuevoProveedor.nombre}
+                name="name"
+                value={nuevoProveedor.name}
                 onChange={handleChange}
-                required
-              />
+                required />
 
               <label>NIT</label>
               <input
                 name="nit"
                 value={nuevoProveedor.nit}
                 onChange={handleChange}
-                required
-              />
+                required />
 
               <label>Email</label>
               <input
@@ -265,35 +282,42 @@ export default function GestionProveedores() {
                 name="email"
                 value={nuevoProveedor.email}
                 onChange={handleChange}
-              />
+                required />
 
-              <label>Contacto</label>
+              <label>Nombre de contacto</label>
               <input
-                name="contacto"
-                value={nuevoProveedor.contacto}
+                name="contact_name"
+                value={nuevoProveedor.contact_name}
                 onChange={handleChange}
-              />
+                required />
 
               <label>Teléfono</label>
               <input
-                name="telefono"
-                value={nuevoProveedor.telefono}
+                name="phone_number"
+                value={nuevoProveedor.phone_number}
                 onChange={handleChange}
-              />
+                required />
 
               <label>Dirección</label>
               <input
-                name="direccion"
-                value={nuevoProveedor.direccion}
+                name="address"
+                value={nuevoProveedor.address}
                 onChange={handleChange}
-              />
+                required />
+
+              <label>Ciudad</label>
+              <input
+                name="city"
+                value={nuevoProveedor.city}
+                onChange={handleChange}
+                required />
 
               <label>Descripción</label>
               <textarea
-                name="descripcion"
-                value={nuevoProveedor.descripcion}
+                name="description"
+                value={nuevoProveedor.description}
                 onChange={handleChange}
-              />
+                required />
 
               <div className="modal-buttons">
                 <button type="submit" className="btn-guardar">

@@ -14,7 +14,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import Materialcreation from "./materialcreation/materialcreation"
 
 // 🚀 IMPORTAR EL NUEVO COMPONENTE DE LA TABLA DE PROVEEDORES
-import SupplierManagement from "./Suppliers/estionProveedores";
+import SupplierManagement from "./Suppliers/gestionProveedores";
 
 function App() {
   return (
