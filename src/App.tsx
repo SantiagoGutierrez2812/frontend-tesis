@@ -13,7 +13,7 @@ import { VisualStaff } from "./staff/visual_staff"; // <-- import nombrado
 
 import PrivateRoute from "./components/PrivateRoute";
 import Materialcreation from "./materialcreation/materialcreation";
-import SupplierManagement from "./Suppliers/estionProveedores";
+import SupplierManagement from "./Suppliers/gestionProveedores";
 
 function App() {
   return (

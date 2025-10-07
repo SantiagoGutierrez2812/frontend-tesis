@@ -16,8 +16,8 @@
   padding: 30px;
   border-radius: 16px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-  width: 90%;
-  max-width: 1200px;
+  /* width: 90%;
+  max-width: 1200px; */
   margin: 0 auto;
 }
 
@@ -30,12 +30,22 @@
 }
 
 
-/* BÚSQUEDA */
+/* BÚSQUEDA Y FILTRO */
+.filterContainer {
+  display: flex;
+  gap: 15px;
+  /* Ajuste el espacio entre elementos */
+  margin-bottom: 20px;
+  /* Permite que los elementos se envuelvan en pantallas pequeñas */
+  flex-wrap: wrap;
+}
+
 .searchInput {
-  width: 100%;
-  max-width: 350px;
+  flex: 1;
+  /* Permite que el input crezca */
+  min-width: 250px;
+  /* Ancho mínimo para que no se comprima demasiado */
   padding: 10px 14px;
-  margin: 15px 0 20px 0;
   border: 1.5px solid #d1d5db;
   border-radius: 8px;
   font-size: 0.95rem;
@@ -83,6 +93,8 @@
 .table td {
   padding: 10px;
   border-bottom: 1px solid #ddd;
+  /* Agregado: Permite que el texto se envuelva si es muy largo */
+  word-wrap: break-word;
 }
 
 .table tr:hover {

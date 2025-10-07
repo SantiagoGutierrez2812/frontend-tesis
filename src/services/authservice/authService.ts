@@ -1,5 +1,8 @@
+
+const API_URL = import.meta.env.VITE_API_URL;
+
 export async function login(username: string, password: string) {
-  const res = await fetch("http://127.0.0.1:5000/auth/login", {
+  const res = await fetch(`${API_URL}/auth/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -12,4 +15,5 @@ export async function login(username: string, password: string) {
     throw new Error(errorText || "Error en login");
   }
 
-  return res.json();}
+  return res.json();
+}
