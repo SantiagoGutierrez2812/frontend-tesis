@@ -1,20 +1,15 @@
 :root {
-  --size: 150px; /* Cambia este valor para hacer el cubo más grande o más pequeño */
+  --size: 150px; /* Tamaño del cubo */
 }
-
-/* h2 {
-  
-} */
 
 div.espacio3D {
   width: var(--size);
   height: var(--size);
   margin: 3em auto 0 auto;
-  /* border: 1px solid rgba(0,255,0,0.5); */
   position: relative;
   perspective-origin: center -50%;
   perspective: 500px;
-  transform: scale(0.75);
+  transform: scale(0.85);
 }
 
 div.cubo3D {
@@ -23,62 +18,69 @@ div.cubo3D {
   position: absolute;
   transform-style: preserve-3d;
   transform: translateZ(calc(-0.5 * var(--size)));
-  animation-name: gira;
-  animation-duration: 3000ms;
-  animation-iteration-count: infinite;
+  animation: gira 10s linear infinite;
 }
 
 div.base {
   position: absolute;
   width: calc(var(--size)/2);
   height: calc(var(--size)/2);
-  background-color: rgba(0,0,0,0.15);
-  transform: translateX(calc(var(--size)/4)) translateY(calc(var(--size)/4)) rotateX(90deg) translateZ(calc(-2/3 * var(--size)));
-  box-shadow: 0 0 50px 100px rgba(0,0,0,0.15);
+  background-color: rgba(0, 0, 0, 0.05);
+  transform: translateX(calc(var(--size)/4))
+    translateY(calc(var(--size)/4))
+    rotateX(90deg)
+    translateZ(calc(-2/3 * var(--size)));
+  box-shadow: 0 0 50px 100px rgba(0, 0, 0, 0.05);
 }
 
+/* 🔹 Caras del cubo */
 aside.cara {
-position: absolute;
-    width: calc(var(--size) - 2px);
-    height: calc(var(--size) - 2px);
-    background-color: #807C77;
-    border: 1px solid #807C77;
-    color: #ffffff;
-    font-size: calc(var(--size) / 10);
-    text-align: center;
-    line-height: calc(var(--size) - 2px);
-    box-shadow: 0px 0px 5px #807C77;
+  position: absolute;
+  width: calc(var(--size) - 2px);
+  height: calc(var(--size) - 2px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-size: calc(var(--size) / 10);
+  text-align: center;
+  line-height: calc(var(--size) - 2px);
+  border-radius: 10px;
+  box-shadow: 0 0 25px rgba(163, 206, 241, 0.4);
+  background: linear-gradient(120deg, #A3CEF1, #B8A2E0, #F7B5A3, #A3CEF1);
+  background-size: 300% 300%;
+  animation: colorShift 30s ease-in-out infinite;
+  transition: all 3s ease-in-out;
 }
 
-aside.cara1 { /* Frente */
-  transform: translateZ(calc(0.5 * var(--size)));
-}
+/* Posición de cada cara */
+aside.cara1 { transform: translateZ(calc(0.5 * var(--size))); }
+aside.cara2 { transform: rotateY(180deg) translateZ(calc(0.5 * var(--size))); }
+aside.cara3 { transform: rotateY(-90deg) translateZ(calc(0.5 * var(--size))); }
+aside.cara4 { transform: rotateY(90deg) translateZ(calc(0.5 * var(--size))); }
+aside.cara5 { transform: rotateX(-90deg) translateZ(calc(0.5 * var(--size))); }
+aside.cara6 { transform: rotateX(90deg) translateZ(calc(0.5 * var(--size))); }
 
-aside.cara2 { /* Atrás */
-  transform: rotateY(180deg) translateZ(calc(0.5 * var(--size)));
-}
-
-aside.cara3 { /* Izquierda */
-  transform: rotateY(-90deg) translateZ(calc(0.5 * var(--size)));
-}
-
-aside.cara4 { /* Derecha */
-  transform: rotateY(90deg) translateZ(calc(0.5 * var(--size)));
-}
-
-aside.cara5 { /* Abajo */
-  transform: rotateX(-90deg) translateZ(calc(0.5 * var(--size)));
-}
-
-aside.cara6 { /* Arriba */
-  transform: rotateX(90deg) translateZ(calc(0.5 * var(--size)));
-}
-
+/* ✨ Giro del cubo */
 @keyframes gira {
   0% {
     transform: translateZ(calc(-0.5 * var(--size))) rotateY(0deg);
   }
   100% {
     transform: translateZ(calc(-0.5 * var(--size))) rotateY(360deg);
+  }
+}
+
+
+@keyframes colorShift {
+  0% {
+    background: linear-gradient(135deg, #3A506B, #748CAB);
+  }
+  33% {
+    background: linear-gradient(135deg, #5C677D, #5c5345);
+  }
+  66% {
+    background: linear-gradient(135deg, #5c473a, #3A506B);
+  }
+  100% {
+    background: linear-gradient(135deg, #3A506B, #748CAB);
   }
 }
