@@ -3,9 +3,12 @@
   --background-dark: #1e1e2d;
   --header-bg: #272739;
   --card-bg: #2d2d3e;
-  --card-norte-accent: #6a82fb; /* Azul */
-  --card-sur-accent: #f2994a;   /* Naranja */
-  --card-centro-accent: #27ae60; /* Verde */
+  --card-norte-accent: #6a82fb;
+  /* Azul */
+  --card-sur-accent: #f2994a;
+  /* Naranja */
+  --card-centro-accent: #27ae60;
+  /* Verde */
   --text-light: #f0f0f5;
   --table-header-bg: #3c3c52;
   --social-icon-color: #9292ab;
@@ -13,7 +16,9 @@
 
 /* Estilos Generales */
 .pageContainer {
-  background-color: var(--background-dark);
+  background: linear-gradient(-45deg, #1e1e2d, #272739, #1e1e2d, #2d2d3e);
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
   color: var(--text-light);
   min-height: 100vh;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -24,14 +29,28 @@
   box-sizing: border-box;
 }
 
+@keyframes gradientBG {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
 /* Encabezado */
 .header {
   width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.5rem 3rem;
-  margin-bottom: 2rem;
+  padding: 1.0rem 3rem;
+  margin-bottom: 0.5rem;
 }
 
 .logoContainer {
@@ -126,10 +145,44 @@
   text-transform: uppercase;
 }
 
+/* Scroll Bonito */
+.tableScroll {
+  max-height: 300px;
+  overflow-y: auto;
+  display: block;
+  margin-top: 1rem;
+  border-radius: 12px;
+  scrollbar-width: thin;
+  scrollbar-color: #6a82fb #2d2d3e;
+}
+
+.tableScroll::-webkit-scrollbar {
+  width: 10px;
+}
+
+.tableScroll::-webkit-scrollbar-track {
+  background: #2d2d3e;
+  border-radius: 12px;
+}
+
+.tableScroll::-webkit-scrollbar-thumb {
+  background-color: #6a82fb;
+  border-radius: 12px;
+  border: 2px solid #2d2d3e;
+}
+
 /* Acentos de Color en las Tarjetas */
-.cardNorte { border-top: 5px solid var(--card-norte-accent); }
-.cardSur { border-top: 5px solid var(--card-sur-accent); }
-.cardCentro { border-top: 5px solid var(--card-centro-accent); }
+.cardNorte {
+  border-top: 5px solid var(--card-norte-accent);
+}
+
+.cardSur {
+  border-top: 5px solid var(--card-sur-accent);
+}
+
+.cardCentro {
+  border-top: 5px solid var(--card-centro-accent);
+}
 
 /* Pie de Página */
 .footer {
@@ -139,7 +192,7 @@
   justify-content: center;
   align-items: center;
   margin-top: 3rem;
-  padding-top: 1.5rem;
+  PADDING: 10PX;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -166,9 +219,11 @@
     text-align: center;
     gap: 1rem;
   }
+
   .loginButton {
     width: 100%;
   }
+
   .mainTitle {
     font-size: 2rem;
   }
@@ -177,15 +232,19 @@
 /* 🔹 Modal */
 .modalOverlay {
   position: fixed;
+  /* Clave para que flote */
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0,0,0,0.7);
+  background: rgba(0, 0, 0, 0.7);
   display: flex;
   justify-content: center;
+  /* Centra horizontalmente */
   align-items: center;
+  /* Centra verticalmente */
   z-index: 1000;
+  /* Clave para que se ponga encima de todo */
 }
 
 .modalContent {
@@ -195,13 +254,20 @@
   width: 100%;
   max-width: 400px;
   text-align: center;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
   animation: fadeIn 0.3s ease;
 }
 
 @keyframes fadeIn {
-  from { transform: scale(0.9); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .inputField {
@@ -249,3 +315,146 @@
   color: white;
   cursor: pointer;
 }
+
+.text5 {
+  color: wheat
+}
+
+/* 🔹 Loader Animado */
+.loaderWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.loader {
+  max-width: fit-content;
+  color: rgb(242, 255, 240);
+  font-size: 50px;
+  font-family: Mine, sans-serif;
+  position: relative;
+  font-style: italic;
+  font-weight: 600;
+}
+
+.loader span {
+  animation: cut 2s infinite;
+  transition: 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.loader:hover {
+  color: #fcffdf;
+}
+
+.loader::after {
+  position: absolute;
+  content: "";
+  width: 100%;
+  height: 6px;
+  border-radius: 4px;
+  background-color: #ff828291;
+  top: 0px;
+  filter: blur(10px);
+  animation: scan 2s infinite;
+  left: 0;
+  z-index: 0;
+  transition: 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.loader::before {
+  position: absolute;
+  content: "";
+  width: 100%;
+  height: 5px;
+  border-radius: 4px;
+  background-color: #ff8282;
+  top: 0px;
+  animation: scan 2s infinite;
+  left: 0;
+  z-index: 1;
+  filter: opacity(0.9);
+  transition: 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes scan {
+  0% {
+    top: 0px;
+  }
+
+  25% {
+    top: 54px;
+  }
+
+  50% {
+    top: 0px;
+  }
+
+  75% {
+    top: 54px;
+  }
+}
+
+@keyframes cut {
+  0% {
+    clip-path: inset(0 0 0 0);
+  }
+
+  25% {
+    clip-path: inset(100% 0 0 0);
+  }
+
+  50% {
+    clip-path: inset(0 0 100% 0);
+  }
+
+  75% {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* Canvas de partículas */
+.particlesCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  /* Detrás de todo */
+  pointer-events: none;
+}
+
+.logoContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 200px; /* ancho fijo del área del logo */
+  height: 80px; /* alto fijo del área del logo */
+}
+
+.epicText {
+  display: block;
+  width: 180px;
+  height: 229px;
+  background-image: url(/src/assets/logo/unnamed-removebg-preview.png);
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  text-indent: -9999px;
+  filter: drop-shadow(0 0 15px rgb(0, 255, 221));
+  animation: glowPulse 5.5s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+  0% {
+    filter: drop-shadow(0 0 10px rgb(0, 255, 221));
+  }
+  50% {
+    filter: drop-shadow(0 0 25px rgb(229, 255, 0));
+  }
+  100% {
+    filter: drop-shadow(0 0 10px rgb(132, 0, 255));
+  }
+}
+

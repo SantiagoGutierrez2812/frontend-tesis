@@ -1,5 +1,6 @@
 :root {
-  --size: 150px; /* Tamaño del cubo */
+  --size: 150px;
+  /* Tamaño del cubo */
 }
 
 div.espacio3D {
@@ -26,10 +27,7 @@ div.base {
   width: calc(var(--size)/2);
   height: calc(var(--size)/2);
   background-color: rgba(0, 0, 0, 0.05);
-  transform: translateX(calc(var(--size)/4))
-    translateY(calc(var(--size)/4))
-    rotateX(90deg)
-    translateZ(calc(-2/3 * var(--size)));
+  transform: translateX(calc(var(--size)/4)) translateY(calc(var(--size)/4)) rotateX(90deg) translateZ(calc(-2/3 * var(--size)));
   box-shadow: 0 0 50px 100px rgba(0, 0, 0, 0.05);
 }
 
@@ -52,18 +50,36 @@ aside.cara {
 }
 
 /* Posición de cada cara */
-aside.cara1 { transform: translateZ(calc(0.5 * var(--size))); }
-aside.cara2 { transform: rotateY(180deg) translateZ(calc(0.5 * var(--size))); }
-aside.cara3 { transform: rotateY(-90deg) translateZ(calc(0.5 * var(--size))); }
-aside.cara4 { transform: rotateY(90deg) translateZ(calc(0.5 * var(--size))); }
-aside.cara5 { transform: rotateX(-90deg) translateZ(calc(0.5 * var(--size))); }
-aside.cara6 { transform: rotateX(90deg) translateZ(calc(0.5 * var(--size))); }
+aside.cara1 {
+  transform: translateZ(calc(0.5 * var(--size)));
+}
+
+aside.cara2 {
+  transform: rotateY(180deg) translateZ(calc(0.5 * var(--size)));
+}
+
+aside.cara3 {
+  transform: rotateY(-90deg) translateZ(calc(0.5 * var(--size)));
+}
+
+aside.cara4 {
+  transform: rotateY(90deg) translateZ(calc(0.5 * var(--size)));
+}
+
+aside.cara5 {
+  transform: rotateX(-90deg) translateZ(calc(0.5 * var(--size)));
+}
+
+aside.cara6 {
+  transform: rotateX(90deg) translateZ(calc(0.5 * var(--size)));
+}
 
 /* ✨ Giro del cubo */
 @keyframes gira {
   0% {
     transform: translateZ(calc(-0.5 * var(--size))) rotateY(0deg);
   }
+
   100% {
     transform: translateZ(calc(-0.5 * var(--size))) rotateY(360deg);
   }
@@ -74,13 +90,148 @@ aside.cara6 { transform: rotateX(90deg) translateZ(calc(0.5 * var(--size))); }
   0% {
     background: linear-gradient(135deg, #3A506B, #748CAB);
   }
+
   33% {
     background: linear-gradient(135deg, #5C677D, #5c5345);
   }
+
   66% {
     background: linear-gradient(135deg, #5c473a, #3A506B);
   }
+
   100% {
     background: linear-gradient(135deg, #3A506B, #748CAB);
   }
 }
+
+
+/* === CUBO BASE === */
+.espacio3D {
+  perspective: 800px;
+  width: 200px;
+  height: 200px;
+  margin: 20px auto;
+}
+
+.cubo3D {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  animation: girar 8s infinite linear;
+}
+
+.base {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transform: translateZ(-100px);
+}
+
+/* === CARAS DEL CUBO === */
+.cara {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-weight: bold;
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+}
+
+.cara1 {
+  transform: rotateY(0deg) translateZ(100px);
+}
+
+.cara2 {
+  transform: rotateY(90deg) translateZ(100px);
+  flex-direction: column;
+  background-color: rgba(255, 0, 0, 0.08);
+  border: 1px solid rgba(255, 0, 0, 0.3);
+}
+
+.cara3 {
+  transform: rotateY(180deg) translateZ(100px);
+}
+
+.cara4 {
+  transform: rotateY(-90deg) translateZ(100px);
+}
+
+.cara5 {
+  transform: rotateX(90deg) translateZ(100px);
+}
+
+.cara6 {
+  transform: rotateX(-90deg) translateZ(100px);
+}
+
+/* === EFECTO DE GIRO === */
+@keyframes girar {
+  from {
+    transform: rotateX(0deg) rotateY(0deg);
+  }
+
+  to {
+    transform: rotateX(360deg) rotateY(360deg);
+  }
+}
+
+/* === ICONO Y CONTADOR === */
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(20px);
+  /* ligeramente ajustado */
+}
+
+.error-count {
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: #ff4d4f;
+  text-shadow: 0 0 12px rgba(255, 77, 79, 0.8);
+  transform: translateY(-10px);
+  /* 🔼 Sube el número un poquito */
+}
+
+.error-icon {
+  width: 38px;
+  height: 38px;
+  color: #ff4d4f;
+  margin-bottom: 4px;
+  /* antes 8px — ahora más juntos */
+  animation: pulse 1.5s infinite;
+}
+
+.user-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(20px);
+}
+
+.user-icon {
+  width: 38px;
+  height: 38px;
+  color: #0083fd;
+  margin-bottom: 4px;
+  animation: pulse 1.5s infinite;
+}
+
+.user-count {
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: #6797ee;
+  text-shadow: 0 0 12px rgba(0, 89, 255, 0.8);
+  transform: translateY(-10px);
+}
+

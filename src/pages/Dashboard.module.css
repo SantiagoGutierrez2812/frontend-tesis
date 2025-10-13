@@ -1,5 +1,4 @@
 .backgroundWrapper {
-
   position: relative;
   min-height: 100vh;
   overflow: hidden;
@@ -113,3 +112,22 @@
   color: #444340;
   font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
+
+/* Contenedor del logo */
+/* .logoContainer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px; /* Separación de los widgets */
+ 
+
+/* Logo grande */
+/* .logo {
+    width: 400px; 
+    height: 150px;
+    background-image: url('../assets//logo/unnamed-removebg-preview.png'); 
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    flex-shrink: 0; 
+} */

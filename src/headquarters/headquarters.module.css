@@ -762,3 +762,38 @@
 .inventoryTable tr:hover {
   background-color: rgba(255, 255, 255, 0.05);
 }
+/* headquarters.module.css */
+
+.branchSelector {
+    /* Diseño y Contraste */
+    padding: 8px 12px;
+    margin-left: 15px; 
+    border: none;
+    border-radius: 8px;
+    appearance: none; 
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    
+    /* Colores Neón */
+    background-color: #2a2a47; 
+    color: #ffffff; 
+    box-shadow: 0 0 5px #ff69b4, 0 0 10px #ff69b4; 
+    border: 1px solid #ff69b4; 
+
+    /* Flecha (opcional, para mantener el indicador) */
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12"><path fill="%23ffffff" d="M10 3.5L6 7.5L2 3.5z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    padding-right: 25px; 
+}
+
+.branchSelector:hover {
+    box-shadow: 0 0 10px #9d7cfd, 0 0 20px #9d7cfd;
+    border-color: #9d7cfd;
+}
+
+.branchSelector option {
+    background-color: #2a2a47; 
+    color: #ffffff;
+}

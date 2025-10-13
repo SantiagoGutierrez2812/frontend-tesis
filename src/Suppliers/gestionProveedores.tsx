@@ -8,8 +8,44 @@ import {
 } from "recharts";
 import "./GestionProveedores.css";
 import TopControl from "../TopControl/TopControl";
-import { createSupplier, deleteSupplier, getSuppliers, updateSupplier } from "../services/supplier/supplier_service";
+import {
+  createSupplier,
+  deleteSupplier,
+  getSuppliers,
+  updateSupplier,
+} from "../services/supplier/supplier_service";
 import type { Proveedor } from "../services/types/supplier_interface";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+// ==================== MODAL DE CONFIRMACIÓN ====================
+const ConfirmModal = ({
+  message,
+  onConfirm,
+  onCancel,
+}: {
+  message: string;
+  onConfirm: () => void;
+  onCancel: () => void;
+}) => {
+  return (
+    <div className="confirm-overlay">
+      <div className="confirm-modal">
+        <h2>⚠️ Confirmar cambios</h2>
+        <p>{message}</p>
+        <div className="confirm-buttons">
+          <button onClick={onCancel} className="btn-cancelar-confirm">
+            Cancelar
+          </button>
+          <button onClick={onConfirm} className="btn-aceptar-confirm">
+            Aceptar
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+// ===============================================================
 
 function sanitizeSupplier(supplier: Proveedor) {
   const allowed = [
@@ -23,23 +59,19 @@ function sanitizeSupplier(supplier: Proveedor) {
     "description",
     "is_active",
   ];
-
   const cleaned: any = {};
-
   for (const key of allowed) {
     if (key in supplier) cleaned[key] = supplier[key as keyof Proveedor];
   }
-
   return cleaned;
 }
 
 export default function GestionProveedores() {
   const [proveedores, setProveedores] = useState<Proveedor[]>([]);
-
   const [filtro, setFiltro] = useState("");
   const [showModal, setShowModal] = useState(false);
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [onConfirmAction, setOnConfirmAction] = useState<() => void>(() => {});
   const [editando, setEditando] = useState<Proveedor | null>(null);
   const [nuevoProveedor, setNuevoProveedor] = useState<Proveedor>({
     id: 0,
@@ -50,30 +82,54 @@ export default function GestionProveedores() {
     phone_number: "",
     address: "",
     description: "",
-    city: ""
+    city: "",
   });
 
-  useEffect(() => {
+  const letterRemoveRegex: RegExp = (() => {
+    try {
+      return new RegExp("[^\\p{L}\\s'-]+", "gu");
+    } catch {
+      return new RegExp("[^A-Za-zÁÉÍÓÚáéíóúÑñ\\s'-]+", "g");
+    }
+  })();
 
+  const contactValidateRegex: RegExp = (() => {
+    try {
+      return new RegExp("^[\\p{L}\\s'-]+$", "u");
+    } catch {
+      return new RegExp("^[A-Za-zÁÉÍÓÚáéíóúÑñ\\s'-]+$");
+    }
+  })();
+
+  useEffect(() => {
     async function fetchSuppliers() {
       try {
         const data = await getSuppliers();
-
         setProveedores(data);
-      } catch (err: any) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
+      } catch {
+        toast.error("Error al cargar proveedores");
       }
     }
-
-
     fetchSuppliers();
   }, []);
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
+
+    if (name === "contact_name") {
+      const cleaned = value.replace(letterRemoveRegex, "");
+      setNuevoProveedor({ ...nuevoProveedor, contact_name: cleaned });
+      return;
+    }
+
+    if (name === "phone_number" || name === "nit") {
+      const digits = value.replace(/[^\d]/g, "");
+      setNuevoProveedor({ ...nuevoProveedor, [name]: digits });
+      return;
+    }
+
     setNuevoProveedor({ ...nuevoProveedor, [name]: value });
   };
 
@@ -88,7 +144,7 @@ export default function GestionProveedores() {
       phone_number: "",
       address: "",
       description: "",
-      city: ""
+      city: "",
     });
     setShowModal(true);
   };
@@ -101,63 +157,87 @@ export default function GestionProveedores() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!nuevoProveedor.name || !nuevoProveedor.nit) return;
 
-    try {
-      if (editando) {
+    if (!nuevoProveedor.name.trim()) return toast.warn("El nombre es obligatorio");
+    if (!/^\d{9}$/.test(String(nuevoProveedor.nit)))
+      return toast.warn("El NIT debe tener exactamente 9 dígitos");
+    if (!nuevoProveedor.email.includes("@"))
+      return toast.warn("El correo debe contener un @ válido");
+    if (!nuevoProveedor.contact_name || !contactValidateRegex.test(nuevoProveedor.contact_name))
+      return toast.warn("El nombre de contacto solo debe contener letras válidas");
+    if (!/^\d+$/.test(String(nuevoProveedor.phone_number)))
+      return toast.warn("El teléfono solo debe contener números");
+    if (!nuevoProveedor.description || nuevoProveedor.description.length < 9)
+      return toast.warn("La descripción debe tener al menos 9 caracteres");
 
-        const updated = await updateSupplier(editando.id, sanitizeSupplier(nuevoProveedor));
+    const nitDuplicado = proveedores.some(
+      (p) => p.nit === nuevoProveedor.nit && (!editando || p.id !== editando.id)
+    );
+    if (nitDuplicado) return toast.error("El NIT ya está registrado");
 
-        setProveedores(
-          proveedores.map((p) => (p.id === editando.id ? updated : p))
-        );
-      } else {
-        const created = await createSupplier(nuevoProveedor);
-        setProveedores([...proveedores, created.supplier]);
+    const correoDuplicado = proveedores.some(
+      (p) =>
+        p.email.toLowerCase() === nuevoProveedor.email.toLowerCase() &&
+        (!editando || p.id !== editando.id)
+    );
+    if (correoDuplicado) return toast.error("El correo ya está registrado");
+
+    // Confirmación personalizada
+    setOnConfirmAction(() => async () => {
+      try {
+        if (editando) {
+          const updated = await updateSupplier(editando.id, sanitizeSupplier(nuevoProveedor));
+          setProveedores(proveedores.map((p) => (p.id === editando.id ? updated : p)));
+          toast.success("Proveedor actualizado con éxito");
+        } else {
+          const created = await createSupplier(nuevoProveedor);
+          setProveedores([...proveedores, created.supplier ?? created]);
+          toast.success("Proveedor creado correctamente");
+        }
+        setShowModal(false);
+        setEditando(null);
+      } catch {
+        toast.error("Hubo un error al guardar");
+      } finally {
+        setShowConfirm(false);
       }
+    });
+    setShowConfirm(true);
+  };
 
-      setShowModal(false);
-      setEditando(null);
-    }
-    catch (error: any) {
-      console.error("Error al crear proveedor:", error);
-      alert("Hubo un error al crear el proveedor.");
-    }
-  }
-
-  const eliminarProveedor = async (id: number) => {
-    if (window.confirm("¿Seguro que deseas eliminar este proveedor?")) {
+  const eliminarProveedor = (id: number) => {
+    setOnConfirmAction(() => async () => {
       try {
         await deleteSupplier(id);
         setProveedores(proveedores.filter((p) => p.id !== id));
-
+        toast.info("Proveedor eliminado correctamente");
+      } catch {
+        toast.error("Error al eliminar proveedor");
+      } finally {
+        setShowConfirm(false);
       }
-      catch (error: any) {
-        console.error("Error al eliminar proveedor:", error);
-        alert("Hubo un error al eliminar el proveedor.");
-      }
-    }
+    });
+    setShowConfirm(true);
   };
 
   const proveedoresFiltrados = proveedores.filter((p) =>
     p.name?.toLowerCase().includes(filtro.toLowerCase())
   );
 
-  // Datos para el gráfico
   const ciudades = [...new Set(proveedores.map((p) => p.city))];
   const data = ciudades.map((c) => ({
     name: c,
     value: proveedores.filter((p) => p.city === c).length,
   }));
-
   const COLORS = ["#0070ff", "#00c49f", "#ffb400", "#e74c3c"];
 
   return (
     <div className="proveedores-container">
       <TopControl title="🚀 Panel de Gestión de Proveedores" />
 
+      <ToastContainer position="top-right" autoClose={3000} />
+
       <div className="proveedores-card">
-        {/* Encabezado */}
         <div className="proveedores-header">
           <h1>Gestión de Proveedores</h1>
           <button className="btn-insertar" onClick={abrirModalNuevo}>
@@ -165,7 +245,6 @@ export default function GestionProveedores() {
           </button>
         </div>
 
-        {/* Tarjetas de métricas */}
         <div className="stats-grid">
           <div className="stat-card">
             <h3>📦 Total Proveedores</h3>
@@ -179,18 +258,9 @@ export default function GestionProveedores() {
             <h3>Distribución por ciudad</h3>
             <ResponsiveContainer width="100%" height={100}>
               <PieChart>
-                <Pie
-                  data={data}
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={30}
-                  dataKey="value"
-                >
+                <Pie data={data} cx="50%" cy="50%" outerRadius={30} dataKey="value">
                   {data.map((entry, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={COLORS[index % COLORS.length]}
-                    />
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
                 <Tooltip />
@@ -199,7 +269,6 @@ export default function GestionProveedores() {
           </div>
         </div>
 
-        {/* Buscador */}
         <input
           type="text"
           placeholder="🔎 Buscar proveedor..."
@@ -208,7 +277,6 @@ export default function GestionProveedores() {
           onChange={(e) => setFiltro(e.target.value)}
         />
 
-        {/* Tabla */}
         <div className="tabla-container">
           <table className="tabla-proveedores">
             <thead>
@@ -236,18 +304,8 @@ export default function GestionProveedores() {
                   <td>{p.address}</td>
                   <td>{p.description}</td>
                   <td className="acciones">
-                    <button
-                      className="btn-editar"
-                      onClick={() => abrirModalEditar(p)}
-                    >
-                      ✏️
-                    </button>
-                    <button
-                      className="btn-eliminar"
-                      onClick={() => eliminarProveedor(p.id)}
-                    >
-                      🗑️
-                    </button>
+                    <button className="btn-editar" onClick={() => abrirModalEditar(p)}>✏️</button>
+                    <button className="btn-eliminar" onClick={() => eliminarProveedor(p.id)}>🗑️</button>
                   </td>
                 </tr>
               ))}
@@ -256,84 +314,52 @@ export default function GestionProveedores() {
         </div>
       </div>
 
-      {/* Modal */}
+      {/* MODAL PRINCIPAL */}
       {showModal && (
         <div className="modal-overlay">
           <div className="modal">
             <h2>{editando ? "Editar Proveedor" : "Nuevo Proveedor"}</h2>
             <form onSubmit={handleSubmit}>
               <label>Nombre</label>
-              <input
-                name="name"
-                value={nuevoProveedor.name}
-                onChange={handleChange}
-                required />
-
+              <input name="name" value={nuevoProveedor.name} onChange={handleChange} required />
               <label>NIT</label>
-              <input
-                name="nit"
-                value={nuevoProveedor.nit}
-                onChange={handleChange}
-                required />
-
+              <input name="nit" value={nuevoProveedor.nit} onChange={handleChange} required />
               <label>Email</label>
-              <input
-                type="email"
-                name="email"
-                value={nuevoProveedor.email}
-                onChange={handleChange}
-                required />
-
+              <input name="email" type="email" value={nuevoProveedor.email} onChange={handleChange} required />
               <label>Nombre de contacto</label>
-              <input
-                name="contact_name"
-                value={nuevoProveedor.contact_name}
-                onChange={handleChange}
-                required />
-
+              <input name="contact_name" value={nuevoProveedor.contact_name} onChange={handleChange} required />
               <label>Teléfono</label>
-              <input
-                name="phone_number"
-                value={nuevoProveedor.phone_number}
-                onChange={handleChange}
-                required />
-
+              <input name="phone_number" value={nuevoProveedor.phone_number} onChange={handleChange} required />
               <label>Dirección</label>
-              <input
-                name="address"
-                value={nuevoProveedor.address}
-                onChange={handleChange}
-                required />
-
+              <input name="address" value={nuevoProveedor.address} onChange={handleChange} required />
               <label>Ciudad</label>
-              <input
-                name="city"
-                value={nuevoProveedor.city}
-                onChange={handleChange}
-                required />
-
+              <input name="city" value={nuevoProveedor.city} onChange={handleChange} required />
               <label>Descripción</label>
-              <textarea
-                name="description"
-                value={nuevoProveedor.description}
-                onChange={handleChange}
-                required />
-
+              <textarea name="description" value={nuevoProveedor.description} onChange={handleChange} required />
               <div className="modal-buttons">
                 <button type="submit" className="btn-guardar">
                   {editando ? "Actualizar" : "Guardar"}
                 </button>
-                <button
-                  type="button"
-                  className="btn-cancelar"
-                  onClick={() => setShowModal(false)}
-                >
+                <button type="button" className="btn-cancelar" onClick={() => setShowModal(false)}>
                   Cancelar
                 </button>
               </div>
             </form>
           </div>
         </div>
+      )}
+
+      {/* MODAL DE CONFIRMACIÓN */}
+      {showConfirm && (
+        <ConfirmModal
+          message={
+            editando
+              ? `¿Estás seguro de modificar los datos de ${nuevoProveedor.name}?`
+              : `¿Estás seguro de registrar a ${nuevoProveedor.name}?`
+          }
+          onConfirm={onConfirmAction}
+          onCancel={() => setShowConfirm(false)}
+        />
       )}
     </div>
   );

@@ -6,15 +6,13 @@ import {
     post_user,
     delete_user,
     update_user,
-    // Asegúrese de que estas funciones existan en apiService.ts para cargar datos reales
-    // get_roles, 
-    // get_branches, 
-} from "../services/services/apiService";
-import type { UserTransformed, NewUserPayload } from "../services/types/types";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css"; // Asegúrese de importar los estilos de toastify
 
-// INTERFACES LOCALES (Duplicadas aquí para facilidad, pero vienen de types.ts)
+} from "../services/services/apiService";
+import type { UserTransformed, NewUserPayload } from "../services/types/user/user";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"; 
+
+
 interface RoleOption {
     id: number;
     name: string;

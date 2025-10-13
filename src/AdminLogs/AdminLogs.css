@@ -314,3 +314,40 @@ body {
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
 }
+
+
+.logs-table-container {
+  max-height: 400px; /* puedes ajustar la altura según tu diseño */
+  overflow-y: auto;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent-info) var(--background-color);
+}
+
+/* Scroll en la tabla dentro del modal */
+.modal-logs-table {
+  display: block;
+  max-height: 350px; /* límite de altura del contenido */
+  overflow-y: auto;
+  border-radius: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent-info) var(--background-color);
+}
+
+/* Bonito estilo para el scroll (solo navegadores que lo soportan) */
+.logs-table-container::-webkit-scrollbar,
+.modal-logs-table::-webkit-scrollbar {
+  width: 8px;
+}
+
+.logs-table-container::-webkit-scrollbar-thumb,
+.modal-logs-table::-webkit-scrollbar-thumb {
+  background-color: var(--accent-info);
+  border-radius: 4px;
+}
+
+.logs-table-container::-webkit-scrollbar-track,
+.modal-logs-table::-webkit-scrollbar-track {
+  background-color: var(--background-color);
+}

@@ -1,81 +1,94 @@
 .mapContainer {
-  width: 100%;
-  margin: 0 auto;
-  position: relative; 
-  user-select: none;  
-}
-.mapImage {
-  height: 100%;
-  width: 100%;
-  pointer-events: none;
+    width: 100%;
+    height: 100vh;
+    position: relative;
+    user-select: none;
+    background-color: #12121e;
+    overflow: hidden;
 }
 
+.mapImage {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.particlesCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none;
+}
 
 .marker {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  z-index: 5;
-  cursor: pointer;
+    position: absolute;
+    transform: translate(-50%, -100%);
+    z-index: 3;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.marker:hover {
+    transform: translate(-50%, -100%) scale(1.2);
 }
 
 .dot {
-  width: 18px;
-  height: 18px;
-  background: red;
-  border-radius: 50%;
-  box-shadow: 0 0 10px rgba(255,0,0,0.7);
-  animation: parpadeoSuave 2s ease-in-out infinite;
+    width: 40px; 
+    height: 40px; 
+    line-height: 40px;
+    text-align: center;
+    background: transparent;
+    border-radius: 0; 
+}
+
+.dot::before {
+    content: '📌';
+    display: block;
+    font-size: 36px;
+}
+
+.stock-low .dot::before {
+    color: #FF0000;
+    text-shadow: 0 0 5px rgba(255,255,255,0.8), 0 0 15px rgba(255,0,0,0.6), 0 0 25px rgba(200,0,0,0.4);
+}
+
+.stock-medium .dot::before {
+    color: #FFC000;
+    text-shadow: 0 0 5px rgba(255,255,255,0.8), 0 0 15px rgba(255,192,0,0.6), 0 0 25px rgba(255,140,0,0.4);
+}
+
+.stock-high .dot::before {
+    color: #39FF14;
+    text-shadow: 0 0 5px rgba(255,255,255,0.8), 0 0 15px rgba(57,255,20,0.6), 0 0 25px rgba(0,200,0,0.4);
+}
+
+.stock-unknown .dot::before {
+    color: #C0C0C0;
+    text-shadow: 0 0 5px rgba(255,255,255,0.5), 0 0 15px rgba(192,192,192,0.3);
 }
 
 .tooltip {
-  display: none;
-  position: absolute;
-  top: -50px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(0,0,0,0.75);
-  color: #fff;
-  padding: 6px 8px;
-  border-radius: 6px;
-  white-space: nowrap;
-  font-size: 0.9rem;
-  pointer-events: none;
+    top: -50px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: none;
+    position: absolute;
+    background: rgba(0,0,0,0.75);
+    color: #fff;
+    padding: 6px 8px;
+    border-radius: 6px;
+    white-space: nowrap;
+    font-size: 0.9rem;
+    pointer-events: none;
+    z-index: 10;
 }
 
 .marker:hover .tooltip,
 .marker:focus-within .tooltip {
-  display: block;
-}
-
-@keyframes parpadeoSuave {
-  0%, 100% { opacity: 1; filter: drop-shadow(0 0 5px rgba(255,0,0,0.6)); }
-  50%     { opacity: 0.6; filter: drop-shadow(0 0 15px rgba(255,0,0,1)); }
-}
-
-@keyframes sombraMovimiento {
-  0% {
-    box-shadow: 1px 1px 10px red;
-  }
-  50% {
-    box-shadow: 1px 1px 20px rgb(199, 102, 102);
-  }
-  100% {
-    box-shadow: 1px 1px 10px zrgb(193, 226, 196);
-  }
-}
-
-.epicTitle {
-  position: absolute;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 10;
-  color: rgb(255, 255, 255);
-  font-size: 2rem;
-  font-weight: bold;
-  background: rgba(0, 0, 0, 0.4);
-  padding: 5px 10px;
-  border-radius: 8px;
-  box-shadow: 1px 1px 10px red;
-  animation: sombraMovimiento 2s ease-in-out infinite;
+    display: block;
 }

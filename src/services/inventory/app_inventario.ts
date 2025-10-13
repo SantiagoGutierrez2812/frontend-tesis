@@ -1,49 +1,62 @@
-// src/services/inventoryService.ts
+import type { InventoriesResponse } from "../types/types";
 
-// 🚨 CORRECCIÓN: Ajusta la ruta a tu archivo de tipos según la ubicación
-import type { InventoriesResponse, Inventory, InventoryDisplayItem } from '../types/types';
+export interface inventory_material_record {
+  id: number;
+  branch: number;
+  product_name: string;
+  product_size: string;
+  price: string;
+  quantity: number;
+  product_id: number;
+  created_at: string;
+}
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-/**
- * Función que realiza la llamada cruda al endpoint de inventarios.
- * @returns {Promise<InventoriesResponse>} La respuesta completa (ok, inventories).
- * @throws {Error} Si la respuesta HTTP no es satisfactoria.
- */
-export async function getInventories(): Promise<InventoriesResponse> {
-    const endpoint = `${API_URL}/inventories/`;
+export async function getInventories(branchId?: number): Promise<InventoriesResponse> {
+  let endpoint = `${API_URL}/inventories/`;
+  if (branchId) endpoint += `?branch_id=${branchId}`;
 
-    const res = await fetch(endpoint, {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-    });
+  const res = await fetch(endpoint, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  });
 
-    if (!res.ok) {
-        // Incluye el estado HTTP en el error para facilitar la depuración
-        throw new Error(`Error al obtener inventarios. Status: ${res.status}`);
-    }
-
-    return res.json();
+  if (!res.ok) throw new Error(`Error al obtener inventarios. Status: ${res.status}`);
+  return res.json();
 }
 
-/**
- * Función principal para obtener y transformar los datos de inventario para la visualización.
- * @returns {Promise<InventoryDisplayItem[]>} Los datos transformados listos para el componente.
- */
-export async function fetchAndTransformInventories(): Promise<InventoryDisplayItem[]> {
-    const result: InventoriesResponse = await getInventories();
+export async function fetchAndTransformInventories(branchId?: number): Promise<inventory_material_record[]> {
+  const result: InventoriesResponse = await getInventories(branchId);
+  if (!result.ok || !result.inventories) return [];
 
-    // Si la API responde con ok: false, también lanzamos un error
-    if (!result.ok) {
-        throw new Error("La API devolvió un estado 'ok: false'.");
-    }
+  return result.inventories.map((item: any) => ({
+    id: item.id || 0,
+    branch: Number(item.branch_id || item.branch || 0),
+    product_name: item.nombre || item.product_name || "N/A",
+    product_size: item.tamaño || item.product_size || "N/A",
+    price: String(item.price || "0"),
+    quantity: Number(item.cantidad || item.quantity || 0),
+    product_id: item.product_id || 0,
+    created_at: item.created_at || new Date().toISOString(),
+  }));
+}
 
-    // Transformación de la respuesta de la API (Inventory) al formato de visualización (InventoryDisplayItem)
-    const transformedData: InventoryDisplayItem[] = result.inventories.map((item: Inventory) => ({
-        nombre: item.product_name,
-        cantidad: item.quantity,
-        tamaño: item.product_size,
-    }));
+export async function post_create_inventory(data: { product_id: number; branch_id: number; quantity: number }) {
+    const payload = {
+        product_id: data.product_id,
+        branch_id: data.branch_id,
+        cantidad: data.quantity 
+    };
+    
+  const response = await fetch(`${API_URL}/inventories/`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
 
-    return transformedData;
+  if (!response.ok) {
+    throw new Error(`Error HTTP: ${response.status}`);
+  }
+  return response.json();
 }

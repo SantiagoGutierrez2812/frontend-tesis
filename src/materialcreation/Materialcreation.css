@@ -102,7 +102,8 @@ th {
 td {
   color: black;
   padding: 0.8rem;
-  border-bottom: 1px solid #2d2d4a;
+  border-bottom: 1px solid #64686b;
+  /* Un azul claro muy sutil */
 }
 
 tr:hover {
@@ -124,7 +125,7 @@ tr:hover {
   color: #00b4ff;
 }
 
-/* --- Modal --- */
+/* --- Modal Base --- */
 .modal_1 {
   position: fixed;
   inset: 0;
@@ -137,12 +138,13 @@ tr:hover {
   animation: fadeIn 0.2s ease;
 }
 
+/* Contenido del modal de creación/edición */
 .modal-content_1 {
   background: #ffffff;
   padding: 2rem;
   border-radius: 12px;
   width: 400px;
-  color: #e5e7eb;
+  color: #5f6061;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
   animation: popIn 0.25s ease;
 }
@@ -195,8 +197,9 @@ tr:hover {
 }
 
 .btn-cancel {
-  background: #2b2b47;
-  color: #cbd5e1;
+  background: #5a6268;
+  /* Gris oscuro para cancelar */
+  color: white;
 }
 
 .btn-save {
@@ -205,7 +208,7 @@ tr:hover {
 }
 
 .btn-cancel:hover {
-  background: #343455;
+  background: #6c757d;
 }
 
 .btn-save:hover {
@@ -232,4 +235,464 @@ tr:hover {
     transform: scale(1);
     opacity: 1;
   }
+}
+
+.actions button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  margin-right: 0.5rem;
+  transition: transform 0.2s, color 0.2s;
+}
+
+.actions button.edit {
+  color: #17a2b8;
+}
+
+.actions button.edit:hover {
+  transform: scale(1.2);
+  color: #00b4ff;
+}
+
+.actions button.delete {
+  color: #dc3545;
+}
+
+.actions button.delete:hover {
+  transform: scale(1.2);
+  color: #ff4c4c;
+}
+
+
+/* ======================== */
+/* ESTILOS DEL MODAL DE CONFIRMACIÓN DE ELIMINACIÓN (COMO LA IMAGEN) */
+/* ======================== */
+
+.modal-delete-confirm {
+  width: 400px;
+  /* Ajustado para que sea un poco más ancho como la imagen */
+  text-align: center;
+  padding: 25px;
+  /* Aumentado padding */
+  background: #343a40;
+  /* Fondo gris oscuro como la imagen */
+  color: #e9ecef;
+  /* Texto casi blanco */
+  border-radius: 8px;
+  /* Bordes ligeramente más suaves */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  /* Sombra más definida */
+  border: none;
+  /* Asegurar que no hay borde */
+}
+
+.modal-delete-confirm h3 {
+  color: #f8f9fa;
+  /* Título blanco */
+  font-size: 1.35rem;
+  /* Tamaño de fuente del título ligeramente más grande */
+  margin-bottom: 15px;
+  /* Espacio debajo del título */
+  font-weight: 600;
+  /* Negrita para el título */
+}
+
+.modal-delete-confirm p {
+  font-size: 1rem;
+  line-height: 1.5;
+  margin-bottom: 25px;
+  /* Espacio debajo del párrafo */
+  color: #adb5bd;
+  /* Gris claro para el texto */
+}
+
+.modal-delete-confirm .material-name-strong {
+  color: #f8f9fa;
+  /* Blanco para el nombre del material a eliminar */
+  font-weight: 700;
+}
+
+.modal-delete-confirm .text-danger {
+  color: #dc3545;
+  /* Rojo para la palabra 'eliminar' */
+  font-weight: 700;
+}
+
+.modal-delete-actions {
+  display: flex;
+  justify-content: space-around;
+  gap: 15px;
+  /* Espacio entre los botones */
+}
+
+/* Botón Cancelar del modal de eliminación */
+.modal-delete-actions .btn-cancel {
+  background: #495057;
+  /* Gris más oscuro para Cancelar */
+  color: white;
+  border: none;
+  /* Sin borde */
+  flex: 1;
+  margin: 0;
+  padding: 10px 20px;
+  /* Padding para hacer los botones más grandes */
+  border-radius: 5px;
+  /* Bordes suaves */
+  font-weight: 600;
+}
+
+.modal-delete-actions .btn-cancel:hover {
+  background: #5a6268;
+  /* Gris más claro al pasar el mouse */
+}
+
+/* Botón Eliminar del modal de eliminación */
+.btn-delete-confirm {
+  flex: 1;
+  margin: 0;
+  border: 1px solid #6c757d;
+  /* Borde gris claro para el botón eliminar */
+  border-radius: 5px;
+  /* Bordes suaves */
+  padding: 10px 20px;
+  /* Padding para hacer los botones más grandes */
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.2s;
+  background: transparent;
+  /* Fondo transparente */
+  color: #e9ecef;
+  /* Texto casi blanco */
+}
+
+.btn-delete-confirm:hover {
+  background: #dc3545;
+  /* Fondo rojo de peligro al pasar el mouse */
+  color: white;
+  /* Texto blanco al pasar el mouse */
+  border-color: #dc3545;
+  /* Borde rojo al pasar el mouse */
+}
+
+
+/* ======================== */
+/* TOASTS PERSONALIZADOS */
+/* ======================== */
+
+/* =========================
+   LAYOUT GLOBAL DE LA PÁGINA
+   ========================= */
+.page {
+  background: linear-gradient(135deg, #1a1a2e, #0f3460);
+  min-height: 100vh;
+  padding: 40px;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+/* CONTENEDOR PRINCIPAL (PARA LA TABLA) */
+.container {
+  background: #ffffff;
+  color: #1a1a2e;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  margin: 0 auto;
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 24px;
+  font-weight: 600;
+  color: #0f3460;
+}
+
+/* BÚSQUEDA Y FILTRO */
+.filterContainer {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.searchInput {
+  flex: 1;
+  min-width: 250px;
+  padding: 10px 14px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  outline: none;
+  transition: all 0.2s ease-in-out;
+}
+
+.searchInput:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 6px rgba(59, 130, 246, 0.4);
+}
+
+/* =========================
+   TABLA Y SCROLL
+   ========================= */
+.tableContainer {
+  max-height: 400px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #1a1a2e;
+  table-layout: fixed;
+}
+
+.table th {
+  position: sticky;
+  top: 0;
+  background: #0f3460;
+  color: #fff;
+  padding: 10px;
+  text-align: left;
+  z-index: 10;
+}
+
+.table td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  word-wrap: break-word;
+}
+
+.table tr:hover {
+  background: #f3f6ff;
+}
+
+.empty {
+  text-align: center;
+  color: #555;
+  margin-top: 20px;
+}
+
+/* =========================
+   BOTONES DE ACCIONES
+   ========================= */
+.editBtn,
+.deleteBtn {
+  margin: 0 5px;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.editBtn {
+  background: #00c2ff;
+  color: white;
+}
+
+.deleteBtn {
+  background: #e94560;
+  color: white;
+}
+
+.addBtn {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 8px;
+  background: #0f3460;
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.addBtn:hover {
+  background: #1a1a2e;
+}
+
+/* =========================
+   MODAL
+   ========================= */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: #ffffff;
+  color: #1a1a2e;
+  padding: 40px 30px;
+  border-radius: 20px;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* FORMULARIO DENTRO DEL MODAL */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form input,
+.form select {
+  padding: 12px 14px;
+  border: 1.5px solid #ccc;
+  border-radius: 10px;
+  font-size: 14px;
+  background: #f9f9f9;
+  color: #1a1a2e;
+  outline: none;
+  transition: all 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.form input:focus,
+.form select:focus {
+  border-color: #e94560;
+  background: #ffffff;
+  box-shadow: 0 0 8px rgba(233, 69, 96, 0.3);
+}
+
+
+.button,
+.closeBtn {
+  flex: 1;
+  padding: 12px 0;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.button {
+  background: #e94560;
+  color: #fff;
+  margin-right: 10px;
+}
+
+.button:hover {
+  background: #ff5c7a;
+}
+
+.closeBtn {
+  background: #1a1a2e;
+  color: #fff;
+}
+
+.closeBtn:hover {
+  background: #0f3460;
+}
+
+/* =========================
+   TOASTS BONITOS
+   ========================= */
+.toast-success {
+  background: linear-gradient(135deg, #388e3c, #2e7d32);
+  color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+  font-weight: 600;
+  font-size: 0.95rem;
+  border: 1px solid rgba(255,255,255,0.2);
+  padding: 12px 16px;
+}
+
+.toast-error {
+  background: linear-gradient(135deg, #d32f2f, #c62828);
+  color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+  font-weight: 600;
+  font-size: 0.95rem;
+  border: 1px solid rgba(255,255,255,0.2);
+  padding: 12px 16px;
+}
+
+.toast-info {
+  background: linear-gradient(135deg, #1976d2, #1565c0);
+  color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+  font-weight: 600;
+  font-size: 0.95rem;
+  border: 1px solid rgba(255,255,255,0.2);
+  padding: 12px 16px;
+}
+
+.toast-delete {
+  background: linear-gradient(135deg, #f57c00, #ef6c00);
+  color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+  font-weight: 600;
+  font-size: 0.95rem;
+  border: 1px solid rgba(255,255,255,0.2);
+  padding: 12px 16px;
+}
+
+.toast-success .Toastify__toast-icon,
+.toast-error .Toastify__toast-icon,
+.toast-info .Toastify__toast-icon,
+.toast-delete .Toastify__toast-icon {
+  font-size: 1.2rem;
+}
+
+
+.glass-table {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.glass-table.scrollable {
+  max-height: 400px; /* Ajusta según tu diseño */
+  overflow-y: auto;
+}
+
+/* Opcional: scrollbar personalizado */
+.glass-table.scrollable::-webkit-scrollbar {
+  width: 8px;
+}
+
+.glass-table.scrollable::-webkit-scrollbar-thumb {
+  background-color: rgba(0,0,0,0.3);
+  border-radius: 4px;
+}
+
+.glass-table.scrollable::-webkit-scrollbar-track {
+  background-color: rgba(0,0,0,0.1);
+  border-radius: 4px;
 }
