@@ -351,3 +351,8 @@ body {
 .modal-logs-table::-webkit-scrollbar-track {
   background-color: var(--background-color);
 }
+
+
+.text_inter{
+    color: wheat;
+}

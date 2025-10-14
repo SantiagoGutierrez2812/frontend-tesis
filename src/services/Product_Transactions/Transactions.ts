@@ -25,8 +25,11 @@ interface CreateTransactionResponse {
   error?: string;
 }
 
+/**
+ * Obtiene todas las transacciones del backend
+ */
 export async function getTransactions(): Promise<Transaction[]> {
-  const endpoint = `${API_URL}/product-transaction/`;
+  const endpoint = `${API_URL}/product-transactions`;
   const token = localStorage.getItem("token");
   if (!token) throw new Error("No hay token de autenticación en localStorage.");
 
@@ -36,14 +39,22 @@ export async function getTransactions(): Promise<Transaction[]> {
   });
 
   if (!res.ok) throw new Error(`Error HTTP al obtener transacciones: ${res.status}`);
+
   const result: TransactionsResponse = await res.json();
+
   if (!result.ok) throw new Error(result.error || "Error desconocido del backend");
 
-  return Array.isArray(result.product_transactions) ? result.product_transactions : [];
+  // Aseguramos que sea un array
+  return Array.isArray(result.product_transactions)
+    ? result.product_transactions
+    : [];
 }
 
+/**
+ * Crea una nueva transacción
+ */
 export async function createTransaction(data: CreateTransactionData): Promise<Transaction> {
-  const endpoint = `${API_URL}/product-transaction/`;
+  const endpoint = `${API_URL}/product-transactions`;
   const token = localStorage.getItem("token");
   if (!token) throw new Error("No hay token de autenticación en localStorage.");
 

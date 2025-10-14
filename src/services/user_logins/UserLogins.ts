@@ -17,9 +17,7 @@ export async function getUserLogins(): Promise<UserLogin[]> {
   return data.users_logins || [];
 }
 
-// *** FUNCIÓN CORREGIDA: Resuelve el error 404 ***
-// Dado que la ruta /app-user/ no existe, apuntamos esta llamada a /user-logins/ 
-// para obtener los datos que se utilizarán para el mapeo.
+
 export async function getAppUsers(): Promise<AppUser[]> {
   const token = localStorage.getItem("token");
   if (!token) throw new Error("No hay token en localStorage");
@@ -32,6 +30,6 @@ export async function getAppUsers(): Promise<AppUser[]> {
   const data = await res.json();
   if (!data.ok) throw new Error(data.error || "Error desconocido");
 
-  // CORRECCIÓN: usar el campo correcto
+ 
   return data.users_logins || []; 
 }

@@ -3,11 +3,18 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import styles from "./InventarioDashboard.module.css";
 
-import { login, verifyOtp, type LoginSuccessResponse } from "../services/authservice/authService";
+import {
+    login,
+    verifyOtp,
+    forgotPassword,
+    verifyOtpPassword,
+    resetPassword,
+    type LoginSuccessResponse
+} from "../services/authservice/authService";
+
 import { getCompanyName } from "../services/companies/app_companies";
 import type { Company, CompaniesResponse } from "../services/companies/app_companies";
 import { getInventories } from "../services/inventory/app_inventario";
-import type { Inventory, InventoriesResponse } from "../services/inventory/app_inventario";
 import { FaFacebook, FaTwitter, FaInstagram } from "react-icons/fa";
 
 export default function Home() {
@@ -19,11 +26,19 @@ export default function Home() {
     const [password, setPassword] = useState("");
     const [verificationCode, setVerificationCode] = useState("");
 
+    // Recuperación de contraseña
+    const [recoveryEmail, setRecoveryEmail] = useState("");
+    const [otpCode, setOtpCode] = useState("");
+    const [newPassword, setNewPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [isOtpStep, setIsOtpStep] = useState(false);
+    const [isResetStep, setIsResetStep] = useState(false);
+
     const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
     const [companies, setCompanies] = useState<Company[]>([]);
-    const [inventories, setInventories] = useState<Inventory[]>([]);
+    const [inventories, setInventories] = useState<any[]>([]);
 
     const navigate = useNavigate();
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -32,7 +47,7 @@ export default function Home() {
     useEffect(() => {
         async function fetchData() {
             try {
-                const [companiesData, inventoriesData]: [CompaniesResponse, InventoriesResponse] =
+                const [companiesData, inventoriesData]: [CompaniesResponse, any] =
                     await Promise.all([getCompanyName(), getInventories()]);
 
                 if (companiesData.ok && companiesData.companies)
@@ -97,14 +112,12 @@ export default function Home() {
         return () => window.removeEventListener("resize", resizeCanvas);
     }, []);
 
-    // 🧠 Paso 1: Login y envío de OTP
+    // 🧠 Login
     const handleLogin = async () => {
         setIsLoading(true);
         setError("");
-
         try {
             const data = await login(username, password);
-
             if (data.ok) {
                 setIsVerificationStep(true);
                 toast.info(`🔐 Te enviamos un código a tu correo. ${data.message}`);
@@ -119,41 +132,96 @@ export default function Home() {
         }
     };
 
-    // 🧩 Paso 2: Verificación OTP
+    // 🧩 OTP Login
     const handleVerifyCode = async () => {
         const trimmedCode = verificationCode.trim();
         if (trimmedCode.length < 4) {
             toast.error("❌ El código debe tener al menos 4 dígitos.");
             return;
         }
-
         setIsLoading(true);
         setError("");
 
         try {
             const result: LoginSuccessResponse = await verifyOtp(username, trimmedCode);
-
             if (result.ok && result.access_token) {
                 toast.success("✅ Código verificado y sesión iniciada");
                 setIsModalOpen(false);
                 setIsVerificationStep(false);
 
                 const role = localStorage.getItem("role");
-
-                // 🔄 Redirección según rol
-                if (role === "1") {
-                    navigate("/dashboard");
-                } else if (role === "2") {
-                    navigate("/registro");
-                } else {
-                    navigate("/no-autorizado");
-                }
+                if (role === "1") navigate("/dashboard");
+                else if (role === "2") navigate("/registro");
+                else navigate("/no-autorizado");
             } else {
                 toast.error("❌ Código inválido o error al verificar.");
             }
         } catch (e: any) {
             setError(e.message || "Error al verificar código");
             toast.error(`❌ ${e.message || "Error al verificar código"}`);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // 🔹 Recuperación de contraseña
+    const handleSendRecoveryEmail = async () => {
+        if (!recoveryEmail) {
+            toast.error("❌ Ingresa un correo válido.");
+            return;
+        }
+        setIsLoading(true);
+        try {
+            const res = await forgotPassword(recoveryEmail);
+            toast.info(res.message);
+            setIsOtpStep(true); // paso OTP
+        } catch (e: any) {
+            toast.error(e.message || "Error enviando correo de recuperación.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleVerifyOtpRecovery = async () => {
+        if (!otpCode || otpCode.length < 4) {
+            toast.error("❌ Ingresa un código válido.");
+            return;
+        }
+        setIsLoading(true);
+        try {
+            const res = await verifyOtpPassword(recoveryEmail, otpCode);
+            if (res.ok) {
+                toast.success(res.message);
+                setIsOtpStep(false);
+                setIsResetStep(true); // paso cambiar contraseña
+            }
+        } catch (e: any) {
+            toast.error(e.message || "Error verificando código OTP.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleResetPassword = async () => {
+        if (!newPassword || newPassword.length < 6) {
+            toast.error("❌ La contraseña debe tener al menos 6 caracteres.");
+            return;
+        }
+        if (newPassword !== confirmPassword) {
+            toast.error("❌ Las contraseñas no coinciden.");
+            return;
+        }
+        setIsLoading(true);
+        try {
+            const res = await resetPassword(recoveryEmail, otpCode, newPassword, confirmPassword);
+            if (res.ok) {
+                toast.success(res.message);
+                setIsResetStep(false);
+                setIsRecovery(false);
+                setIsModalOpen(false);
+            }
+        } catch (e: any) {
+            toast.error(e.message || "Error al cambiar la contraseña.");
         } finally {
             setIsLoading(false);
         }
@@ -228,10 +296,11 @@ export default function Home() {
                 </div>
             </footer>
 
-            {/* 🔐 Modal de Login / Verificación */}
+            {/* Modal */}
             {isModalOpen && (
                 <div className={styles.modalOverlay}>
                     <div className={styles.modalContent}>
+                        {/* Login / OTP */}
                         {!isRecovery ? (
                             !isVerificationStep ? (
                                 <>
@@ -308,19 +377,83 @@ export default function Home() {
                             )
                         ) : (
                             <>
-                                <h2>Recuperar Contraseña</h2>
-                                <input
-                                    type="email"
-                                    placeholder="Correo electrónico"
-                                    className={styles.inputField}
-                                />
-                                <button className={styles.primaryButton}>Enviar enlace</button>
-                                <button
-                                    className={styles.linkButton}
-                                    onClick={() => setIsRecovery(false)}
-                                >
-                                    Volver al login
-                                </button>
+                                {/* Recuperación de contraseña */}
+                                {!isOtpStep && !isResetStep && (
+                                    <>
+                                        <h2>Recuperar Contraseña</h2>
+                                        <input
+                                            type="email"
+                                            placeholder="Correo electrónico"
+                                            className={styles.inputField}
+                                            value={recoveryEmail}
+                                            onChange={(e) => setRecoveryEmail(e.target.value)}
+                                        />
+                                        <button
+                                            className={styles.primaryButton}
+                                            onClick={handleSendRecoveryEmail}
+                                            disabled={isLoading || !recoveryEmail}
+                                        >
+                                            {isLoading ? "Enviando..." : "Enviar enlace"}
+                                        </button>
+                                        <button
+                                            className={styles.linkButton}
+                                            onClick={() => setIsRecovery(false)}
+                                        >
+                                            Volver al login
+                                        </button>
+                                    </>
+                                )}
+
+                                {isOtpStep && !isResetStep && (
+                                    <>
+                                        <h2>Verificación de Código</h2>
+                                        <p>Revisa tu correo <b>{recoveryEmail}</b> e ingresa el código recibido:</p>
+                                        <input
+                                            type="text"
+                                            placeholder="Código OTP"
+                                            className={styles.inputField}
+                                            value={otpCode}
+                                            maxLength={6}
+                                            inputMode="numeric"
+                                            pattern="[0-9]*"
+                                            onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ""))}
+                                        />
+                                        <button
+                                            className={styles.primaryButton}
+                                            onClick={handleVerifyOtpRecovery}
+                                            disabled={isLoading || otpCode.length < 4}
+                                        >
+                                            {isLoading ? "Verificando..." : "Verificar código"}
+                                        </button>
+                                    </>
+                                )}
+
+                                {isResetStep && (
+                                    <>
+                                        <h2>Cambiar Contraseña</h2>
+                                        <input
+                                            type="password"
+                                            placeholder="Nueva contraseña"
+                                            className={styles.inputField}
+                                            value={newPassword}
+                                            onChange={(e) => setNewPassword(e.target.value)}
+                                        />
+                                        <input
+                                            type="password"
+                                            placeholder="Confirmar contraseña"
+                                            className={styles.inputField}
+                                            value={confirmPassword}
+                                            onChange={(e) => setConfirmPassword(e.target.value)}
+                                        />
+                                        <button
+                                            className={styles.primaryButton}
+                                            onClick={handleResetPassword}
+                                            disabled={isLoading || !newPassword || !confirmPassword}
+                                        >
+                                            {isLoading ? "Cambiando..." : "Cambiar contraseña"}
+                                        </button>
+                                    </>
+                                )}
                             </>
                         )}
                     </div>

@@ -1,237 +1,160 @@
 :root {
-  --size: 150px;
-  /* Tamaño del cubo */
+  --size: 150px; /* Tamaño del cubo */
 }
 
-div.espacio3D {
+/* === ESPACIO 3D === */
+.espacio3D {
   width: var(--size);
   height: var(--size);
-  margin: 3em auto 0 auto;
+  margin: 3em auto;
   position: relative;
-  perspective-origin: center -50%;
-  perspective: 500px;
-  transform: scale(0.85);
+  perspective: 800px;
+  transform: scale(0.9);
 }
 
-div.cubo3D {
+/* === CUBO === */
+.cubo3D {
   width: 100%;
   height: 100%;
   position: absolute;
   transform-style: preserve-3d;
   transform: translateZ(calc(-0.5 * var(--size)));
-  animation: gira 10s linear infinite;
+  animation: gira 20s linear infinite;
+  z-index: 2;
 }
 
-div.base {
+/* === LUZ SUPERIOR === */
+.espacio3D::before {
+  content: "";
   position: absolute;
-  width: calc(var(--size)/2);
-  height: calc(var(--size)/2);
-  background-color: rgba(0, 0, 0, 0.05);
-  transform: translateX(calc(var(--size)/4)) translateY(calc(var(--size)/4)) rotateX(90deg) translateZ(calc(-2/3 * var(--size)));
-  box-shadow: 0 0 50px 100px rgba(0, 0, 0, 0.05);
+  top: -120px;
+  left: 50%;
+  width: 250px;
+  height: 250px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.8) 0%,
+    rgba(255, 255, 255, 0.3) 40%,
+    transparent 80%
+  );
+  filter: blur(60px);
+  opacity: 0.8;
+  pointer-events: none;
+  z-index: 1;
 }
 
-/* 🔹 Caras del cubo */
+/* === SOMBRA EN EL PISO === */
+.espacio3D::after {
+  content: "";
+  position: absolute;
+  bottom: -50px;
+  left: 50%;
+  width: 220px;
+  height: 60px;
+  transform: translateX(-50%) rotateX(75deg);
+  background: radial-gradient(
+    ellipse at center,
+    rgba(0, 0, 0, 0.4) 0%,
+    rgba(0, 0, 0, 0.05) 70%,
+    transparent 100%
+  );
+  filter: blur(10px);
+  opacity: 0.8;
+  z-index: 0;
+}
+
+/* === BASE DEL CUBO === */
+.base {
+  position: absolute;
+  width: calc(var(--size) / 2);
+  height: calc(var(--size) / 2);
+  background-color: rgba(0, 0, 0, 0.05);
+  transform: translateX(calc(var(--size)/4))
+             translateY(calc(var(--size)/4))
+             rotateX(90deg)
+             translateZ(calc(-2/3 * var(--size)));
+}
+
+/* === CARAS === */
 aside.cara {
   position: absolute;
   width: calc(var(--size) - 2px);
   height: calc(var(--size) - 2px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #ffffff;
-  font-size: calc(var(--size) / 10);
-  text-align: center;
-  line-height: calc(var(--size) - 2px);
-  border-radius: 10px;
-  box-shadow: 0 0 25px rgba(163, 206, 241, 0.4);
-  background: linear-gradient(120deg, #A3CEF1, #B8A2E0, #F7B5A3, #A3CEF1);
-  background-size: 300% 300%;
-  animation: colorShift 30s ease-in-out infinite;
-  transition: all 3s ease-in-out;
-}
-
-/* Posición de cada cara */
-aside.cara1 {
-  transform: translateZ(calc(0.5 * var(--size)));
-}
-
-aside.cara2 {
-  transform: rotateY(180deg) translateZ(calc(0.5 * var(--size)));
-}
-
-aside.cara3 {
-  transform: rotateY(-90deg) translateZ(calc(0.5 * var(--size)));
-}
-
-aside.cara4 {
-  transform: rotateY(90deg) translateZ(calc(0.5 * var(--size)));
-}
-
-aside.cara5 {
-  transform: rotateX(-90deg) translateZ(calc(0.5 * var(--size)));
-}
-
-aside.cara6 {
-  transform: rotateX(90deg) translateZ(calc(0.5 * var(--size)));
-}
-
-/* ✨ Giro del cubo */
-@keyframes gira {
-  0% {
-    transform: translateZ(calc(-0.5 * var(--size))) rotateY(0deg);
-  }
-
-  100% {
-    transform: translateZ(calc(-0.5 * var(--size))) rotateY(360deg);
-  }
-}
-
-
-@keyframes colorShift {
-  0% {
-    background: linear-gradient(135deg, #3A506B, #748CAB);
-  }
-
-  33% {
-    background: linear-gradient(135deg, #5C677D, #5c5345);
-  }
-
-  66% {
-    background: linear-gradient(135deg, #5c473a, #3A506B);
-  }
-
-  100% {
-    background: linear-gradient(135deg, #3A506B, #748CAB);
-  }
-}
-
-
-/* === CUBO BASE === */
-.espacio3D {
-  perspective: 800px;
-  width: 200px;
-  height: 200px;
-  margin: 20px auto;
-}
-
-.cubo3D {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  transform-style: preserve-3d;
-  animation: girar 8s infinite linear;
-}
-
-.base {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  transform: translateZ(-100px);
-}
-
-/* === CARAS DEL CUBO === */
-.cara {
-  position: absolute;
-  width: 200px;
-  height: 200px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: #ffffff;
-  font-weight: bold;
   font-family: 'Poppins', sans-serif;
+  color: #fff;
   text-align: center;
+  line-height: normal;
+  box-shadow: 0 0 25px rgba(163, 206, 241, 0.3);
+  background: linear-gradient(135deg, #3A506B, #748CAB);
 }
 
-.cara1 {
-  transform: rotateY(0deg) translateZ(100px);
-}
-
-.cara2 {
-  transform: rotateY(90deg) translateZ(100px);
-  flex-direction: column;
-  background-color: rgba(255, 0, 0, 0.08);
-  border: 1px solid rgba(255, 0, 0, 0.3);
-}
-
-.cara3 {
-  transform: rotateY(180deg) translateZ(100px);
-}
-
-.cara4 {
-  transform: rotateY(-90deg) translateZ(100px);
-}
-
-.cara5 {
-  transform: rotateX(90deg) translateZ(100px);
-}
-
+/* === POSICIÓN DE CADA CARA === */
+.cara1 { transform: rotateY(0deg) translateZ(calc(0.49 * var(--size))); }
+.cara2 { transform: rotateY(90deg) translateZ(calc(0.49 * var(--size))); }
+.cara3 { transform: rotateY(180deg) translateZ(calc(0.49 * var(--size))); }
+.cara4 { transform: rotateY(-90deg) translateZ(calc(0.49 * var(--size))); }
+.cara5 { transform: rotateX(-90deg) translateZ(calc(0.49 * var(--size))); }
 .cara6 {
-  transform: rotateX(-90deg) translateZ(100px);
+  transform: rotateX(90deg) translateZ(calc(0.49 * var(--size)));
+  background: linear-gradient(145deg, rgba(255,255,255,0.3), rgba(255,255,255,0.1));
+  box-shadow: inset 0 0 50px rgba(255,255,255,0.5);
 }
 
-/* === EFECTO DE GIRO === */
-@keyframes girar {
-  from {
-    transform: rotateX(0deg) rotateY(0deg);
-  }
-
-  to {
-    transform: rotateX(360deg) rotateY(360deg);
-  }
+/* === ANIMACIÓN === */
+@keyframes gira {
+  0% { transform: translateZ(calc(-0.5 * var(--size))) rotateY(0deg); }
+  100% { transform: translateZ(calc(-0.5 * var(--size))) rotateY(360deg); }
 }
 
-/* === ICONO Y CONTADOR === */
-.error-container {
+/* === PULSE (ICONOS) === */
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.1); opacity: 0.8; }
+}
+
+/* === ERRORES === */
+.error-container,
+.user-container,
+.transaction-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  transform: translateY(20px);
-  /* ligeramente ajustado */
+  transform: translateY(10px);
 }
 
-.error-count {
-  font-size: 2.8rem;
-  font-weight: 800;
-  color: #ff4d4f;
-  text-shadow: 0 0 12px rgba(255, 77, 79, 0.8);
-  transform: translateY(-10px);
-  /* 🔼 Sube el número un poquito */
-}
-
-.error-icon {
-  width: 38px;
-  height: 38px;
-  color: #ff4d4f;
-  margin-bottom: 4px;
-  /* antes 8px — ahora más juntos */
-  animation: pulse 1.5s infinite;
-}
-
-.user-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  transform: translateY(20px);
-}
-
-.user-icon {
-  width: 38px;
-  height: 38px;
-  color: #0083fd;
+.error-icon, .user-icon, .transaction-icon {
+  width: calc(var(--size) / 4);
+  height: calc(var(--size) / 4);
   margin-bottom: 4px;
   animation: pulse 1.5s infinite;
 }
 
-.user-count {
-  font-size: 2.8rem;
+.error-icon { color: #ff6b6b; }
+.user-icon { color: #6c63ff; }
+.transaction-icon { color: #4caf50; }
+
+.error-count, .user-count, .transaction-count {
+  font-size: calc(var(--size) / 5);
   font-weight: 800;
-  color: #6797ee;
-  text-shadow: 0 0 12px rgba(0, 89, 255, 0.8);
-  transform: translateY(-10px);
+  text-shadow: 0 0 8px rgba(0,0,0,0.4);
+}
+
+.error-count { color: #ff8787; }
+.user-count { color: #a39aff; }
+.transaction-count { color: #f0c14b; }
+
+.cara p {
+  font-size: calc(var(--size) / 10);
+  font-weight: 600;
+  margin: 4px 0;
 }
 

@@ -1,4 +1,4 @@
-// types/UserLogin.ts
+
 export interface UserLogin {
   id: number;
   app_user_id: number;

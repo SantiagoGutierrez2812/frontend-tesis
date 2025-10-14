@@ -2,6 +2,10 @@
 
 const API_URL = import.meta.env.VITE_API_URL;
 
+// ----------------------------
+// Tipos de respuesta del backend
+// ----------------------------
+
 // Respuesta del primer paso: POST /auth/login
 interface InitialLoginResponse {
     ok: boolean;
@@ -18,7 +22,9 @@ export interface LoginSuccessResponse {
     username: string;
 }
 
-
+// ----------------------------
+// Función: login
+// ----------------------------
 export async function login(username: string, password: string): Promise<InitialLoginResponse> {
     const response = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
@@ -27,35 +33,33 @@ export async function login(username: string, password: string): Promise<Initial
     });
 
     if (!response.ok) {
-        let errorData;
         let errorMessage = "Credenciales inválidas o usuario no existe.";
-        
+
         try {
-            errorData = await response.json();
+            const errorData = await response.json();
             errorMessage = errorData.detail || errorData.error || errorData.message || errorMessage;
-        } catch (e) {
+        } catch {
             try {
                 errorMessage = await response.text() || `Error de servidor: ${response.status}.`;
-            } catch (e) {
+            } catch {
                 errorMessage = `Error HTTP: ${response.status}.`;
             }
         }
-        
+
         throw new Error(errorMessage);
     }
 
-    return response.json() as Promise<InitialLoginResponse>; 
+    return response.json() as Promise<InitialLoginResponse>;
 }
 
+// ----------------------------
+// Función: verifyOtp
+// ----------------------------
 export async function verifyOtp(username: string, token: string): Promise<LoginSuccessResponse> {
-    const API_URL = import.meta.env.VITE_API_URL; // 🔧 asegúrate de tener esto en tu .env
-    const tokenAsNumber = parseInt(token, 10);
-    const tokenToSend = isNaN(tokenAsNumber) ? token : tokenAsNumber;
-
     const response = await fetch(`${API_URL}/auth/verify-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, token: tokenToSend }),
+        body: JSON.stringify({ username, token }), // ✅ siempre string
     });
 
     if (!response.ok) {
@@ -70,19 +74,101 @@ export async function verifyOtp(username: string, token: string): Promise<LoginS
     }
 
     const data = await response.json();
-
-    // 🧠 El backend devuelve un array: [ { datos }, 200 ]
     const parsed = Array.isArray(data) ? data[0] : data;
 
-    // 🔥 Guarda los datos críticos en localStorage directamente aquí
-    if (parsed.access_token) {
-        localStorage.setItem("token", parsed.access_token);
-        localStorage.setItem("role", String(Number(parsed.role))); // ✅ lo guardamos como número convertido a string
-        localStorage.setItem("welcome", parsed.username);
-        if (parsed.branch_id) localStorage.setItem("branch_id", String(parsed.branch_id));
-    } else {
+    if (!parsed.access_token) {
         throw new Error("No se recibió token del servidor.");
     }
 
+    // Guardar datos críticos en localStorage
+    localStorage.setItem("token", parsed.access_token);
+    localStorage.setItem("role", String(Number(parsed.role)));
+    localStorage.setItem("welcome", parsed.username);
+    if (parsed.branch_id) localStorage.setItem("branch_id", String(parsed.branch_id));
+
     return parsed as LoginSuccessResponse;
+}
+
+
+
+// ----------------------------
+// Solicitar token de recuperación
+// ----------------------------
+export async function forgotPassword(email: string): Promise<{ message: string }> {
+    const response = await fetch(`${API_URL}/auth/forgot-password`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+    });
+
+    if (!response.ok) {
+        let errorMessage = "No se pudo enviar el correo de recuperación.";
+        try {
+            const errorData = await response.json();
+            errorMessage = errorData.error || errorData.message || errorMessage;
+        } catch {
+            errorMessage = `Error HTTP: ${response.status}`;
+        }
+        throw new Error(errorMessage);
+    }
+
+    return response.json();
+}
+
+// ----------------------------
+// Verificar OTP del email para reset
+// ----------------------------
+export async function verifyOtpPassword(email: string, token: string): Promise<{ ok: boolean; message: string }> {
+    const response = await fetch(`${API_URL}/auth/verify-otp-password`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, token }), // ✅ siempre string
+    });
+
+    if (!response.ok) {
+        let errorMessage = "OTP inválido.";
+        try {
+            const errorData = await response.json();
+            errorMessage = errorData.error || errorData.message || errorMessage;
+        } catch {
+            errorMessage = `Error HTTP: ${response.status}`;
+        }
+        throw new Error(errorMessage);
+    }
+
+    return response.json();
+}
+
+// ----------------------------
+// Resetear contraseña con OTP
+// ----------------------------
+export async function resetPassword(
+    email: string,
+    token: string,
+    newPassword: string,
+    confirmPassword: string
+): Promise<{ ok: boolean; message: string }> {
+    const response = await fetch(`${API_URL}/auth/reset-password`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            email,
+            token,
+            new_password: newPassword,
+            confirm_password: confirmPassword
+        }),
+    });
+
+    if (!response.ok) {
+        let errorMessage = "No se pudo resetear la contraseña.";
+        try {
+            const errorData = await response.json();
+            errorMessage = errorData.error || errorData.message || errorMessage;
+        } catch {
+            errorMessage = `Error HTTP: ${response.status}`;
+        }
+        throw new Error(errorMessage);
+    }
+
+    return response.json();
 }
