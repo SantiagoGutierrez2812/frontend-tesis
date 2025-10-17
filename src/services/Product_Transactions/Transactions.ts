@@ -6,6 +6,7 @@ export type CreateTransactionData = {
   description: string;
   quantity: number;
   unit_price: number;
+  total_price?: number; // <-- agregar
   transaction_date: string;
   product_id: number;
   branch_id: number;

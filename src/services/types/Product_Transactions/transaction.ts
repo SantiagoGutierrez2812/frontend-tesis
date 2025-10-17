@@ -1,21 +1,19 @@
 export interface Transaction {
   id: number;
-  app_user_name?: string; // <-- Agregado
-  branch_name?: string;   // <-- Agregado
+  app_user_name?: string; 
+  branch_name?: string;   
   created_at?: string;
   description?: string;
-  product?: string;       // <-- Agregado
+  product?: string;     
   quantity?: number;
   supplier_name?: string;
   total_price?: number;
   transaction_date?: string;
-  transaction_type_name?: string; // <-- Agregado
+  transaction_type_name?: string; 
   unit_price?: number;
-  app_user_id?: number; // si también lo usas
+  app_user_id?: number; 
 }
 
-
-// Define el tipo de datos para crear la transacción
 export type CreateTransactionData = {
   description: string;
   quantity: number;
@@ -26,3 +24,4 @@ export type CreateTransactionData = {
   transaction_type_id: number;
   app_user_id: number;
 };
+

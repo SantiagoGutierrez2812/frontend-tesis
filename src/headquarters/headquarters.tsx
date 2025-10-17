@@ -350,7 +350,6 @@ export default function Headquarters() {
                 value={activeBranchId || ''}
                 onChange={handleBranchSelectInternal}
                 disabled={loading || branches.length === 0}
-                // Aplica la clase CSS
                 className={styles.branchSelector} 
             >
                 {branches.length === 0 && <option value="">Cargando Sedes...</option>}
