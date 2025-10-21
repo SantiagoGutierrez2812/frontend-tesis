@@ -211,7 +211,7 @@ export default function Materialcreation() {
       {showModal && (
         <div className="modal_1" onClick={handleModalClick}>
           <div className="modal-content_1">
-            <h3>{editingId ? "✏️ Editar Material" : "✨ Crear Material"}</h3>
+            <h3>{editingId ? "✏️ Editar Material" : "Crear Material"}</h3>
 
             <label>Nombre del Material</label>
             <input placeholder="Nombre" value={newMaterial.nombre} onChange={e => setNewMaterial({ ...newMaterial, nombre: e.target.value })} />

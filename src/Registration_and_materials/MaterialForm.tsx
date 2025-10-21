@@ -2,6 +2,8 @@ import  { useEffect, useState, useMemo } from "react";
 import Modal from "./Modal/Modal";
 import TopControl from "../TopControl/TopControl";
 import { get_read_from } from "../services/inventory/materials_creation_section";
+import { getBranches } from "../services/branchService/branchService";
+import type { Branch } from "../services/types/branch/branchService";
 import AddTransactionForm from "./AddProduct/AddProductForm";
 import type { inventory_material_record } from "../services/types/inventory/inventory";
 import type { Transaction } from "../services/types/Product_Transactions/transaction";
@@ -15,20 +17,60 @@ export default function MaterialForm() {
   const [sort, setSort] = useState("");
   const [showModal, setShowModal] = useState(false);
 
-  // Fetch inventario
+  // Control de sedes para administradores
+  const userRole = localStorage.getItem("role");
+  const userBranchId = Number(localStorage.getItem("branch_id"));
+  const isAdmin = userRole === "1";
+
+  const [branches, setBranches] = useState<Branch[]>([]);
+  const [selectedBranchId, setSelectedBranchId] = useState<number>(
+    isAdmin ? 0 : userBranchId || 0
+  );
+
+  // Cargar sedes si es administrador
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data: inventory_material_record[] = await get_read_from();
-        setInventories(data);
-      } catch (error) {
-        console.error("Error al obtener inventario:", error);
-      } finally {
+    if (isAdmin) {
+      const loadBranches = async () => {
+        try {
+          const branchList = await getBranches();
+          setBranches(branchList);
+          // Seleccionar la primera sede por defecto
+          if (branchList.length > 0 && selectedBranchId === 0) {
+            setSelectedBranchId(branchList[0].id);
+          }
+        } catch (error) {
+          console.error("Error al cargar sedes:", error);
+        }
+      };
+      loadBranches();
+    }
+  }, [isAdmin]);
+
+  // Función para cargar inventario (extraída para reutilizar)
+  const fetchInventoryData = async (showLoadingState = true) => {
+    try {
+      if (showLoadingState) {
+        setLoading(true);
+      }
+      // Filtrar por sede: admin usa la seleccionada, usuario usa la suya
+      const branchId = isAdmin ? (selectedBranchId || undefined) : userBranchId;
+      const data: inventory_material_record[] = await get_read_from(branchId);
+      setInventories(data);
+    } catch (error) {
+      console.error("Error al obtener inventario:", error);
+    } finally {
+      if (showLoadingState) {
         setLoading(false);
       }
-    };
-    fetchData();
-  }, []);
+    }
+  };
+
+  // Fetch inventario al montar el componente y cuando cambie la sede seleccionada
+  useEffect(() => {
+    if (selectedBranchId > 0) {
+      fetchInventoryData();
+    }
+  }, [selectedBranchId]);
 
   // Filtro y ordenamiento
   const filteredInventories = useMemo(() => {
@@ -70,9 +112,26 @@ export default function MaterialForm() {
         <div className="titele">Registro de Inventario</div>
 
         <div className="inventory-header">
+          {/* Select de sedes - Solo para administradores */}
+          {isAdmin && (
+            <select
+              className="filter-select"
+              value={selectedBranchId}
+              onChange={(e) => setSelectedBranchId(Number(e.target.value))}
+              style={{ marginRight: "10px" }}
+            >
+              <option value={0}>Seleccione una sede</option>
+              {branches.map((branch) => (
+                <option key={branch.id} value={branch.id}>
+                  {branch.name}
+                </option>
+              ))}
+            </select>
+          )}
+
           <input
             type="text"
-            placeholder="🔎 Buscar por producto, ID o sucursal..."
+            placeholder="🔎 Buscar por producto, ID..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="search-input"
@@ -98,7 +157,7 @@ export default function MaterialForm() {
               <tr>
                 <th>ID</th>
                 <th>Producto</th>
-                <th>Talla</th>
+                <th>Tamaño</th>
                 <th>Cantidad</th>
                 <th>Precio</th>
                 <th>Fecha de creación</th>
@@ -131,9 +190,13 @@ export default function MaterialForm() {
         <Modal onClose={() => setShowModal(false)}>
           <AddTransactionForm
             onClose={() => setShowModal(false)}
-            onTransactionCreated={(newTx: Transaction) =>
-              setTransactions((prev: Transaction[]) => [newTx, ...prev])
-            }
+            branchId={isAdmin ? selectedBranchId : userBranchId}
+            onTransactionCreated={(newTx: Transaction) => {
+              // Actualizar la lista de transacciones
+              setTransactions((prev: Transaction[]) => [newTx, ...prev]);
+              // Recargar el inventario para reflejar los cambios (sin mostrar pantalla de carga)
+              fetchInventoryData(false);
+            }}
           />
         </Modal>
       )}

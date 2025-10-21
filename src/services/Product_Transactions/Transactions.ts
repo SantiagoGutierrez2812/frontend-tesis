@@ -65,7 +65,17 @@ export async function createTransaction(data: CreateTransactionData): Promise<Tr
     body: JSON.stringify(data),
   });
 
-  if (!res.ok) throw new Error(`Error HTTP al crear transacción: ${res.status}`);
+  if (!res.ok) {
+    let errorMessage = `Error HTTP ${res.status}`;
+    try {
+      const errorData = await res.json();
+      console.error("Error del backend:", errorData);
+      errorMessage = errorData.error || errorData.message || errorMessage;
+    } catch (e) {
+      // Si no se puede parsear el JSON, usar mensaje genérico
+    }
+    throw new Error(errorMessage);
+  }
 
   const result: CreateTransactionResponse = await res.json();
   if (!result.ok) throw new Error(result.error || "Error desconocido del backend");

@@ -3,14 +3,12 @@
     background-color: #1A1A2E;
     width: 100%;
     min-height: 100vh;
-    display: flex
-;
+    display: flex;
     justify-content: center;
     align-items: center;
-    padding: 40px 0;
+    padding: 120px 0 40px 0;
     flex-direction: column;
     align-content: center;
-
 }
 
 /* --- Contenedor principal --- */
@@ -56,7 +54,7 @@
 .kpi-card h3 {
   font-size: 1.5rem;
   margin-bottom: 5px;
-  color: #007bff;
+  color: #0f3460;
 }
 
 .kpi-card p {
@@ -90,7 +88,7 @@
 }
 
 .add-button {
-  background-color: #007bff;
+  background-color: #0f3460;
   color: white;
   border: none;
   padding: 10px 20px;
@@ -102,7 +100,7 @@
 }
 
 .add-button:hover {
-  background-color: #0069d9;
+  background-color: #1a1a2e;
 }
 
 /* --- Contenedor con scroll --- */
@@ -163,7 +161,7 @@
 }
 
 .edit-btn {
-  color: #007bff;
+  color: #0f3460;
 }
 
 .edit-btn:hover {
@@ -183,11 +181,11 @@
   width: 8px;
 }
 .table-container::-webkit-scrollbar-thumb {
-  background: #007bff;
+  background: #0f3460;
   border-radius: 4px;
 }
 .table-container::-webkit-scrollbar-thumb:hover {
-  background: #0056b3;
+  background: #1a1a2e;
 }
 
 .date-filter {

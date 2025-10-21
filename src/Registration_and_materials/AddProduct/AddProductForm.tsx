@@ -6,41 +6,110 @@ import {
 import type { Transaction } from "../../services/types/Product_Transactions/transaction";
 import { get_all_products } from "../../services/product/materials_creation_section";
 import type { product_id_record } from "../../services/types/product/product";
+import { getSuppliers } from "../../services/supplier/supplier_service";
+import type { Proveedor } from "../../services/types/supplier_interface";
 import "./AddProductForm.css";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+interface TransactionType {
+  id: number;
+  name: string;
+  description?: string;
+}
+
 interface Props {
   onClose: () => void;
   onTransactionCreated: (newTransaction: Transaction) => void;
+  branchId?: number; // ID de la sede seleccionada (para admins) o del usuario
 }
 
 export default function AddTransactionForm({
   onClose,
   onTransactionCreated,
+  branchId,
 }: Props) {
   const [products, setProducts] = useState<product_id_record[]>([]);
-  const [selectedProduct, setSelectedProduct] = useState<string>("");
+  const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
+  const [transactionTypes, setTransactionTypes] = useState<TransactionType[]>([]);
+  const [suppliers, setSuppliers] = useState<Proveedor[]>([]);
   const [description, setDescription] = useState("");
-  const [quantity, setQuantity] = useState(""); 
-  const [unitPrice, setUnitPrice] = useState(""); 
-  const [total, setTotal] = useState(""); 
-  const [transactionType, setTransactionType] = useState(2);
+  const [quantity, setQuantity] = useState("");
+  const [unitPrice, setUnitPrice] = useState("");
+  const [total, setTotal] = useState("");
+  const [transactionTypeId, setTransactionTypeId] = useState<number | null>(null);
+  const [supplierId, setSupplierId] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
 
+  // Cargar productos, transaction types y suppliers al montar el componente
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchData = async () => {
       try {
-        const data = await get_all_products();
-        setProducts(data);
-        if (data.length > 0) setSelectedProduct(data[0].name);
+        // Cargar productos
+        const productsData = await get_all_products();
+        setProducts(productsData);
+        // NO pre-seleccionar el primer producto
+
+        // Cargar transaction types
+        const API_URL = import.meta.env.VITE_API_URL;
+        const token = localStorage.getItem("token");
+        const transactionTypesRes = await fetch(`${API_URL}/transaction_types/`, {
+          headers: {
+            "Content-Type": "application/json",
+            ...(token && { Authorization: `Bearer ${token}` }),
+          },
+        });
+
+        if (transactionTypesRes.ok) {
+          const transactionTypesData = await transactionTypesRes.json();
+          if (transactionTypesData.ok && transactionTypesData.transaction_types) {
+            setTransactionTypes(transactionTypesData.transaction_types);
+            // NO pre-seleccionar el primer tipo de transacción
+          }
+        } else {
+          toast.error("No se pudieron cargar los tipos de transacción");
+        }
+
+        // Cargar suppliers
+        const suppliersData = await getSuppliers();
+        setSuppliers(suppliersData);
       } catch (err) {
-        console.error("Error al cargar productos:", err);
-        toast.error("No se pudieron cargar los productos");
+        console.error("Error al cargar datos:", err);
+        toast.error("No se pudieron cargar los datos necesarios");
       }
     };
-    fetchProducts();
+    fetchData();
   }, []);
+
+  // Auto-llenar unit_price cuando se selecciona un producto
+  useEffect(() => {
+    if (selectedProductId !== null) {
+      const product = products.find((p) => p.id === selectedProductId);
+      if (product) {
+        setUnitPrice(product.price.toString());
+      }
+    }
+  }, [selectedProductId, products]);
+
+  // Calcular total automáticamente
+  useEffect(() => {
+    const qty = Number(quantity);
+    const price = Number(unitPrice);
+    if (!qty || !price) {
+      setTotal("");
+      return;
+    }
+    const t = qty * price;
+    setTotal(t % 1 === 0 ? t.toString() : t.toFixed(2));
+  }, [quantity, unitPrice]);
+
+  // Resetear supplier cuando se cambia el transaction type
+  useEffect(() => {
+    // Solo mostrar supplier si transaction_type_id es 1 o 4
+    if (transactionTypeId !== 1 && transactionTypeId !== 4) {
+      setSupplierId(null);
+    }
+  }, [transactionTypeId]);
 
   const handleNumericInput = (
     value: string,
@@ -54,28 +123,28 @@ export default function AddTransactionForm({
     }
   };
 
- 
-  useEffect(() => {
-    const qty = Number(quantity);
-    const price = Number(unitPrice);
-    if (!qty || !price) {
-      setTotal("");
-      return;
-    }
-    const t = qty * price;
-    setTotal(t % 1 === 0 ? t.toString() : t.toFixed(2));
-  }, [quantity, unitPrice]);
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedProduct) {
+
+    // Validaciones
+    if (selectedProductId === null) {
       toast.warning("Selecciona un producto");
       return;
     }
 
-    const product = products.find((p) => p.name === selectedProduct);
-    if (!product) {
-      toast.error("Producto inválido");
+    if (transactionTypeId === null) {
+      toast.warning("Selecciona un tipo de transacción");
+      return;
+    }
+
+    // Validar que se seleccione supplier si el transaction type es 1 o 4
+    if ((transactionTypeId === 1 || transactionTypeId === 4) && supplierId === null) {
+      toast.warning("Debes seleccionar un proveedor para este tipo de transacción");
+      return;
+    }
+
+    if (!description || description.trim().length < 5) {
+      toast.warning("La descripción debe tener al menos 5 caracteres");
       return;
     }
 
@@ -98,7 +167,7 @@ export default function AddTransactionForm({
         <div style={{ display: "flex", justifyContent: "space-around", marginTop: 10 }}>
           <button
             onClick={() =>
-              sendTransaction(quantityNumber, unitPriceNumber, totalNumber, product.id)
+              sendTransaction(quantityNumber, unitPriceNumber, totalNumber)
             }
             style={{ padding: "5px 10px" }}
           >
@@ -116,23 +185,30 @@ export default function AddTransactionForm({
   const sendTransaction = async (
     quantityNumber: number,
     unitPriceNumber: number,
-    totalNumber: number,
-    productId: number
+    totalNumber: number
   ) => {
     toast.dismiss();
     setLoading(true);
 
-    const newTxData: CreateTransactionData & { total_price?: number } = {
+    // Formato de fecha YYYY-MM-DD que el backend acepta
+    const currentDate = new Date().toISOString().split('T')[0];
+
+    const newTxData: CreateTransactionData & { total_price?: number; supplier_id?: number } = {
       description,
       quantity: quantityNumber,
       unit_price: unitPriceNumber,
       total_price: totalNumber,
-      transaction_date: new Date().toISOString(),
-      product_id: productId,
-      branch_id: Number(localStorage.getItem("branch_id") || 1),
-      transaction_type_id: transactionType,
+      transaction_date: currentDate,
+      product_id: selectedProductId!,
+      branch_id: branchId || Number(localStorage.getItem("branch_id") || 1),
+      transaction_type_id: transactionTypeId!,
       app_user_id: Number(localStorage.getItem("user_id") || 1),
     };
+
+    // Agregar supplier_id solo si aplica (transaction_type_id es 1 o 4)
+    if ((transactionTypeId === 1 || transactionTypeId === 4) && supplierId !== null) {
+      newTxData.supplier_id = supplierId;
+    }
 
     try {
       const newTx = await createTransaction(newTxData);
@@ -140,8 +216,12 @@ export default function AddTransactionForm({
       toast.success("Transacción creada correctamente");
       onClose();
     } catch (err) {
-      console.error(err);
-      toast.error("Error al crear la transacción");
+      console.error("Error completo:", err);
+      if (err instanceof Error) {
+        toast.error(`Error: ${err.message}`);
+      } else {
+        toast.error("Error al crear la transacción");
+      }
     } finally {
       setLoading(false);
     }
@@ -150,67 +230,103 @@ export default function AddTransactionForm({
   return (
     <>
       <ToastContainer />
-      <form className="product-form" onSubmit={handleSubmit}>
+      <div className="product-form">
         <h2 className="form-title">Registrar nueva transacción</h2>
 
-        <label>Producto</label>
-        <select
-          value={selectedProduct}
-          onChange={(e) => setSelectedProduct(e.target.value)}
-          required
-        >
-          {products.map((p) => (
-            <option key={p.name} value={p.name}>
-              {p.name} ({p.size})
+        <form onSubmit={handleSubmit}>
+          <label>Producto</label>
+          <select
+            value={selectedProductId ?? ""}
+            onChange={(e) => setSelectedProductId(Number(e.target.value))}
+            required
+          >
+            <option value="" disabled>
+              Selecciona un producto
             </option>
-          ))}
-        </select>
+            {products.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.name} ({p.size})
+              </option>
+            ))}
+          </select>
 
-        <label>Descripción</label>
-        <input
-          type="text"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          placeholder="Descripción de la transacción"
-          required
-        />
+          <label>Tipo de transacción</label>
+          <select
+            value={transactionTypeId ?? ""}
+            onChange={(e) => setTransactionTypeId(Number(e.target.value))}
+            required
+          >
+            <option value="" disabled>
+              Selecciona un tipo
+            </option>
+            {transactionTypes.map((tt) => (
+              <option key={tt.id} value={tt.id}>
+                {tt.name.charAt(0).toUpperCase() + tt.name.slice(1).toLowerCase()}
+              </option>
+            ))}
+          </select>
 
-        <label>Cantidad</label>
-        <input
-          type="text"
-          value={quantity}
-          onChange={(e) => handleNumericInput(e.target.value, setQuantity, "Cantidad")}
-          placeholder="Cantidad"
-          required
-        />
+          {/* Mostrar supplier solo si transaction_type_id es 1 o 4 */}
+          {(transactionTypeId === 1 || transactionTypeId === 4) && (
+            <>
+              <label>Proveedor</label>
+              <select
+                value={supplierId ?? ""}
+                onChange={(e) => setSupplierId(Number(e.target.value))}
+                required
+              >
+                <option value="" disabled>
+                  Selecciona un proveedor
+                </option>
+                {suppliers.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.name}
+                  </option>
+                ))}
+              </select>
+            </>
+          )}
 
-        <label>Precio unitario</label>
-        <input
-          type="text"
-          value={unitPrice}
-          onChange={(e) => handleNumericInput(e.target.value, setUnitPrice, "Precio unitario")}
-          placeholder="Precio unitario"
-          required
-        />
+          <label>Cantidad</label>
+          <input
+            type="text"
+            value={quantity}
+            onChange={(e) => handleNumericInput(e.target.value, setQuantity, "Cantidad")}
+            placeholder="Ingrese la cantidad"
+            required
+          />
 
-        <label>Total</label>
-        <input
-          type="text"
-          value={total}
-          onChange={(e) => handleNumericInput(e.target.value, setTotal, "Total")}
-          placeholder="Total"
-        />
+          <label>Precio unitario</label>
+          <input
+            type="text"
+            value={unitPrice}
+            placeholder="Se auto-completa al seleccionar el producto"
+            readOnly
+            style={{ backgroundColor: "#f0f0f0", cursor: "not-allowed" }}
+          />
 
-        <label>Tipo de transacción</label>
-        <select value={transactionType} onChange={(e) => setTransactionType(Number(e.target.value))}>
-          <option value={1}>Entrada</option>
-          <option value={2}>Salida</option>
-        </select>
+          <label>Total</label>
+          <input
+            type="text"
+            value={total}
+            placeholder="Se calcula automáticamente"
+            readOnly
+            style={{ backgroundColor: "#f0f0f0", cursor: "not-allowed" }}
+          />
 
-        <button type="submit" disabled={loading}>
-          {loading ? "Guardando..." : "💾 Guardar transacción"}
-        </button>
-      </form>
+          <label>Descripción de la transacción</label>
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Ingrese una descripción (mínimo 5 caracteres)"
+            required
+          />
+
+          <button type="submit" disabled={loading}>
+            {loading ? "Guardando..." : "💾 Guardar transacción"}
+          </button>
+        </form>
+      </div>
     </>
   );
 }

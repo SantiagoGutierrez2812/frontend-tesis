@@ -9,6 +9,7 @@ import {
 
 } from "../services/services/apiService";
 import type { UserTransformed, NewUserPayload } from "../services/types/user/user";
+import { getBranches } from "../services/branchService/branchService";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; 
 
@@ -77,14 +78,13 @@ export const VisualStaff = () => {
             try {
                 setLoading(true);
 
-                // MOCKS TEMPORALES (Si sus funciones reales no existen)
+                // Roles hardcodeados (no cambian frecuentemente)
                 const MOCKED_ROLES: RoleOption[] = [{ id: 1, name: "Administrador" }, { id: 2, name: "Empleado" }];
-                const MOCKED_BRANCHES: BranchOption[] = [{ id: 1, name: "Sucursal Central" }, { id: 2, name: "Sucursal Norte" }, { id: 3, name: "Sucursal Sur" }];
 
-                // REEMPLAZAR Promise.resolve() con sus llamadas API reales (get_roles() y get_branches())
+                // Cargar sedes y usuarios desde el backend
                 const [roles, branches, usersData] = await Promise.all([
                     Promise.resolve(MOCKED_ROLES),
-                    Promise.resolve(MOCKED_BRANCHES),
+                    getBranches(),
                     get_users(),
                 ]);
 

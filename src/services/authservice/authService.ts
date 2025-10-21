@@ -20,6 +20,8 @@ export interface LoginSuccessResponse {
     ok: boolean;
     message: string;
     username: string;
+    user_id?: number;
+    name?: string;
 }
 
 // ----------------------------
@@ -85,6 +87,8 @@ export async function verifyOtp(username: string, token: string): Promise<LoginS
     localStorage.setItem("role", String(Number(parsed.role)));
     localStorage.setItem("welcome", parsed.username);
     if (parsed.branch_id) localStorage.setItem("branch_id", String(parsed.branch_id));
+    if (parsed.user_id) localStorage.setItem("user_id", String(parsed.user_id));
+    if (parsed.name) localStorage.setItem("user_name", parsed.name);
 
     return parsed as LoginSuccessResponse;
 }

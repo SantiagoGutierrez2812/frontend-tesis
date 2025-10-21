@@ -4,69 +4,71 @@ import { logout } from "../utils/auth";
 import "./TopControl.css";
 
 export interface MenuOption {
-  label: string;
-  icon?: string;
-  onClick?: () => void;
+  label: string;
+  icon?: string;
+  onClick?: () => void;
 }
 
 interface TopControlProps {
-  title?: string | React.ReactNode; 
-  options?: MenuOption[]; 
-  onBackClick?: () => void; 
+  title?: string | React.ReactNode;
+  options?: MenuOption[];
+  onBackClick?: () => void;
 }
 
 export default function TopControl({ title = "Panel", options = [], onBackClick }: TopControlProps) {
-  const navigate = useNavigate();
-  const [menuOpen, setMenuOpen] = useState(false);
+  const navigate = useNavigate();
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  const handleLogout = () => {
-    logout();
-    navigate("/");
-  };
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
 
-  const handleDefaultBack = () => {
-    navigate(-1);
-  };
+  const handleDefaultBack = () => {
+    navigate(-1);
+  };
 
-  const handleBack = onBackClick || handleDefaultBack;
-
-
-  const defaultOptions: MenuOption[] = [
-    { label: "⬅ Regresar", onClick: handleBack },
-    { label: "🚪 Cerrar Sesión", onClick: handleLogout },
-  ];
+  const handleBack = onBackClick || handleDefaultBack;
 
 
-  const finalOptions = [...options, ...defaultOptions];
+  const defaultOptions: MenuOption[] = [
+    { label: "🚪 Cerrar Sesión", onClick: handleLogout },
+  ];
 
-  return (
-    <>
-      <div className="top-control">
-        <h2 className="top-title">{title}</h2>
-        <button className="top-btn menu" onClick={() => setMenuOpen(!menuOpen)}>
-          ☰
-        </button>
 
-      </div>
+  const finalOptions = [...options, ...defaultOptions];
 
-      {menuOpen && (
-        <div className="top-menu-overlay">
-          <div className="menu-content">
-            <button onClick={() => setMenuOpen(false)}>❌ Cerrar Menú</button>
-            {finalOptions.map((opt, i) => (
-              <button
-                key={i}
-                onClick={async () => {
-                  setMenuOpen(false);
-                  if (opt.onClick) await opt.onClick(); 
-                }}
-              >
-                {opt.icon} {opt.label}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-    </>
-  );
+  return (
+    <>
+      <div className="top-control">
+        <button className="top-btn back-btn" onClick={handleBack} title="Regresar">
+          ←
+        </button>
+        <h2 className="top-title">{title}</h2>
+        <button className="top-btn menu" onClick={() => setMenuOpen(!menuOpen)}>
+          ☰
+        </button>
+
+      </div>
+
+      {menuOpen && (
+        <div className="top-menu-overlay">
+          <div className="menu-content">
+            <button onClick={() => setMenuOpen(false)}>❌ Cerrar Menú</button>
+            {finalOptions.map((opt, i) => (
+              <button
+                key={i}
+                onClick={async () => {
+                  setMenuOpen(false);
+                  if (opt.onClick) await opt.onClick();
+                }}
+              >
+                {opt.icon} {opt.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+    </>
+  );
 }

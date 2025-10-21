@@ -119,15 +119,178 @@
     display: flex;
     justify-content: center;
     margin-bottom: 30px; /* Separación de los widgets */
- 
+
 
 /* Logo grande */
 /* .logo {
-    width: 400px; 
+    width: 400px;
     height: 150px;
-    background-image: url('../assets//logo/unnamed-removebg-preview.png'); 
+    background-image: url('../assets//logo/unnamed-removebg-preview.png');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
-    flex-shrink: 0; 
+    flex-shrink: 0;
 } */
+
+/* ====== MODAL DE PERFIL ====== */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: #ffffff;
+  color: #1a1a2e;
+  padding: 40px 30px;
+  border-radius: 20px;
+  width: 450px;
+  max-width: 90%;
+  max-height: 85vh;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  animation: fadeInModal 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+@keyframes fadeInModal {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.modal h2 {
+  color: #0f3460;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.modal form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 10px;
+  margin-right: -10px;
+}
+
+.modal form::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal form::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.modal form::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+.modal form::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.modal label {
+  font-weight: 600;
+  color: #0f3460;
+  font-size: 0.9rem;
+  margin-top: 8px;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.modal label:first-of-type {
+  margin-top: 0;
+}
+
+.modal input,
+.modal select {
+  padding: 12px 14px;
+  border: 1.5px solid #ccc;
+  border-radius: 10px;
+  font-size: 14px;
+  background: #f9f9f9;
+  color: #1a1a2e;
+  outline: none;
+  transition: all 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.modal input:focus,
+.modal select:focus {
+  border-color: #e94560;
+  background: #ffffff;
+  box-shadow: 0 0 8px rgba(233, 69, 96, 0.3);
+}
+
+.modal select {
+  cursor: pointer;
+}
+
+.modalButtons {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.btnSave,
+.btnCancel {
+  flex: 1;
+  padding: 12px 0;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.btnSave {
+  background: #e94560;
+  color: #fff;
+  margin-right: 5px;
+}
+
+.btnSave:hover {
+  background: #ff5c7a;
+}
+
+.btnSave:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.btnCancel {
+  background: #1a1a2e;
+  color: #fff;
+  margin-left: 5px;
+}
+
+.btnCancel:hover {
+  background: #0f3460;
+}
+
+.loadingText {
+  text-align: center;
+  padding: 20px;
+  color: #0f3460;
+  font-size: 1.1rem;
+}

@@ -2,8 +2,13 @@ import type { inventory_material_record } from "../types/inventory/inventory";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-export async function get_read_from(): Promise<inventory_material_record[]> {
-  const endpoint = `${API_URL}/inventories/`;
+export async function get_read_from(branchId?: number): Promise<inventory_material_record[]> {
+  let endpoint = `${API_URL}/inventories/`;
+
+  // Agregar parámetro branch_id si se proporciona
+  if (branchId !== undefined) {
+    endpoint += `?branch_id=${branchId}`;
+  }
 
   const res = await fetch(endpoint, {
     method: "GET",

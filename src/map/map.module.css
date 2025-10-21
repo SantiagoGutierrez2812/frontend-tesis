@@ -5,6 +5,8 @@
     user-select: none;
     background-color: #12121e;
     overflow: hidden;
+    padding-top: 100px;
+    box-sizing: border-box;
 }
 
 .mapImage {

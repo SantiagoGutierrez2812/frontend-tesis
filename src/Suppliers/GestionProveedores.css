@@ -5,7 +5,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 2rem;
+  padding: 120px 2rem 2rem 2rem;
   font-family: "Poppins", sans-serif;
   flex-direction: column;
 }
@@ -48,14 +48,14 @@
 }
 
 .proveedores-header h1 {
-  color: #0070ff;
+  color: #0f3460;
   font-size: 2rem;
   font-weight: 700;
   margin: 0;
 }
 
 .btn-insertar {
-  background-color: #0070ff;
+  background-color: #0f3460;
   color: #fff;
   border: none;
   border-radius: 6px;
@@ -66,7 +66,7 @@
 }
 
 .btn-insertar:hover {
-  background-color: #005ce6;
+  background-color: #1a1a2e;
   transform: scale(1.05);
 }
 
@@ -91,7 +91,7 @@
 }
 
 .stat-card h3 {
-  color: #0070ff;
+  color: #0f3460;
   font-size: 1rem;
   margin-bottom: 0.3rem;
 }
@@ -115,8 +115,8 @@
 
 .buscador:focus {
   outline: none;
-  border-color: #0070ff;
-  box-shadow: 0 0 5px rgba(0, 112, 255, 0.3);
+  border-color: #0f3460;
+  box-shadow: 0 0 5px rgba(15, 52, 96, 0.3);
 }
 
 
@@ -222,109 +222,156 @@
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.55);
+  background: rgba(0, 0, 0, 0.7);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 50;
-  backdrop-filter: blur(4px);
+  z-index: 1000;
 }
 
 .modal {
   background: #ffffff;
-  color: #333;
-  padding: 1.5rem;
-  border-radius: 12px;
-  width: 90%;
-  max-width: 546px;
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
-  animation: fadeInModal 0.25s ease;
+  color: #1a1a2e;
+  padding: 40px 30px;
+  border-radius: 20px;
+  width: 450px;
+  max-width: 90%;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  animation: fadeInModal 0.3s ease;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 @keyframes fadeInModal {
   from {
     opacity: 0;
-    transform: translateY(-15px) scale(0.98);
+    transform: scale(0.9);
   }
   to {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: scale(1);
   }
 }
 
 .modal h2 {
-  color: #0070ff;
-  margin-bottom: 0.8rem;
-  font-size: 1.25rem;
+  color: #0f3460;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
   font-weight: 700;
   text-align: center;
+  flex-shrink: 0;
 }
 
 .modal form {
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
+  gap: 12px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 10px;
+  margin-right: -10px;
 }
 
 .modal label {
   font-weight: 600;
-  color: #444;
+  color: #0f3460;
   font-size: 0.9rem;
+  margin-top: 8px;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.modal label:first-of-type {
+  margin-top: 0;
 }
 
 .modal input,
 .modal textarea {
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  padding: 0.45rem 0.6rem;
-  font-size: 0.9rem;
-  resize: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  padding: 12px 14px;
+  border: 1.5px solid #ccc;
+  border-radius: 10px;
+  font-size: 14px;
+  background: #f9f9f9;
+  color: #1a1a2e;
+  outline: none;
+  transition: all 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .modal input:focus,
 .modal textarea:focus {
-  outline: none;
-  border-color: #0070ff;
-  box-shadow: 0 0 0 2px rgba(0, 112, 255, 0.1);
+  border-color: #e94560;
+  background: #ffffff;
+  box-shadow: 0 0 8px rgba(233, 69, 96, 0.3);
 }
 
 .modal textarea {
-  min-height: 70px;
+  min-height: 80px;
+  resize: vertical;
+  line-height: 1.5;
+  font-family: inherit;
+}
+
+/* Scrollbar del formulario */
+.modal form::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal form::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.modal form::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+.modal form::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 
 /* ====== BOTONES ====== */
 .modal-buttons {
   display: flex;
-  justify-content: flex-end;
-  gap: 0.6rem;
-  margin-top: 1rem;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 20px;
 }
 
 .btn-guardar,
 .btn-cancelar {
+  flex: 1;
+  padding: 12px 0;
+  font-size: 16px;
+  font-weight: 600;
   border: none;
-  border-radius: 6px;
+  border-radius: 10px;
   cursor: pointer;
-  font-size: 0.9rem;
-  padding: 0.5rem 0.9rem;
-  transition: all 0.2s ease;
+  transition: background 0.3s ease;
 }
 
 .btn-guardar {
-  background-color: #0070ff;
-  color: white;
+  background: #e94560;
+  color: #fff;
+  margin-right: 5px;
 }
+
 .btn-guardar:hover {
-  background-color: #005ce6;
+  background: #ff5c7a;
 }
 
 .btn-cancelar {
-  background-color: #999;
-  color: white;
+  background: #1a1a2e;
+  color: #fff;
+  margin-left: 5px;
 }
+
 .btn-cancelar:hover {
-  background-color: #777;
+  background: #0f3460;
 }
 
 /* ====== RESPONSIVE ====== */

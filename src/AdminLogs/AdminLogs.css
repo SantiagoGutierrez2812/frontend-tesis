@@ -18,7 +18,7 @@ body {
 .admin-logs {
     background-color: var(--background-color);
     min-height: 100vh;
-    padding: 40px;
+    padding: 120px 40px 40px 40px;
     color: var(--text-primary);
     display: flex;
     flex-direction: column;
@@ -62,8 +62,12 @@ body {
 
 /* Tabla Principal */
 .logs-table-container {
-    overflow: hidden;
-    padding: 0;
+    max-height: 500px;
+    overflow-y: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent-info) var(--background-color);
 }
 
 .logs-table {
@@ -81,15 +85,32 @@ body {
 }
 
 .logs-table th {
-    background-color: rgba(0, 0, 0, 0.3);
+    position: sticky;
+    top: 0;
+    background-color: #1f2843;
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 1px;
     color: var(--text-secondary);
+    z-index: 10;
 }
 
 .logs-table tbody tr:hover {
     background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Scrollbar personalizado para tabla principal */
+.logs-table-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.logs-table-container::-webkit-scrollbar-thumb {
+    background-color: var(--accent-info);
+    border-radius: 4px;
+}
+
+.logs-table-container::-webkit-scrollbar-track {
+    background-color: var(--background-color);
 }
 
 /* Badges */
@@ -246,18 +267,65 @@ body {
     margin-top: 15px;
     color: #fff;
     font-size: 1rem;
+    display: block;
+    max-height: 400px;
+    overflow-y: auto;
+    border-radius: 8px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent-info) var(--background-color);
 }
+
+.modal-logs-table thead {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.modal-logs-table tbody {
+    display: block;
+    max-height: 350px;
+    overflow-y: auto;
+}
+
+.modal-logs-table tbody tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
 .modal-logs-table th, .modal-logs-table td {
     padding: 12px;
     border-bottom: 1px solid rgba(0, 234, 255, 0.2);
 }
+
 .modal-logs-table th {
+    position: sticky;
+    top: 0;
     text-align: left;
     background: rgba(0, 234, 255, 0.1);
     color: #00eaff;
+    z-index: 10;
 }
+
 .modal-logs-table tbody tr:hover {
     background: rgba(0, 234, 255, 0.05);
+}
+
+/* Scrollbar personalizado para tablas de modales */
+.modal-logs-table::-webkit-scrollbar,
+.modal-logs-table tbody::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-logs-table::-webkit-scrollbar-thumb,
+.modal-logs-table tbody::-webkit-scrollbar-thumb {
+    background-color: var(--accent-info);
+    border-radius: 4px;
+}
+
+.modal-logs-table::-webkit-scrollbar-track,
+.modal-logs-table tbody::-webkit-scrollbar-track {
+    background-color: var(--background-color);
 }
 
 .summary {
@@ -316,41 +384,7 @@ body {
 }
 
 
-.logs-table-container {
-  max-height: 400px; /* puedes ajustar la altura según tu diseño */
-  overflow-y: auto;
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  scrollbar-width: thin;
-  scrollbar-color: var(--accent-info) var(--background-color);
-}
-
-/* Scroll en la tabla dentro del modal */
-.modal-logs-table {
-  display: block;
-  max-height: 350px; /* límite de altura del contenido */
-  overflow-y: auto;
-  border-radius: 8px;
-  scrollbar-width: thin;
-  scrollbar-color: var(--accent-info) var(--background-color);
-}
-
-/* Bonito estilo para el scroll (solo navegadores que lo soportan) */
-.logs-table-container::-webkit-scrollbar,
-.modal-logs-table::-webkit-scrollbar {
-  width: 8px;
-}
-
-.logs-table-container::-webkit-scrollbar-thumb,
-.modal-logs-table::-webkit-scrollbar-thumb {
-  background-color: var(--accent-info);
-  border-radius: 4px;
-}
-
-.logs-table-container::-webkit-scrollbar-track,
-.modal-logs-table::-webkit-scrollbar-track {
-  background-color: var(--background-color);
-}
+/* Estilos de scroll ya definidos arriba */
 
 
 .text_inter{

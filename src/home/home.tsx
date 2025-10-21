@@ -12,8 +12,8 @@ import {
     type LoginSuccessResponse
 } from "../services/authservice/authService";
 
-import { getCompanyName } from "../services/companies/app_companies";
-import type { Company, CompaniesResponse } from "../services/companies/app_companies";
+import { getBranches } from "../services/branchService/branchService";
+import type { Branch } from "../services/types/branch/branchService";
 import { getInventories } from "../services/inventory/app_inventario";
 import { FaFacebook, FaTwitter, FaInstagram } from "react-icons/fa";
 
@@ -37,7 +37,7 @@ export default function Home() {
     const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
-    const [companies, setCompanies] = useState<Company[]>([]);
+    const [branches, setBranches] = useState<Branch[]>([]);
     const [inventories, setInventories] = useState<any[]>([]);
 
     const navigate = useNavigate();
@@ -47,11 +47,12 @@ export default function Home() {
     useEffect(() => {
         async function fetchData() {
             try {
-                const [companiesData, inventoriesData]: [CompaniesResponse, any] =
-                    await Promise.all([getCompanyName(), getInventories()]);
+                const [branchesData, inventoriesData] = await Promise.all([
+                    getBranches(),
+                    getInventories()
+                ]);
 
-                if (companiesData.ok && companiesData.companies)
-                    setCompanies(companiesData.companies);
+                setBranches(branchesData);
                 if (inventoriesData.ok && inventoriesData.inventories)
                     setInventories(inventoriesData.inventories);
             } catch (err) {
@@ -250,13 +251,13 @@ export default function Home() {
                 </div>
 
                 <div className={styles.cardsContainer}>
-                    {companies.map((company) => {
-                        const companyInventories = inventories.filter(
-                            (inv) => inv.branch_id === company.id
+                    {branches.map((branch) => {
+                        const branchInventories = inventories.filter(
+                            (inv) => inv.branch_id === branch.id
                         );
                         return (
-                            <div key={company.id} className={styles.card}>
-                                <h2 className={styles.cardTitle}>{company.name}</h2>
+                            <div key={branch.id} className={styles.card}>
+                                <h2 className={styles.cardTitle}>{branch.name}</h2>
                                 <div className={styles.tableScroll}>
                                     <table className={styles.inventoryTable}>
                                         <thead>
@@ -266,8 +267,8 @@ export default function Home() {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {companyInventories.length > 0 ? (
-                                                companyInventories.map((inv, index) => (
+                                            {branchInventories.length > 0 ? (
+                                                branchInventories.map((inv, index) => (
                                                     <tr key={index}>
                                                         <td className={styles.text5}>{inv.product_name}</td>
                                                         <td className={styles.text5}>{inv.quantity}</td>
