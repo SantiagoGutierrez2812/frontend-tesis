@@ -89,18 +89,25 @@ table {
   color: #e5e7eb;
 }
 
-th {
-  background: #66666f;
+.tabla-encabezado th {
+  background: #0F3460;
   text-align: left;
   padding: 0.8rem;
-
   color: #d1d5db;
   font-weight: 600;
   text-transform: uppercase;
   font-size: 0.9rem;
 }
 
+.tabla-encabezado th:first-child {
+  border-top-left-radius: 10px;
+}
+
+.tabla-encabezado th:last-child {
+  border-top-right-radius: 10px;
+}
 td {
+
   color: black;
   padding: 0.8rem;
   border-bottom: 1px solid #64686b;

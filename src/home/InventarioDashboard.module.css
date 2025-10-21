@@ -320,6 +320,7 @@
   color: wheat
 }
 
+
 /* 🔹 Loader Animado */
 .loaderWrapper {
   display: flex;
@@ -339,7 +340,7 @@
 }
 
 .loader span {
-  animation: cut 2s infinite;
+  animation: cut 6s infinite; /* ⬅️ antes 2s */
   transition: 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
@@ -356,7 +357,7 @@
   background-color: #ff828291;
   top: 0px;
   filter: blur(10px);
-  animation: scan 2s infinite;
+  animation: scan 6s infinite; /* ⬅️ antes 2s */
   left: 0;
   z-index: 0;
   transition: 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -370,7 +371,7 @@
   border-radius: 4px;
   background-color: #ff8282;
   top: 0px;
-  animation: scan 2s infinite;
+  animation: scan 6s infinite; /* ⬅️ antes 2s */
   left: 0;
   z-index: 1;
   filter: opacity(0.9);
@@ -412,6 +413,7 @@
     clip-path: inset(0 0 0 0);
   }
 }
+
 
 /* Canvas de partículas */
 .particlesCanvas {

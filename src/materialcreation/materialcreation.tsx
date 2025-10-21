@@ -53,7 +53,7 @@ export default function Materialcreation() {
       try {
         const products = await get_all_products();
         const mappedMaterials: Material[] = products.map(p => ({
-          id: (p as any).id ?? nextId, 
+          id: (p as any).id ?? nextId,
           nombre: p.name,
           tamaño: p.size,
           precio: Number(p.price),
@@ -180,14 +180,14 @@ export default function Materialcreation() {
 
       <div className="glass-table" style={{ maxHeight: materials.length > 5 ? "400px" : "auto", overflowY: materials.length > 5 ? "scroll" : "visible" }}>
         <table>
-          <thead>
+          <thead className="tabla-encabezado">
             <tr>
-              <th>ID</th>
-              <th>Material</th>
-              <th>Tamaño</th>
-              <th>Descripción</th>
-              <th>Precio ($)</th>
-              <th>Acciones</th>
+              <th className="th-id">ID</th>
+              <th className="th-material">Material</th>
+              <th className="th-tamano">Tamaño</th>
+              <th className="th-descripcion">Descripción</th>
+              <th className="th-precio">Precio ($)</th>
+              <th className="th-acciones">Acciones</th>
             </tr>
           </thead>
           <tbody>

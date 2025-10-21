@@ -145,7 +145,7 @@ export default function Home() {
 
         try {
             const result: LoginSuccessResponse = await verifyOtp(username, trimmedCode);
-            if (result.ok && result.access_token) {
+            if (result.ok && result) {
                 toast.success("✅ Código verificado y sesión iniciada");
                 setIsModalOpen(false);
                 setIsVerificationStep(false);
@@ -266,7 +266,7 @@ export default function Home() {
                                                 <th>Cantidad</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
+                                        <tbody >
                                             {branchInventories.length > 0 ? (
                                                 branchInventories.map((inv, index) => (
                                                     <tr key={index}>
@@ -276,7 +276,7 @@ export default function Home() {
                                                 ))
                                             ) : (
                                                 <tr>
-                                                    <td colSpan={2}>Sin inventario</td>
+                                                    <td colSpan={2} className={styles.text5}>Sin inventario</td>
                                                 </tr>
                                             )}
                                         </tbody>
