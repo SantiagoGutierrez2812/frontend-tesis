@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import TopControl from "../TopControl/TopControl";
 import { get_all_logs } from "../services/log/log";
 import { getUserLogins, getAppUsers } from "../services/user_logins/UserLogins";
 import { getTransactions } from "../services/Product_Transactions/Transactions";
 import type { LogRecord } from "../services/types/log/log";
-import type { UserLogin } from "../services/types/user_logins/UserLogin";
 import type { Transaction } from "../services/types/Product_Transactions/transaction";
 import "./AdminLogs.css";
 
@@ -97,7 +96,7 @@ export default function AdminLogs() {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [modalLogs, setModalLogs] = useState<Log[]>([]);
   const [modalTitle, setModalTitle] = useState<string>("");
-  const [isSummaryView, setIsSummaryView] = useState<boolean>(false);
+  const [,setIsSummaryView] = useState<boolean>(false);
   const [modalType, setModalType] = useState<"logs" | "userLogins">("logs");
 
   // === Cargar logs ===
@@ -183,18 +182,21 @@ export default function AdminLogs() {
   const infoCount = userLogins.length;
   const transactionCount = transactions.length;
 
-  const openSummaryModal = (type: "logs" | "userLogins") => {
-    setModalType(type);
-    setIsSummaryView(true);
-    if (type === "logs") {
-      setModalLogs(combinedLogs);
-      setModalTitle("Resumen de Logs y Transacciones");
-    } else {
-      setModalLogs([]);
-      setModalTitle("Usuarios conectados recientes");
-    }
-    setModalOpen(true);
-  };
+const openSummaryModal = (type: "logs" | "userLogins") => {
+  setModalType(type);
+  setIsSummaryView(true);
+
+  if (type === "logs") {
+    const errorLogs = combinedLogs.filter((log) => log.tipo === "ERROR");
+    setModalLogs(errorLogs);
+    setModalTitle("Resumen de Errores");
+  } else {
+    setModalLogs([]);
+    setModalTitle("Usuarios conectados recientes");
+  }
+
+  setModalOpen(true);
+};
 
   const openIndividualModal = (log: Log) => {
     setModalType("logs");

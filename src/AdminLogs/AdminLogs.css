@@ -261,19 +261,7 @@ body {
 }
 
 /* Estilo para la tabla DENTRO del modal */
-.modal-logs-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 15px;
-    color: #fff;
-    font-size: 1rem;
-    display: block;
-    max-height: 400px;
-    overflow-y: auto;
-    border-radius: 8px;
-    scrollbar-width: thin;
-    scrollbar-color: var(--accent-info) var(--background-color);
-}
+
 
 .modal-logs-table thead {
     display: table;

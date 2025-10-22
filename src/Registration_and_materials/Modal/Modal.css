@@ -4,7 +4,8 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.7); /* oscurece el fondo */
+  background-color: rgba(0, 0, 0, 0.7);
+  /* oscurece el fondo */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -12,7 +13,8 @@
 
   /* desenfoque al fondo */
   backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px); /* soporte en Safari */
+  -webkit-backdrop-filter: blur(8px);
+  /* soporte en Safari */
 }
 
 .modal-content {
@@ -25,8 +27,8 @@
 
 .modal-close-button {
   position: absolute;
-  top: 15px;
-  right: 20px;
+  top: 6px;
+  right: 42px;
   font-size: 2rem;
   background: none;
   border: none;

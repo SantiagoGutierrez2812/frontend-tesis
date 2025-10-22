@@ -192,9 +192,7 @@ export default function MaterialForm() {
             onClose={() => setShowModal(false)}
             branchId={isAdmin ? selectedBranchId : userBranchId}
             onTransactionCreated={(newTx: Transaction) => {
-              // Actualizar la lista de transacciones
               setTransactions((prev: Transaction[]) => [newTx, ...prev]);
-              // Recargar el inventario para reflejar los cambios (sin mostrar pantalla de carga)
               fetchInventoryData(false);
             }}
           />

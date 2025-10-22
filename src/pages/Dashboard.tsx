@@ -27,28 +27,39 @@ const Dashboard = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
+    // 🔹 Cargar nombre del usuario y limpiar datos corruptos
     useEffect(() => {
-        // Limpiar cualquier user_id corrupto en localStorage
         const storedUserId = localStorage.getItem("user_id");
         if (storedUserId && storedUserId.includes("[object")) {
             console.log("Limpiando user_id corrupto de localStorage");
             localStorage.removeItem("user_id");
         }
 
-        // Obtener el nombre del usuario desde localStorage
         const storedName = localStorage.getItem("user_name");
         if (storedName) {
             setUserName(storedName);
         }
     }, []);
 
-    // Función para manejar el cierre de sesión
+    // 🔹 Escuchar cambios en localStorage (por ejemplo, si se actualiza desde otro módulo)
+    useEffect(() => {
+        const handleStorageChange = (event: StorageEvent) => {
+            if (event.key === "user_name" && event.newValue) {
+                setUserName(event.newValue);
+            }
+        };
+
+        window.addEventListener("storage", handleStorageChange);
+        return () => window.removeEventListener("storage", handleStorageChange);
+    }, []);
+
+    // 🔹 Cerrar sesión
     const handleLogout = () => {
         logout();
         navigate("/", { replace: true });
     };
 
-    // Función para abrir el modal y cargar datos del usuario
+    // 🔹 Abrir modal de perfil
     const handleOpenModal = async () => {
         setShowModal(true);
         setLoading(true);
@@ -56,7 +67,6 @@ const Dashboard = () => {
         try {
             console.log("Obteniendo usuario actual...");
 
-            // Cargar usuario y sucursales en paralelo
             const [user, branchesData] = await Promise.all([
                 getCurrentUser(),
                 getBranches()
@@ -77,7 +87,7 @@ const Dashboard = () => {
         }
     };
 
-    // Función para manejar cambios en los inputs
+    // 🔹 Manejador de cambios en inputs
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         if (editedData) {
@@ -85,13 +95,13 @@ const Dashboard = () => {
         }
     };
 
-    // Función para guardar cambios
+    // 🔹 Guardar cambios de perfil
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
 
         if (!editedData || !userData) return;
 
-        // Validar contraseñas si se ingresó una nueva
+        // Validar contraseñas
         if (newPassword) {
             if (newPassword.length < 6) {
                 toast.error("La contraseña debe tener al menos 6 caracteres");
@@ -118,11 +128,16 @@ const Dashboard = () => {
                 newPassword || undefined
             );
 
+            console.log("Nombre actualizado:", updated.name);
+
+            // ✅ Actualizar nombre en estado y localStorage
             setUserData(updated);
-            // Actualizar el nombre en localStorage y el estado
-            localStorage.setItem("user_name", updated.name);
             setUserName(updated.name);
+            localStorage.setItem("user_name", updated.name);
+
             toast.success("Información actualizada correctamente");
+
+            // ✅ Cerrar modal y limpiar contraseñas
             setShowModal(false);
             setNewPassword("");
             setConfirmPassword("");
@@ -154,7 +169,7 @@ const Dashboard = () => {
                     </div>
                 </div>
 
-                {/* Contenedor para el menú de opciones */}
+                {/* 🔹 Menú lateral */}
                 <div className={styles.dashboardMenuBox}>
                     <div
                         className={styles.menuItem}
@@ -177,7 +192,7 @@ const Dashboard = () => {
                 </div>
             </div>
 
-            {/* Modal de perfil de usuario */}
+            {/* 🔹 Modal de perfil */}
             {showModal && (
                 <div className={styles.modalOverlay} onClick={() => setShowModal(false)}>
                     <div className={styles.modal} onClick={(e) => e.stopPropagation()}>

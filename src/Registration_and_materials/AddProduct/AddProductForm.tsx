@@ -12,6 +12,40 @@ import "./AddProductForm.css";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+/* ---------- MODAL DE CONFIRMACIÓN ---------- */
+function ConfirmDialog({
+  open,
+  message,
+  onConfirm,
+  onCancel,
+}: {
+  open: boolean;
+  message: string;
+  onConfirm: () => void;
+  onCancel: () => void;
+}) {
+  if (!open) return null;
+
+  return (
+    <div className="confirm-overlay" onClick={onCancel}>
+      <div className="confirm-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="confirm-icon">⚠️</div>
+        <h3 className="confirm-title">Confirmar acción</h3>
+        <p className="confirm-message">{message}</p>
+        <div className="confirm-buttons">
+          <button className="cancel-btn" onClick={onCancel}>
+            Cancelar
+          </button>
+          <button className="accept-btn" onClick={onConfirm}>
+            Aceptar
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ---------- FORMULARIO PRINCIPAL ---------- */
 interface TransactionType {
   id: number;
   name: string;
@@ -21,7 +55,7 @@ interface TransactionType {
 interface Props {
   onClose: () => void;
   onTransactionCreated: (newTransaction: Transaction) => void;
-  branchId?: number; // ID de la sede seleccionada (para admins) o del usuario
+  branchId?: number;
 }
 
 export default function AddTransactionForm({
@@ -41,36 +75,33 @@ export default function AddTransactionForm({
   const [supplierId, setSupplierId] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
 
-  // Cargar productos, transaction types y suppliers al montar el componente
+  // Estado del modal de confirmación
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [confirmAction, setConfirmAction] = useState<() => void>(() => {});
+
+  /* -------- Cargar datos -------- */
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Cargar productos
         const productsData = await get_all_products();
         setProducts(productsData);
-        // NO pre-seleccionar el primer producto
 
-        // Cargar transaction types
         const API_URL = import.meta.env.VITE_API_URL;
         const token = localStorage.getItem("token");
-        const transactionTypesRes = await fetch(`${API_URL}/transaction_types/`, {
+        const res = await fetch(`${API_URL}/transaction_types/`, {
           headers: {
             "Content-Type": "application/json",
             ...(token && { Authorization: `Bearer ${token}` }),
           },
         });
 
-        if (transactionTypesRes.ok) {
-          const transactionTypesData = await transactionTypesRes.json();
-          if (transactionTypesData.ok && transactionTypesData.transaction_types) {
-            setTransactionTypes(transactionTypesData.transaction_types);
-            // NO pre-seleccionar el primer tipo de transacción
-          }
+        if (res.ok) {
+          const data = await res.json();
+          if (data.ok && data.transaction_types) setTransactionTypes(data.transaction_types);
         } else {
           toast.error("No se pudieron cargar los tipos de transacción");
         }
 
-        // Cargar suppliers
         const suppliersData = await getSuppliers();
         setSuppliers(suppliersData);
       } catch (err) {
@@ -81,119 +112,76 @@ export default function AddTransactionForm({
     fetchData();
   }, []);
 
-  // Auto-llenar unit_price cuando se selecciona un producto
+  /* -------- Auto completar precio y total -------- */
   useEffect(() => {
     if (selectedProductId !== null) {
-      const product = products.find((p) => p.id === selectedProductId);
-      if (product) {
-        setUnitPrice(product.price.toString());
-      }
+      const p = products.find((x) => x.id === selectedProductId);
+      if (p) setUnitPrice(p.price.toString());
     }
   }, [selectedProductId, products]);
 
-  // Calcular total automáticamente
   useEffect(() => {
     const qty = Number(quantity);
     const price = Number(unitPrice);
-    if (!qty || !price) {
-      setTotal("");
-      return;
-    }
+    if (!qty || !price) return setTotal("");
     const t = qty * price;
     setTotal(t % 1 === 0 ? t.toString() : t.toFixed(2));
   }, [quantity, unitPrice]);
 
-  // Resetear supplier cuando se cambia el transaction type
   useEffect(() => {
-    // Solo mostrar supplier si transaction_type_id es 1 o 4
-    if (transactionTypeId !== 1 && transactionTypeId !== 4) {
-      setSupplierId(null);
-    }
+    if (transactionTypeId !== 1 && transactionTypeId !== 4) setSupplierId(null);
   }, [transactionTypeId]);
 
+  /* -------- Validaciones -------- */
   const handleNumericInput = (
     value: string,
     setter: React.Dispatch<React.SetStateAction<string>>,
-    fieldName: string
+    field: string
   ) => {
-    if (/^\d*\.?\d*$/.test(value)) {
-      setter(value);
-    } else {
-      toast.warning(`El campo ${fieldName} solo acepta números`);
-    }
+    if (/^\d*\.?\d*$/.test(value)) setter(value);
+    else toast.warning(`El campo ${field} solo acepta números`);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validaciones
-    if (selectedProductId === null) {
-      toast.warning("Selecciona un producto");
-      return;
-    }
-
-    if (transactionTypeId === null) {
-      toast.warning("Selecciona un tipo de transacción");
-      return;
-    }
-
-    // Validar que se seleccione supplier si el transaction type es 1 o 4
-    if ((transactionTypeId === 1 || transactionTypeId === 4) && supplierId === null) {
-      toast.warning("Debes seleccionar un proveedor para este tipo de transacción");
-      return;
-    }
-
-    if (!description || description.trim().length < 5) {
-      toast.warning("La descripción debe tener al menos 5 caracteres");
-      return;
-    }
+    if (selectedProductId === null) return toast.warning("Selecciona un producto");
+    if (transactionTypeId === null)
+      return toast.warning("Selecciona un tipo de transacción");
+    if ((transactionTypeId === 1 || transactionTypeId === 4) && supplierId === null)
+      return toast.warning("Debes seleccionar un proveedor");
+    if (!description || description.trim().length < 5)
+      return toast.warning("La descripción debe tener al menos 5 caracteres");
 
     const quantityNumber = Number(quantity);
     const unitPriceNumber = Number(unitPrice);
     const totalNumber = Number(total);
+    if (isNaN(quantityNumber) || quantityNumber <= 0)
+      return toast.warning("Cantidad inválida");
+    if (isNaN(unitPriceNumber) || unitPriceNumber < 0)
+      return toast.warning("Precio unitario inválido");
 
-    if (isNaN(quantityNumber) || quantityNumber <= 0) {
-      toast.warning("Cantidad inválida");
-      return;
-    }
-    if (isNaN(unitPriceNumber) || unitPriceNumber < 0) {
-      toast.warning("Precio unitario inválido");
-      return;
-    }
-
-    toast.info(
-      <div>
-        <p>¿Estás seguro de los datos?</p>
-        <div style={{ display: "flex", justifyContent: "space-around", marginTop: 10 }}>
-          <button
-            onClick={() =>
-              sendTransaction(quantityNumber, unitPriceNumber, totalNumber)
-            }
-            style={{ padding: "5px 10px" }}
-          >
-            Aceptar
-          </button>
-          <button onClick={() => toast.dismiss()} style={{ padding: "5px 10px" }}>
-            Cancelar
-          </button>
-        </div>
-      </div>,
-      { autoClose: false, closeOnClick: false, draggable: false }
+    // Mostrar modal de confirmación
+    setConfirmOpen(true);
+    setConfirmAction(() => () =>
+      sendTransaction(quantityNumber, unitPriceNumber, totalNumber)
     );
   };
 
+  /* -------- Envío -------- */
   const sendTransaction = async (
     quantityNumber: number,
     unitPriceNumber: number,
     totalNumber: number
   ) => {
-    toast.dismiss();
+    setConfirmOpen(false);
     setLoading(true);
 
-    // Formato de fecha YYYY-MM-DD que el backend acepta
-    const currentDate = new Date().toISOString().split('T')[0];
-
-    const newTxData: CreateTransactionData & { total_price?: number; supplier_id?: number } = {
+    const currentDate = new Date().toISOString().split("T")[0];
+    const newTxData: CreateTransactionData & {
+      total_price?: number;
+      supplier_id?: number;
+    } = {
       description,
       quantity: quantityNumber,
       unit_price: unitPriceNumber,
@@ -205,10 +193,8 @@ export default function AddTransactionForm({
       app_user_id: Number(localStorage.getItem("user_id") || 1),
     };
 
-    // Agregar supplier_id solo si aplica (transaction_type_id es 1 o 4)
-    if ((transactionTypeId === 1 || transactionTypeId === 4) && supplierId !== null) {
+    if ((transactionTypeId === 1 || transactionTypeId === 4) && supplierId !== null)
       newTxData.supplier_id = supplierId;
-    }
 
     try {
       const newTx = await createTransaction(newTxData);
@@ -216,12 +202,8 @@ export default function AddTransactionForm({
       toast.success("Transacción creada correctamente");
       onClose();
     } catch (err) {
-      console.error("Error completo:", err);
-      if (err instanceof Error) {
-        toast.error(`Error: ${err.message}`);
-      } else {
-        toast.error("Error al crear la transacción");
-      }
+      console.error("Error:", err);
+      toast.error("Error al crear la transacción");
     } finally {
       setLoading(false);
     }
@@ -266,7 +248,6 @@ export default function AddTransactionForm({
             ))}
           </select>
 
-          {/* Mostrar supplier solo si transaction_type_id es 1 o 4 */}
           {(transactionTypeId === 1 || transactionTypeId === 4) && (
             <>
               <label>Proveedor</label>
@@ -327,6 +308,13 @@ export default function AddTransactionForm({
           </button>
         </form>
       </div>
+
+      <ConfirmDialog
+        open={confirmOpen}
+        message="¿Estás seguro de los datos ingresados?"
+        onConfirm={confirmAction}
+        onCancel={() => setConfirmOpen(false)}
+      />
     </>
   );
 }
