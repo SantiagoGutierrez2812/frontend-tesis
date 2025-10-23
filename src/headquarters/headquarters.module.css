@@ -1,7 +1,7 @@
 /* -------------------------
-    headquarters.module.css
-    Dashboard con grilla 4 columnas
-    ------------------------- */
+    headquarters.module.css
+    Dashboard con grilla 4 columnas
+    ------------------------- */
 
 .container {
     width: 100%;
@@ -62,16 +62,167 @@
     }
 }
 
-/* ---------- GRID PRINCIPAL (4 columnas compactas) ---------- */
+/* ------------------------------------------------------------------ */
+/* --- GRID SUPERIOR (3 Columnas en Desktop) --- */
+/* ------------------------------------------------------------------ */
 .secondary_container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 24px;
+    /* Fijo en 3 columnas en desktop para las 3 tarjetas superiores */
+    grid-template-columns: repeat(3, 1fr);
+    gap: 11px;
     width: 100%;
     max-width: 1700px;
-    margin: 0 auto;
+    margin: 0 auto 24px auto;
     align-items: stretch;
 }
+
+/* ------------------------------------------------------------------ */
+/* --- GRID INFERIOR (2 Columnas en Desktop) --- */
+/* ------------------------------------------------------------------ */
+/* ... código CSS anterior ... */
+
+/* ------------------------------------------------------------------ */
+/* --- GRID INFERIOR (2 Columnas en Desktop) --- */
+/* ------------------------------------------------------------------ */
+.bottom_container {
+    display: flex;
+    /* Esto fuerza 2 columnas 50/50 en desktop/tablet grande. */
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    width: 100%;
+    height: 100px;
+    max-width: 1700px;
+    margin: 0 auto;
+    margin-bottom: 20px;
+}
+
+
+@media (min-width: 601px) and (max-width: 1000px) {
+
+
+    .secondary_container {
+        grid-template-columns: repeat(7, 1fr);
+    }
+    .bottom_container {
+        grid-template-columns: repeat(7, 1fr);
+    }
+}
+
+@media (max-width: 500px) {
+
+    .secondary_container,
+    .bottom_container {
+
+        grid-template-columns: 10fr;
+        gap: 12px;
+    }
+}
+
+
+
+
+
+
+
+
+/* ... (Mantén todos tus estilos existentes aquí) ... */
+
+/* ---------------------------------------------------------------------- */
+/* --- Ajustes para la Tabla de Transacciones Detalladas (Nueva) --- */
+/* ---------------------------------------------------------------------- */
+
+/* Asegura que el contenedor de la tabla tenga espacio para la cabecera */
+.transactionBlock.inventoryTableContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Define el ancho de las columnas para la tabla de Transacciones */
+.transactionBlock .tableHeader th:nth-child(1),
+.transactionBlock .tableBodyScroll td:nth-child(1) {
+    /* Tipo (Venta/Compra) */
+    width: 15%; 
+    text-align: center;
+}
+
+.transactionBlock .tableHeader th:nth-child(2),
+.transactionBlock .tableBodyScroll td:nth-child(2) {
+    /* Empleado */
+    width: 25%;
+}
+
+.transactionBlock .tableHeader th:nth-child(3),
+.transactionBlock .tableBodyScroll td:nth-child(3) {
+    /* Descripción */
+    width: 35%;
+}
+
+.transactionBlock .tableHeader th:nth-child(4),
+.transactionBlock .tableBodyScroll td:nth-child(4) {
+    /* Cantidad */
+    width: 10%;
+    text-align: center;
+}
+
+.transactionBlock .tableHeader th:nth-child(5),
+.transactionBlock .tableBodyScroll td:nth-child(5) {
+    /* Precio Total */
+    width: 15%;
+    text-align: right;
+}
+
+/* ... (Fin de estilos) ... */
+
+
+
+
+
+
+
+
+
+
+
+/* ... resto del código CSS ... */
+
+.bottom_container .block {
+    min-height: 250px;
+    /* Altura más pequeña para las cartas inferiores */
+}
+
+
+/* Reajustes Responsive */
+@media (min-width: 601px) and (max-width: 1000px) {
+
+    /* En tablets, la parte superior pasa a 2 columnas */
+    .secondary_container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* El contenedor inferior se mantiene en 1 o 2 columnas dependiendo del ancho */
+    .bottom_container {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
+}
+
+@media (max-width: 500px) {
+
+    .secondary_container,
+    .bottom_container {
+        grid-template-columns: 1fr;
+        /* 1 columna en móviles */
+        gap: 12px;
+    }
+}
+
+/* Ajuste del contenido del PieChart para que sea más pequeño */
+.transactionBlock .chartCard,
+.transactionTypeBlock .chartCard {
+    /* Altura consistente y compacta para las gráficas inferiores */
+    height: 120px;
+
+}
+
 
 /* Todas las cards iguales */
 .block {
@@ -85,10 +236,17 @@
     min-height: 50px;
     font-size: 1rem;
     transition: transform 0.25s ease;
+    flex-grow: 1;
+    flex-basis: 0;
+    min-width: 300px;
+    background-color: #1f1f2e;
+    padding: 20px;
+    border-radius: 12px;
+    overflow: hidden;
 }
 
 .block.estadisticas {
-    min-height: 350px;
+    min-height: 100px;
 }
 
 .block:hover {
@@ -329,15 +487,17 @@
 }
 
 /* ----------- RESPONSIVE ----------- */
-@media (max-width: 1100px) {
+@media (max-width: 1000px) {
     .secondary_container {
         grid-template-columns: repeat(2, 1fr);
+        /* 2 columnas en tablets */
     }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 500px) {
     .secondary_container {
         grid-template-columns: 1fr;
+        /* 1 columna en móviles */
         gap: 12px;
     }
 }
@@ -370,7 +530,7 @@
     font-weight: bold;
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
- 
+
 }
 
 .tableHeader th {
@@ -736,56 +896,60 @@
 
 /* Estilo exclusivo para la tabla del inventario */
 .inventoryTable {
-  color: #EAEAF0; /* Texto claro */
-  background-color: #1f1f33; /* Fondo oscuro elegante */
-  border-collapse: collapse;
-  width: 100%;
+    color: #EAEAF0;
+    /* Texto claro */
+    background-color: #1f1f33;
+    /* Fondo oscuro elegante */
+    border-collapse: collapse;
+    width: 100%;
 }
 
 .inventoryTable th {
-  background-color: #2b2b47;
-  color: #00b4ff; /* Azul brillante para destacar encabezados */
-  text-align: left;
-  padding: 0.8rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  font-size: 0.9rem;
-  border-bottom: 2px solid #32324d;
+    background-color: #2b2b47;
+    color: #00b4ff;
+    /* Azul brillante para destacar encabezados */
+    text-align: left;
+    padding: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    border-bottom: 2px solid #32324d;
 }
 
 .inventoryTable td {
-  padding: 0.8rem;
-  border-bottom: 1px solid #2d2d4a;
-  font-size: 0.95rem;
+    padding: 0.8rem;
+    border-bottom: 1px solid #2d2d4a;
+    font-size: 0.95rem;
 }
 
 .inventoryTable tr:hover {
-  background-color: rgba(255, 255, 255, 0.05);
+    background-color: rgba(255, 255, 255, 0.05);
 }
+
 /* headquarters.module.css */
 
 .branchSelector {
     /* Diseño y Contraste */
     padding: 8px 12px;
-    margin-left: 15px; 
+    margin-left: 15px;
     border: none;
     border-radius: 8px;
-    appearance: none; 
+    appearance: none;
     cursor: pointer;
     font-size: 1rem;
     font-weight: 600;
-    
+
     /* Colores Neón */
-    background-color: #2a2a47; 
-    color: #ffffff; 
-    box-shadow: 0 0 5px #ff69b4, 0 0 10px #ff69b4; 
-    border: 1px solid #ff69b4; 
+    background-color: #2a2a47;
+    color: #ffffff;
+    box-shadow: 0 0 5px #ff69b4, 0 0 10px #ff69b4;
+    border: 1px solid #ff69b4;
 
     /* Flecha (opcional, para mantener el indicador) */
     background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12"><path fill="%23ffffff" d="M10 3.5L6 7.5L2 3.5z"/></svg>');
     background-repeat: no-repeat;
     background-position: right 8px center;
-    padding-right: 25px; 
+    padding-right: 25px;
 }
 
 .branchSelector:hover {
@@ -794,6 +958,26 @@
 }
 
 .branchSelector option {
-    background-color: #2a2a47; 
+    background-color: #2a2a47;
     color: #ffffff;
+}
+
+.transactionTop {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+/* --- Estilos para los gráficos inferiores (tanto Ingresos/Egresos como Tipos) --- */
+.transactionBottom {
+    height: 100%;
+    background: #1f1f2e;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.transactionContent{
+    display: flex;
 }
