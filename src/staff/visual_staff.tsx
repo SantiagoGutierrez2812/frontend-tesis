@@ -6,13 +6,14 @@ import {
     post_user,
     delete_user,
     update_user,
-
 } from "../services/services/apiService";
-import type { UserTransformed, NewUserPayload } from "../services/types/user/user";
+import type {
+    UserTransformed,
+    NewUserPayload,
+} from "../services/types/user/user";
 import { getBranches } from "../services/branchService/branchService";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css"; 
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface RoleOption {
     id: number;
@@ -46,22 +47,19 @@ const initialForm: PersonalData = {
     username: "",
 };
 
-
 export const VisualStaff = () => {
-    const [records, setRecords] = useState<PersonalData[]>([]),
-          [loading, setLoading] = useState(true),
-          [error, setError] = useState<string | null>(null),
-          [search, setSearch] = useState(""),
-          [filterBranchId, setFilterBranchId] = useState<string>("all"),
-          [showModal, setShowModal] = useState(false),
-          [editIndex, setEditIndex] = useState<number | null>(null),
-          [formData, setFormData] = useState<PersonalData>(initialForm),
-          [showDeleteConfirm, setShowDeleteConfirm] = useState(false),
-          [deleteIndex, setDeleteIndex] = useState<number | null>(null),
-          [showEditConfirm, setShowEditConfirm] = useState(false);
+    const [records, setRecords] = useState<PersonalData[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    const [search, setSearch] = useState("");
+    const [filterBranchId, setFilterBranchId] = useState<string>("all");
+    const [showModal, setShowModal] = useState(false);
+    const [editIndex, setEditIndex] = useState<number | null>(null);
+    const [formData, setFormData] = useState<PersonalData>(initialForm);
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    const [deleteIndex, setDeleteIndex] = useState<number | null>(null);
+    const [showEditConfirm, setShowEditConfirm] = useState(false);
 
-
-    // ESTADOS DINÁMICOS
     const [roleOptions, setRoleOptions] = useState<RoleOption[]>([]);
     const [branchOptions, setBranchOptions] = useState<BranchOption[]>([]);
 
@@ -70,18 +68,16 @@ export const VisualStaff = () => {
         setEditIndex(null);
         setFormData(initialForm);
         setShowEditConfirm(false);
-    }
+    };
 
-    // EFECTO DE CARGA: Carga concurrente de USERS, ROLES y BRANCHES
     useEffect(() => {
         const loadData = async () => {
             try {
                 setLoading(true);
-
-                // Roles hardcodeados (no cambian frecuentemente)
-                const MOCKED_ROLES: RoleOption[] = [{ id: 1, name: "Administrador" }, { id: 2, name: "Empleado" }];
-
-                // Cargar sedes y usuarios desde el backend
+                const MOCKED_ROLES: RoleOption[] = [
+                    { id: 1, name: "Administrador" },
+                    { id: 2, name: "Empleado" },
+                ];
                 const [roles, branches, usersData] = await Promise.all([
                     Promise.resolve(MOCKED_ROLES),
                     getBranches(),
@@ -91,7 +87,6 @@ export const VisualStaff = () => {
                 setRoleOptions(roles);
                 setBranchOptions(branches);
 
-                // Procesar Usuarios
                 const processed: PersonalData[] = usersData
                     .filter((u: UserTransformed) => !u.deleted_at)
                     .map((u: UserTransformed) => ({
@@ -99,9 +94,8 @@ export const VisualStaff = () => {
                         document_id: String(u.document_id),
                         email: u.email,
                         phone_number: String(u.phone_number),
-                        role: String(u.role), // ID de rol
-                        // CLAVE: Obtiene el ID real de la sucursal del API (corregido en apiService)
-                        branch_id: String(u.branch_id ?? ""), 
+                        role: String(u.role),
+                        branch_id: String(u.branch_id ?? ""),
                         password: "",
                         username: u.username || "",
                     }));
@@ -109,33 +103,16 @@ export const VisualStaff = () => {
                 setRecords(processed);
                 setError(null);
             } catch (err: any) {
-                setError(err.message || "Error cargando datos esenciales (usuarios, roles o sucursales).");
+                setError(
+                    err.message ||
+                        "Error cargando datos esenciales (usuarios, roles o sucursales)."
+                );
             } finally {
                 setLoading(false);
             }
         };
         loadData();
     }, []);
-
-    // FUNCIÓN DE CONVERSIÓN: ID de Sucursal a Nombre
-    const getBranchName = (branchId: string | number): string => {
-        const idString = String(branchId);
-        if (branchOptions.length === 0) return `ID: ${idString}`; 
-        
-        const branch = branchOptions.find(b => String(b.id) === idString);
-        
-        return branch ? branch.name : `ID: ${idString}`;
-    }
-
-    // FUNCIÓN DE CONVERSIÓN: ID de Rol a Nombre
-    const getRoleName = (roleId: string): string => {
-        const idString = String(roleId);
-        if (roleOptions.length === 0) return `ID: ${idString}`;
-
-        const role = roleOptions.find(r => String(r.id) === idString);
-        return role ? role.name : `ID: ${idString}`;
-    }
-
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -145,15 +122,9 @@ export const VisualStaff = () => {
 
     const getErrorMessage = (error: any): string => {
         if (error?.response?.data?.error) return error.response.data.error;
-        if (error?.message) {
-            try {
-                const errorObj = JSON.parse(error.message);
-                return errorObj.error || errorObj.message || "Error en la operación.";
-            } catch {
-                return error.message;
-            }
-        }
-        return "Error desconocido.";
+        if (typeof error?.response?.data === "string") return error.response.data;
+        if (error?.message) return error.message;
+        return "Error desconocido en la operación.";
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -169,7 +140,6 @@ export const VisualStaff = () => {
 
         let missingFieldDisplay: string | undefined;
 
-        // Validación de campos obligatorios
         if (editIndex === null && !formData.password.trim()) {
             missingFieldDisplay = "Contraseña";
         } else if (formData.role === "0") {
@@ -177,8 +147,9 @@ export const VisualStaff = () => {
         } else if (!formData.branch_id || formData.branch_id === "") {
             missingFieldDisplay = "Sucursal";
         } else {
-            const missingKey = requiredFields.find((field) => !formData[field].trim());
-
+            const missingKey = requiredFields.find(
+                (field) => !formData[field].trim()
+            );
             if (missingKey) {
                 const fieldNameMap: Record<keyof PersonalData, string> = {
                     name: "Nombre",
@@ -190,7 +161,6 @@ export const VisualStaff = () => {
                     role: "Rol",
                     password: "Contraseña",
                 };
-
                 missingFieldDisplay = fieldNameMap[missingKey];
             }
         }
@@ -198,33 +168,46 @@ export const VisualStaff = () => {
         if (missingFieldDisplay) {
             toast.error(
                 `Por favor, complete el campo obligatorio: ${missingFieldDisplay}.`,
-                {
-                    position: "top-right",
-                    autoClose: 5000,
-                }
+                { position: "top-right", autoClose: 5000 }
             );
             return;
         }
 
-        // Validación de longitud y números
-        if (formData.document_id.length > 15) {
-            toast.error("El Documento no puede superar 15 caracteres.", { position: "top-right", autoClose: 5000, }); return;
+        // 🔒 VALIDACIONES PERSONALIZADAS
+        if (formData.password && formData.password.length < 6) {
+            toast.error("La contraseña debe tener al menos 6 caracteres.", {
+                position: "top-right",
+                autoClose: 5000,
+            });
+            return;
         }
-        if (formData.phone_number.length > 15) {
-            toast.error("El Teléfono no puede superar 15 caracteres.", { position: "top-right", autoClose: 5000, }); return;
+
+        if (
+            formData.document_id.length !== 10 ||
+            !/^\d+$/.test(formData.document_id)
+        ) {
+            toast.error("El Documento debe tener exactamente 10 dígitos numéricos.", {
+                position: "top-right",
+                autoClose: 5000,
+            });
+            return;
+        }
+
+        if (
+            formData.phone_number.length !== 10 ||
+            !/^\d+$/.test(formData.phone_number)
+        ) {
+            toast.error("El Teléfono debe tener exactamente 10 dígitos numéricos.", {
+                position: "top-right",
+                autoClose: 5000,
+            });
+            return;
         }
 
         const docNum = Number(formData.document_id);
         const phoneNum = Number(formData.phone_number);
 
-        if (isNaN(docNum) || isNaN(phoneNum)) {
-            const field = isNaN(docNum) ? "Documento" : "Teléfono";
-            toast.error(`${field} debe ser un número válido.`, { position: "top-right", autoClose: 5000, });
-            return;
-        }
-
         if (editIndex === null) {
-            // Lógica para REGISTRO
             const payload: NewUserPayload = {
                 name: formData.name.trim(),
                 email: formData.email.trim(),
@@ -238,29 +221,22 @@ export const VisualStaff = () => {
 
             try {
                 await post_user(payload);
-                toast.success("✅ Usuario registrado correctamente.", { position: "top-right", autoClose: 5000, });
+                toast.success("✅ Usuario registrado correctamente.");
                 setRecords([
                     ...records,
-                    { ...formData, role: formData.role, branch_id: formData.branch_id },
+                    {
+                        ...formData,
+                        role: formData.role,
+                        branch_id: formData.branch_id,
+                    },
                 ]);
                 resetModalState();
             } catch (err: any) {
-                const errorMessage = getErrorMessage(err).toLowerCase();
-                let displayMsg = "Ocurrió un error al registrar el usuario.";
-
-                if (errorMessage.includes("email")) {
-                    displayMsg = "Este correo electrónico ya se encuentra en uso. Por favor, pruebe con otro.";
-                } else if (errorMessage.includes("username")) {
-                    displayMsg = "El nombre de usuario ya está ocupado. Intenta con otro.";
-                } else if (errorMessage.includes("document_id")) {
-                    displayMsg = "El número de documento ya pertenece a una cuenta activa.";
-                } else if (errorMessage.includes("phone_number") || errorMessage.includes("phone")) {
-                    displayMsg = "Este número de teléfono ya está registrado. Por favor, verifique.";
-                } else {
-                    displayMsg = `Conflicto de datos: ${errorMessage}`;
-                }
-
-                toast.error(displayMsg, { position: "top-right", autoClose: 8000, });
+                const backendMessage = getErrorMessage(err);
+                toast.error(backendMessage, {
+                    position: "top-right",
+                    autoClose: 8000,
+                });
             }
         } else {
             setShowEditConfirm(true);
@@ -273,33 +249,57 @@ export const VisualStaff = () => {
         const payload: any = {};
         const original = records[editIndex];
 
-        // Chequeo de cambios para el payload
+        if (formData.password && formData.password.length < 6) {
+            toast.error("La contraseña debe tener al menos 6 caracteres.", {
+                position: "top-right",
+                autoClose: 5000,
+            });
+            return;
+        }
+
+        if (
+            formData.document_id.length !== 10 ||
+            !/^\d+$/.test(formData.document_id)
+        ) {
+            toast.error("El Documento debe tener exactamente 10 dígitos numéricos.", {
+                position: "top-right",
+                autoClose: 5000,
+            });
+            return;
+        }
+
+        if (
+            formData.phone_number.length !== 10 ||
+            !/^\d+$/.test(formData.phone_number)
+        ) {
+            toast.error("El Teléfono debe tener exactamente 10 dígitos numéricos.", {
+                position: "top-right",
+                autoClose: 5000,
+            });
+            return;
+        }
+
         if (formData.name !== original.name) payload.name = formData.name;
         if (formData.email !== original.email) payload.email = formData.email;
         if (formData.username !== original.username)
             payload.username = formData.username;
-
         if (formData.password) payload.hashed_password = formData.password;
         if (formData.phone_number !== original.phone_number)
             payload.phone_number = Number(formData.phone_number);
-
-        if (formData.role !== original.role) payload.role_id = Number(formData.role);
+        if (formData.role !== original.role)
+            payload.role_id = Number(formData.role);
         if (formData.branch_id !== original.branch_id)
             payload.branch_id = Number(formData.branch_id);
 
         if (Object.keys(payload).length === 0) {
-            toast.info("No se modificó ningún campo.", {
-                position: "top-right",
-                autoClose: 3000,
-            });
+            toast.info("No se modificó ningún campo.");
             resetModalState();
             return;
         }
 
         try {
             await update_user(original.document_id, payload);
-            toast.success("Usuario actualizado correctamente", { position: "top-right", autoClose: 5000, });
-
+            toast.success("Usuario actualizado correctamente");
             const updated = [...records];
             updated[editIndex] = {
                 ...updated[editIndex],
@@ -307,26 +307,10 @@ export const VisualStaff = () => {
                 password: "",
             };
             setRecords(updated);
-
             resetModalState();
-
         } catch (err: any) {
-            const errorMessage = getErrorMessage(err).toLowerCase();
-            let displayMsg = "Ocurrió un error al procesar la operación.";
-
-            if (errorMessage.includes("email")) {
-                displayMsg = "Este correo electrónico ya se encuentra en uso por otra persona.";
-            } else if (errorMessage.includes("username")) {
-                displayMsg = "El nombre de usuario ya está ocupado por otra persona.";
-            } else if (errorMessage.includes("document_id")) {
-                displayMsg = "El número de documento ya pertenece a otra cuenta activa.";
-            } else if (errorMessage.includes("phone_number") || errorMessage.includes("phone")) {
-                displayMsg = "Este número de teléfono ya está registrado. Por favor, verifique.";
-            } else {
-                displayMsg = `Conflicto de datos: ${errorMessage}`;
-            }
-
-            toast.error(displayMsg, { position: "top-right", autoClose: 8000, });
+            const backendMessage = getErrorMessage(err);
+            toast.error(backendMessage);
             setShowEditConfirm(false);
         }
     };
@@ -354,104 +338,92 @@ export const VisualStaff = () => {
 
     const executeDelete = async () => {
         if (deleteIndex === null) return;
-        const index = deleteIndex;
-        const userToDelete = records[index];
+        const userToDelete = records[deleteIndex];
         setShowDeleteConfirm(false);
         setDeleteIndex(null);
 
         try {
             await delete_user(userToDelete.document_id);
-            setRecords(records.filter((_, i) => i !== index));
-            toast.success(
-                `🗑️ Usuario ${userToDelete.name} inhabilitado correctamente.`,
-                { position: "bottom-right", autoClose: 5000 }
-            );
+            setRecords(records.filter((_, i) => i !== deleteIndex));
+            toast.success(`🗑️ Usuario ${userToDelete.name} inhabilitado.`);
         } catch (err: any) {
-            toast.error("Ocurrió un error al inhabilitar el usuario.", {
-                position: "bottom-right",
-                autoClose: 5000,
-            });
+            const backendMessage = getErrorMessage(err);
+            toast.error(backendMessage);
         }
     };
 
-    // Lógica de filtrado por texto y sucursal
-    const filteredRecords = records.filter(
-        (rec) => {
-            const branchMatch = filterBranchId === "all" || rec.branch_id === filterBranchId;
-            const searchMatch =
-                rec.name.toLowerCase().includes(search.toLowerCase()) ||
-                rec.document_id.includes(search) ||
-                rec.phone_number.includes(search) ||
-                rec.username.toLowerCase().includes(search.toLowerCase());
+    const getBranchName = (branchId: string | number): string => {
+        const branch = branchOptions.find(
+            (b) => String(b.id) === String(branchId)
+        );
+        return branch ? branch.name : `ID: ${branchId}`;
+    };
 
-            return branchMatch && searchMatch;
-        }
-    );
+    const getRoleName = (roleId: string): string => {
+        const role = roleOptions.find((r) => String(r.id) === String(roleId));
+        return role ? role.name : `ID: ${roleId}`;
+    };
+
+    const filteredRecords = records.filter((rec) => {
+        const branchMatch =
+            filterBranchId === "all" || rec.branch_id === filterBranchId;
+        const searchMatch =
+            rec.name.toLowerCase().includes(search.toLowerCase()) ||
+            rec.document_id.includes(search) ||
+            rec.phone_number.includes(search) ||
+            rec.username.toLowerCase().includes(search.toLowerCase());
+        return branchMatch && searchMatch;
+    });
 
     return (
         <div className={styles.page}>
-            <ToastContainer position="top-right" autoClose={5000} />
+            <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop closeOnClick pauseOnHover={true} draggable theme="colored" />
             <TopControl title="Panel de Administración" />
-            <div className={styles.container}>
-                <h2 className={styles.title}>Empleados Registrados</h2>
 
-                <div className={styles.filterContainer} style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
+            <div className={styles.container}>
+                <h2 className={styles.title}>Gestión de Personal</h2>
+
+                <div className={styles.filterContainer}>
                     <input
-                        className={styles.searchInput}
                         type="text"
-                        placeholder="Buscar (Nombre, Documento, etc.)..."
+                        placeholder="Buscar..."
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
-                    />
-
-                    {/* FILTRO DE SUCURSAL DINÁMICO */}
-                    <select
                         className={styles.searchInput}
-                        value={filterBranchId}
-                        onChange={(e) => setFilterBranchId(e.target.value)}
-                        style={{ flex: 0.5 }}
-                        disabled={loading && branchOptions.length === 0}
-                    >
-                        <option value="all">Todas las Sucursales</option>
-                        {branchOptions.map(branch => (
-                            <option key={`filter-${branch.id}`} value={String(branch.id)}>
-                                {branch.name}
-                            </option>
-                        ))}
-                    </select>
+                    />
                 </div>
 
-                {loading && <p>Cargando...</p>}
-                {error && <p style={{ color: "red" }}>{error}</p>}
-                {!loading && filteredRecords.length === 0 ? (
-                    <p className={styles.empty}>No se encontraron registros</p>
-                ) : (
-                    <div className={styles.tableContainer}>
-                        <table className={styles.table}>
-                            <thead>
+                <div className={styles.tableContainer}>
+                    <table className={styles.table}>
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Documento</th>
+                                <th>Email</th>
+                                <th>Teléfono</th>
+                                <th>Usuario</th>
+                                <th>Rol</th>
+                                <th>Sucursal</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {filteredRecords.length === 0 ? (
                                 <tr>
-                                    <th>Nombre</th>
-                                    <th>Documento</th>
-                                    <th>Email</th>
-                                    <th>Teléfono</th>
-                                    <th>Rol</th>
-                                    <th>Sucursal</th>
-                                    <th>Usuario</th>
-                                    <th>Acciones</th>
+                                    <td colSpan={8} className={styles.empty}>
+                                        No hay registros disponibles.
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                {filteredRecords.map((rec, i) => (
+                            ) : (
+                                filteredRecords.map((rec, i) => (
                                     <tr key={i}>
                                         <td>{rec.name}</td>
                                         <td>{rec.document_id}</td>
                                         <td>{rec.email}</td>
                                         <td>{rec.phone_number}</td>
-                                        {/* CONVERSIÓN DE ROL DINÁMICA */}
-                                        <td>{getRoleName(rec.role)}</td>
-                                        {/* CONVERSIÓN DE SUCURSAL DINÁMICA */}
-                                        <td>{getBranchName(rec.branch_id)}</td>
                                         <td>{rec.username}</td>
+                                        <td>{getRoleName(rec.role)}</td>
+                                        <td>{getBranchName(rec.branch_id)}</td>
                                         <td>
                                             <button
                                                 className={styles.editBtn}
@@ -467,103 +439,101 @@ export const VisualStaff = () => {
                                             </button>
                                         </td>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
+                                ))
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+
                 <button
                     className={styles.addBtn}
-                    onClick={() => {
-                        setFormData(initialForm);
-                        setEditIndex(null);
-                        setShowModal(true);
-                    }}
+                    onClick={() => setShowModal(true)}
                 >
-                    ➕ Registrar Nuevo
+                    + Registrar Usuario
                 </button>
             </div>
 
-            {/* Modal de Registro y Edición */}
             {showModal && (
                 <div className={styles.modalOverlay}>
                     <div className={styles.modal}>
-                        <h2 className={styles.title}>
-                            {editIndex !== null ? "Editar Usuario" : "Registrar Nuevo Usuario"}
-                        </h2>
-                        <form className={styles.form} onSubmit={handleSubmit}>
+                        <form onSubmit={handleSubmit} className={styles.form}>
                             <input
+                                type="text"
                                 name="name"
                                 placeholder="Nombre"
                                 value={formData.name}
                                 onChange={handleChange}
                             />
                             <input
-                                type="number"
+                                type="text"
                                 name="document_id"
                                 placeholder="Documento"
                                 value={formData.document_id}
                                 onChange={handleChange}
-                                disabled={editIndex !== null}
+                                maxLength={10}
                             />
                             <input
+                                type="email"
                                 name="email"
                                 placeholder="Email"
                                 value={formData.email}
                                 onChange={handleChange}
                             />
                             <input
-                                type="number"
+                                type="text"
                                 name="phone_number"
                                 placeholder="Teléfono"
                                 value={formData.phone_number}
                                 onChange={handleChange}
+                                maxLength={10}
                             />
                             <input
+                                type="text"
                                 name="username"
                                 placeholder="Usuario"
                                 value={formData.username}
                                 onChange={handleChange}
                             />
-
-                            {/* SELECT DINÁMICO DE SUCURSALES */}
-                            <select name="branch_id" value={formData.branch_id} onChange={handleChange} disabled={branchOptions.length === 0}>
-                                <option value="" disabled>
-                                    Seleccionar Sucursal
-                                </option>
-                                {branchOptions.map(branch => (
-                                    <option key={`form-b-${branch.id}`} value={String(branch.id)}>
-                                        {branch.name}
+                            <select
+                                name="role"
+                                value={formData.role}
+                                onChange={handleChange}
+                            >
+                                <option value="0">Seleccionar rol</option>
+                                {roleOptions.map((r) => (
+                                    <option key={r.id} value={r.id}>
+                                        {r.name}
                                     </option>
                                 ))}
                             </select>
-
-                            {/* SELECT DINÁMICO DE ROLES */}
-                            <select name="role" value={formData.role} onChange={handleChange} disabled={roleOptions.length === 0}>
-                                <option value="0" disabled>
-                                    Seleccionar Rol
-                                </option>
-                                {roleOptions.map(role => (
-                                    <option key={`form-r-${role.id}`} value={String(role.id)}>
-                                        {role.name}
+                            <select
+                                name="branch_id"
+                                value={formData.branch_id}
+                                onChange={handleChange}
+                            >
+                                <option value="">Seleccionar sucursal</option>
+                                {branchOptions.map((b) => (
+                                    <option key={b.id} value={b.id}>
+                                        {b.name}
                                     </option>
                                 ))}
                             </select>
-
                             <input
-                                name="password"
                                 type="password"
+                                name="password"
                                 placeholder={
                                     editIndex !== null
-                                        ? "Contraseña (solo si desea cambiarla)"
+                                        ? "Nueva Contraseña (opcional)"
                                         : "Contraseña"
                                 }
                                 value={formData.password}
                                 onChange={handleChange}
                             />
                             <div className={styles.actions}>
-                                <button className={styles.button} type="submit">
-                                    {editIndex !== null ? "Guardar" : "Registrar"}
+                                <button type="submit" className={styles.button}>
+                                    {editIndex !== null
+                                        ? "Guardar Cambios"
+                                        : "Registrar"}
                                 </button>
                                 <button
                                     type="button"
@@ -578,86 +548,44 @@ export const VisualStaff = () => {
                 </div>
             )}
 
-            {/* Modal de Confirmación de Edición */}
-            {showEditConfirm && editIndex !== null && (
+            {showEditConfirm && (
                 <div className={styles.modalOverlay}>
-                    <div className={styles.modal} style={{ maxWidth: "400px" }}>
-                        <h2 className={styles.title} style={{ color: "#f39c12" }}>
-                            Confirmar cambios
-                        </h2>
-                        <p
-                            style={{
-                                marginBottom: "25px",
-                                textAlign: "center",
-                                fontSize: "1.1em",
-                            }}
-                        >
-                            ¿Estás seguro de modificar los datos de{" "}
-                            <strong>{records[editIndex].name}</strong>?
-                        </p>
-                        <div
-                            className={styles.actions}
-                            style={{ justifyContent: "space-around", paddingTop: "10px" }}
-                        >
+                    <div className={styles.modal}>
+                        <p>¿Desea confirmar los cambios realizados?</p>
+                        <div className={styles.actions}>
                             <button
-                                type="button"
-                                className={styles.closeBtn}
-                                onClick={() => setShowEditConfirm(false)}
-                            >
-                                Cancelar
-                            </button>
-                            <button
-                                type="button"
                                 className={styles.button}
-                                style={{ backgroundColor: "#f39c12" }}
                                 onClick={confirmEdit}
                             >
-                                Aceptar
+                                Sí
+                            </button>
+                            <button
+                                className={styles.closeBtn}
+                                onClick={resetModalState}
+                            >
+                                No
                             </button>
                         </div>
                     </div>
                 </div>
             )}
 
-            {/* Modal de Confirmación de Inhabilitación */}
-            {showDeleteConfirm && deleteIndex !== null && (
+            {showDeleteConfirm && (
                 <div className={styles.modalOverlay}>
-                    <div className={styles.modal} style={{ maxWidth: "400px" }}>
-                        <h2 className={styles.title} style={{ color: "#e74c3c" }}>
-                            Confirmar Inhabilitación
-                        </h2>
-                        <p
-                            style={{
-                                marginBottom: "25px",
-                                textAlign: "center",
-                                fontSize: "1.1em",
-                            }}
-                        >
-                            ¿Estás seguro de que deseas **inhabilitar** a{" "}
-                            <strong>{records[deleteIndex]?.name}</strong>? Podrá ser
-                            reactivado más tarde.
-                        </p>
-                        <div
-                            className={styles.actions}
-                            style={{ justifyContent: "space-around", paddingTop: "10px" }}
-                        >
+                    <div className={styles.modal}>
+                        <p>¿Seguro que desea inhabilitar este usuario?</p>
+                        <div className={styles.actions}>
                             <button
-                                type="button"
-                                className={styles.closeBtn}
-                                onClick={() => {
-                                    setShowDeleteConfirm(false);
-                                    setDeleteIndex(null);
-                                }}
-                            >
-                                Cerrar
-                            </button>
-                            <button
-                                type="button"
                                 className={styles.button}
-                                style={{ backgroundColor: "#e74c3c" }}
                                 onClick={executeDelete}
                             >
-                                Inhabilitar
+                                Sí
+                            </button>
+                            <button
+                                className={styles.closeBtn}
+                                onClick={() => setShowDeleteConfirm(false)}
+                            >
+                                No
                             </button>
                         </div>
                     </div>
@@ -666,3 +594,5 @@ export const VisualStaff = () => {
         </div>
     );
 };
+
+export default VisualStaff;
