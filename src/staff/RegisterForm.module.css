@@ -8,7 +8,9 @@
   justify-content: center;
   flex-direction: column;
 }
-
+.confirm-overlay {
+  z-index: 15000; /* Menor que ToastContainer, mayor que modal-overlay */
+}
 /* CONTENEDOR PRINCIPAL (PARA LA TABLA) */
 .container {
   background: #ffffff;

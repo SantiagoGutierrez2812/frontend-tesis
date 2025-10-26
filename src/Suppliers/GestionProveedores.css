@@ -226,7 +226,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+
 }
 
 .modal {
@@ -436,6 +436,7 @@
   box-shadow: 0 4px 25px rgba(0, 0, 0, 0.3);
   text-align: center;
   animation: slideIn 0.3s ease;
+ 
 }
 
 .confirm-modal h2 {

@@ -44,6 +44,8 @@ export default function Materialcreation() {
     descripcion: "",
   });
 
+  const [searchTerm, setSearchTerm] = useState(""); // <- NUEVO ESTADO para buscar
+
   const showToast = (message: string, type: "success" | "error" | "info" | "delete") => {
     const icon =
       type === "success"
@@ -190,7 +192,6 @@ export default function Materialcreation() {
   if (loading) return <div>Cargando materiales... ⏳</div>;
   if (error) return <div>Error: {error} ❌</div>;
 
-  // ✅ Agregamos una opción extra al menú del TopControl
   const menuOptions = [
     {
       label: "👤 Mi Perfil",
@@ -204,7 +205,13 @@ export default function Materialcreation() {
       <ToastContainer />
 
       <div className="control-bar">
-        <input type="text" placeholder="🔍 Buscar material..." className="search-input" />
+        <input
+          type="text"
+          placeholder="🔍 Buscar material..."
+          className="search-input"
+          value={searchTerm} // <- vinculamos
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
         <button
           className="btn-primary"
           onClick={() => {
@@ -236,28 +243,28 @@ export default function Materialcreation() {
           </thead>
           <tbody>
             {materials.length ? (
-              materials.map((mat) => (
-                <tr key={mat.id}>
-                  <td>{mat.id}</td>
-                  <td>{mat.nombre}</td>
-                  <td>{mat.tamaño}</td>
-                  <td>{mat.descripcion}</td>
-                  <td>
-                    {mat.precio.toLocaleString(undefined, {
-                      minimumFractionDigits: 0,
-                      maximumFractionDigits: 2,
-                    })}
-                  </td>
-                  <td className="actions">
-                    <button className="edit" onClick={() => handleEdit(mat)}>
-                      ✏️
-                    </button>
-                    <button className="delete" onClick={() => handleDelete(mat.id)}>
-                      🗑️
-                    </button>
-                  </td>
-                </tr>
-              ))
+              materials
+                .filter((mat) =>
+                  mat.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+                ) // <- FILTRADO POR NOMBRE
+                .map((mat) => (
+                  <tr key={mat.id}>
+                    <td>{mat.id}</td>
+                    <td>{mat.nombre}</td>
+                    <td>{mat.tamaño}</td>
+                    <td>{mat.descripcion}</td>
+                    <td>
+                      {mat.precio.toLocaleString(undefined, {
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 2,
+                      })}
+                    </td>
+                    <td className="actions">
+                      <button className="edit" onClick={() => handleEdit(mat)}>✏️</button>
+                      <button className="delete" onClick={() => handleDelete(mat.id)}>🗑️</button>
+                    </td>
+                  </tr>
+                ))
             ) : (
               <tr>
                 <td colSpan={6}>No hay materiales registrados.</td>
