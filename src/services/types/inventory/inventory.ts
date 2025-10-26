@@ -8,3 +8,13 @@ export interface inventory_material_record {
     product_id:  number;
     created_at:string;
 }
+
+export interface InventoriesResponse {
+  data: inventory_material_record[];
+  message: string;
+  success: boolean;
+}
+export interface InventoryApiResponse {
+    inventories: inventory_material_record[];
+    ok: boolean;
+}

@@ -61,6 +61,7 @@ const ConfiWidget = () => {
 
   return (
     <div onClick={() => navigate("/adminLogs")} style={{ cursor: "pointer" }}>
+      <p className="TEXT"><b>ADMINISTRACIÓN</b></p>
       <div className="espacio3D">
         <div className="cubo3D">
           <div className="base"></div>

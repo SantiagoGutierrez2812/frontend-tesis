@@ -158,3 +158,8 @@ aside.cara {
   margin: 4px 0;
 }
 
+.TEXT{
+  display: flex;
+  justify-content: center;
+  font-size: 21px;
+}

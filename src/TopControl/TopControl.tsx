@@ -13,9 +13,15 @@ interface TopControlProps {
   title?: string | React.ReactNode;
   options?: MenuOption[];
   onBackClick?: () => void;
+  extraMenuOption?: MenuOption; // 👈 nuevo prop
 }
 
-export default function TopControl({ title = "Panel", options = [], onBackClick }: TopControlProps) {
+export default function TopControl({
+  title = "Panel",
+  options = [],
+  onBackClick,
+  extraMenuOption,
+}: TopControlProps) {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -30,13 +36,12 @@ export default function TopControl({ title = "Panel", options = [], onBackClick 
 
   const handleBack = onBackClick || handleDefaultBack;
 
-
-  const defaultOptions: MenuOption[] = [
+  // 👇 agregamos el botón extra antes del logout
+  const finalOptions: MenuOption[] = [
+    ...options,
+    ...(extraMenuOption ? [extraMenuOption] : []),
     { label: "🚪 Cerrar Sesión", onClick: handleLogout },
   ];
-
-
-  const finalOptions = [...options, ...defaultOptions];
 
   return (
     <>
@@ -48,13 +53,13 @@ export default function TopControl({ title = "Panel", options = [], onBackClick 
         <button className="top-btn menu" onClick={() => setMenuOpen(!menuOpen)}>
           ☰
         </button>
-
       </div>
 
       {menuOpen && (
         <div className="top-menu-overlay">
           <div className="menu-content">
             <button onClick={() => setMenuOpen(false)}>❌ Cerrar Menú</button>
+
             {finalOptions.map((opt, i) => (
               <button
                 key={i}

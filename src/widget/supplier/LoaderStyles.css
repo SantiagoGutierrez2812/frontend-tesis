@@ -1,0 +1,159 @@
+.loader-container {
+    position: relative;
+    top: -39px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 250px;
+    justify-content: space-around;
+}
+
+.loader-title {
+    display: flex;
+    color: #000000ff;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+.loader {
+    width: fit-content;
+    height: fit-content;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-direction: column;
+    flex-wrap: nowrap;
+
+}
+
+.truckWrapper {
+    width: 200px;
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    align-items: center;
+    justify-content: flex-end;
+    overflow-x: hidden;
+}
+
+.truckBody {
+    width: 130px;
+    height: fit-content;
+    margin-bottom: 6px;
+    animation: motion 1s linear infinite;
+}
+
+@keyframes motion {
+    0% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(3px);
+    }
+
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+.truckTires {
+    width: 130px;
+    height: fit-content;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0px 10px 0px 15px;
+    position: absolute;
+    bottom: 0;
+}
+
+.truckTires svg {
+    width: 24px;
+}
+
+.road {
+    width: 100%;
+    height: 1.5px;
+    background-color: #282828;
+    position: relative;
+    bottom: 0;
+    align-self: flex-end;
+    border-radius: 3px;
+}
+
+.road::before {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 100%;
+    background-color: #282828;
+    right: -50%;
+    border-radius: 3px;
+    animation: roadAnimation 1.4s linear infinite;
+    border-left: 10px solid white;
+}
+
+.road::after {
+    content: "";
+    position: absolute;
+    width: 10px;
+    height: 100%;
+    background-color: #282828;
+    right: -65%;
+    border-radius: 3px;
+    animation: roadAnimation 1.4s linear infinite;
+    border-left: 4px solid white;
+}
+
+.cube-title {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+
+    font-size: 24px;
+    /* El texto del cubo es en MAYÚSCULAS */
+    text-transform: uppercase;
+    /* El texto del cubo parece estar en negrita o un peso de fuente alto */
+    font-weight: 700;
+    /* Ajusta el color si es necesario. En el cubo es oscuro. */
+    color: #000000;
+    /* Añade un margen para separarlo del camión */
+    margin-bottom: 20px;
+}
+
+/* Si prefieres seguir usando la clase .text1, modifícala así: */
+.text1 {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    font-size: 21px;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: #000000;
+    margin-bottom: 20px;
+}
+
+.lampPost {
+    position: absolute;
+    bottom: 0;
+    right: -90%;
+    height: 90px;
+    animation: roadAnimation 1.4s linear infinite;
+}
+
+@keyframes roadAnimation {
+    0% {
+        transform: translateX(0px);
+    }
+
+    100% {
+        transform: translateX(-350px);
+    }
+}
