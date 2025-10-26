@@ -6,7 +6,7 @@ const Card = () => {
     const navigate = useNavigate();
   return (
     <StyledWrapper onClick={() => navigate("/mapa")} style={{ cursor: "pointer" }}>
-    <div className='MAPA'><p ><b>MAPA</b></p></div>
+    <div className='MAPA'><p ><b>SEDES</b></p></div>
       <div className="section-banner"> 
         <div id="star-1">
           <div className="curved-corner-star">

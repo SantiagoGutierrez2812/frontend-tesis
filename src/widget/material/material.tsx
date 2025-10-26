@@ -11,7 +11,7 @@ const Loader = () => {
         style={{ cursor: 'pointer' }}
         className="widget"
       >
-        <p className="loader-title">CREACIÓN DE MATERIAL</p>
+        <p className="loader-title">REGISTRO DE MATERIAL</p>
         <div className="boxes">
           <div className="box">
             <div />

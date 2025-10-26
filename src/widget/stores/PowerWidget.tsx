@@ -35,7 +35,7 @@ export default function InventoryPyramids() {
 
   return (
     <div className="inventory-container" onClick={() => navigate("/registro")}>
-      <p className="text1"><b>REGISTRO DE MATERIAL</b></p>
+      <p className="text1"><b>INVENTARIO</b></p>
       {error && <p className="error-text">{error}</p>}
 
       <div className="styled-wrapper">
