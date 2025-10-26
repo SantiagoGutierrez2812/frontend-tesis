@@ -26,6 +26,7 @@ export interface Log {
   branch?: string;
   product?: string;
   transactionType?: string;
+  quantity?: number;
 }
 
 // === Tipo combinado para logins con info de usuario ===
@@ -69,6 +70,7 @@ function mapTransactionRecord(tx: Transaction): Log {
     branch: (tx as any).branch_name || "Sucursal desconocida",
     product: (tx as any).product || "N/A",
     transactionType: (tx as any).transaction_type_name || "N/A",
+    quantity: (tx as any).quantity ?? 1,
   };
 }
 
@@ -77,7 +79,7 @@ function mapLoginToLog(login: UserLoginWithUser): Log {
   return {
     id: login.id,
     fecha: login.created_at,
-    usuario: login.app_user_username || "Usuario desconocido", // <-- fallback
+    usuario: login.app_user_username || "Usuario desconocido",
     accion: "Inicio de sesión",
     tipo: "LOGIN",
   };
@@ -96,7 +98,7 @@ export default function AdminLogs() {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [modalLogs, setModalLogs] = useState<Log[]>([]);
   const [modalTitle, setModalTitle] = useState<string>("");
-  const [,setIsSummaryView] = useState<boolean>(false);
+  const [, setIsSummaryView] = useState<boolean>(false);
   const [modalType, setModalType] = useState<"logs" | "userLogins">("logs");
 
   // === Cargar logs ===
@@ -182,21 +184,21 @@ export default function AdminLogs() {
   const infoCount = userLogins.length;
   const transactionCount = transactions.length;
 
-const openSummaryModal = (type: "logs" | "userLogins") => {
-  setModalType(type);
-  setIsSummaryView(true);
+  const openSummaryModal = (type: "logs" | "userLogins") => {
+    setModalType(type);
+    setIsSummaryView(true);
 
-  if (type === "logs") {
-    const errorLogs = combinedLogs.filter((log) => log.tipo === "ERROR");
-    setModalLogs(errorLogs);
-    setModalTitle("Resumen de Errores");
-  } else {
-    setModalLogs([]);
-    setModalTitle("Usuarios conectados recientes");
-  }
+    if (type === "logs") {
+      const errorLogs = combinedLogs.filter((log) => log.tipo === "ERROR");
+      setModalLogs(errorLogs);
+      setModalTitle("Resumen de Errores");
+    } else {
+      setModalLogs([]);
+      setModalTitle("Usuarios conectados recientes");
+    }
 
-  setModalOpen(true);
-};
+    setModalOpen(true);
+  };
 
   const openIndividualModal = (log: Log) => {
     setModalType("logs");
@@ -303,14 +305,13 @@ const openSummaryModal = (type: "logs" | "userLogins") => {
                   )}
                 </tbody>
               </table>
-            ) : (
+            ) : modalTitle.includes("Errores") ? (
+              // Modal resumen de errores
               <table className="modal-logs-table">
                 <thead>
                   <tr>
                     <th>📅 Fecha</th>
-                    <th>👤 Usuario</th>
-                    <th>🏢 Sucursal</th>
-                    <th>🛒 Producto</th>
+                    <th>🛠 Método</th>
                     <th>⚡ Descripción / Acción</th>
                     <th>📌 Tipo</th>
                   </tr>
@@ -321,15 +322,49 @@ const openSummaryModal = (type: "logs" | "userLogins") => {
                       <tr key={`${log.tipo}-${log.id}-${index}`}>
                         <td>{formatDate(log.fecha)}</td>
                         <td>{log.usuario}</td>
-                        <td>{(log as any).branch || "-"}</td>
-                        <td>{(log as any).product || "-"}</td>
                         <td>{log.accion}</td>
-                        <td>{(log as any).transactionType || log.tipo}</td>
+                        <td>{log.tipo}</td>
                       </tr>
                     ))
                   ) : (
                     <tr>
-                      <td colSpan={6} style={{ textAlign: "center" }}>
+                      <td colSpan={4} style={{ textAlign: "center" }}>
+                        No hay registros.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            ) : (
+              // Modal resumen de transacciones
+              <table className="modal-logs-table">
+                <thead>
+                  <tr>
+                    <th>📅 Fecha</th>
+                    <th>👤 Usuario</th>
+                    <th>🏢 Sucursal</th>
+                    <th>🛒 Producto</th>
+                    <th>⚡ Descripción / Acción</th>
+                    <th>🔢 Cantidad</th>
+                    <th>📌 Tipo</th>
+                  </tr>
+                </thead>
+                <tbody className="logs-table">
+                  {modalLogs.length > 0 ? (
+                    modalLogs.map((log, index) => (
+                      <tr key={`${log.tipo}-${log.id}-${index}`}>
+                        <td>{formatDate(log.fecha)}</td>
+                        <td>{log.usuario}</td>
+                        <td>{log.branch || "-"}</td>
+                        <td>{log.product || "-"}</td>
+                        <td>{log.accion}</td>
+                        <td>{log.quantity ?? "-"}</td>
+                        <td>{log.transactionType || log.tipo}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={7} style={{ textAlign: "center" }}>
                         No hay registros.
                       </td>
                     </tr>
