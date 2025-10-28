@@ -20,7 +20,7 @@ export interface LoginSuccessResponse {
     ok: boolean;
     message: string;
     username: string;
-    user_id?: number;
+    user_id: number;
     name?: string;
 }
 
