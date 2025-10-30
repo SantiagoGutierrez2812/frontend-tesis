@@ -30,7 +30,7 @@ interface CreateTransactionResponse {
  * Obtiene todas las transacciones del backend
  */
 export async function getTransactions(): Promise<Transaction[]> {
-  const endpoint = `${API_URL}/product-transactions`;
+  const endpoint = `${API_URL}/product-transactions/`;
   const token = localStorage.getItem("token");
   if (!token) throw new Error("No hay token de autenticación en localStorage.");
 
@@ -55,7 +55,7 @@ export async function getTransactions(): Promise<Transaction[]> {
  * Crea una nueva transacción
  */
 export async function createTransaction(data: CreateTransactionData): Promise<Transaction> {
-  const endpoint = `${API_URL}/product-transactions`;
+  const endpoint = `${API_URL}/product-transactions/`;
   const token = localStorage.getItem("token");
   if (!token) throw new Error("No hay token de autenticación en localStorage.");
 
