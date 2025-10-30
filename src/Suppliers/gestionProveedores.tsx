@@ -259,7 +259,7 @@ export default function GestionProveedores() {
             <ResponsiveContainer width="100%" height={100}>
               <PieChart>
                 <Pie data={data} cx="50%" cy="50%" outerRadius={30} dataKey="value">
-                  {data.map((entry, index) => (
+                  {data.map((_, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>

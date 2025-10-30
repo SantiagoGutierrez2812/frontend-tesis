@@ -1,5 +1,5 @@
 // src/components/ProfileModal.tsx
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "../pages/Dashboard.module.css";
 import { getCurrentUser } from "../services/user/user_service";
 import type { UserTransformed } from "../services/types/user/user";

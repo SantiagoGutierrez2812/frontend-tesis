@@ -49,10 +49,10 @@ const initialForm: PersonalData = {
 
 export const VisualStaff = () => {
     const [records, setRecords] = useState<PersonalData[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    const [_loading, setLoading] = useState(true);
+    const [_error, setError] = useState<string | null>(null);
     const [search, setSearch] = useState("");
-    const [filterBranchId, setFilterBranchId] = useState<string>("all");
+    const [filterBranchId] = useState<string>("all");
     const [showModal, setShowModal] = useState(false);
     const [editIndex, setEditIndex] = useState<number | null>(null);
     const [formData, setFormData] = useState<PersonalData>(initialForm);

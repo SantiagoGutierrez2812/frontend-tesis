@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import type { inventory_material_record } from "../../services/types/inventory/inventory";
 import { get_read_from } from "../../services/inventory/materials_creation_section";
 import { useNavigate } from "react-router-dom";

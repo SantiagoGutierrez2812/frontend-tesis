@@ -15,7 +15,6 @@ const ConfiWidget = () => {
   const [logCount, setLogCount] = useState<number>(0);
   const [userCount, setUserCount] = useState<number>(0);
   const [transactionCount, setTransactionCount] = useState<number>(0);
-  const [setLastTransactionId] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchLogs = async () => {
@@ -42,11 +41,6 @@ const ConfiWidget = () => {
       try {
         const transactions: Transaction[] = await getTransactions();
         setTransactionCount(transactions.length);
-
-        if (transactions.length > 0) {
-          const last = transactions[transactions.length - 1];
-
-        }
       } catch (error) {
         console.error("Error al obtener transacciones:", error);
         setTransactionCount(0);
