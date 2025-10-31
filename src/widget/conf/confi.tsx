@@ -1,4 +1,4 @@
-// components/ConfiWidget/ConfiWidget.tsx
+// ConfiWidget component
 import "./confi.css";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";

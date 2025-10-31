@@ -9,7 +9,7 @@
 .Toastify__toast--success {
   background-color: #2a4365; 
   color: #ffffff;
-  border-left: 6px solid #63b3ed; /
+  border-left: 6px solid #63b3ed;
 }
 
 .Toastify__toast--error {

@@ -29,7 +29,7 @@ export async function get_users(): Promise<UserTransformed[]> {
     if (Array.isArray(responseData)) {
         usersRaw = responseData;
     } else if (responseData && Array.isArray(responseData.users)) {
-        // Asumo que el formato de respuesta del backend es { ok: true, users: [...] }
+        // Formato de respuesta del backend es { ok: true, users: [...] }
         usersRaw = responseData.users;
     } else if (responseData && Array.isArray(responseData.data)) {
         usersRaw = responseData.data;

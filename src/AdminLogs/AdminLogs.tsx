@@ -121,7 +121,7 @@ export default function AdminLogs() {
       try {
         const txs = await getTransactions();
         const mappedTxs = txs.map(mapTransactionRecord);
-        // Sort by transaction_date descending (newest first)
+        // Ordenar por fecha de transacción descendente (más reciente primero)
         mappedTxs.sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
         setTransactions(mappedTxs);
       } catch (err) {
@@ -147,7 +147,7 @@ export default function AdminLogs() {
             role: user?.role ? String(user.role) : undefined,
           };
         });
-        // Sort by created_at descending (newest first)
+        // Ordenar por fecha de creación descendente (más reciente primero)
         loginsWithUser.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
         setUserLogins(loginsWithUser);
       } catch (err) {

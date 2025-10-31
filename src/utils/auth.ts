@@ -32,6 +32,6 @@ export const getRole = (): number | null => {
 export const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
-    localStorage.removeItem("welcome"); // Opcional: remover cualquier otro dato de sesión
-    localStorage.removeItem("branch_id"); // Opcional: remover cualquier otro dato de sesión
+    localStorage.removeItem("welcome"); // Remover cualquier otro dato de sesión
+    localStorage.removeItem("branch_id"); // Remover cualquier otro dato de sesión
 };

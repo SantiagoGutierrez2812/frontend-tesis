@@ -34,7 +34,6 @@ export default function Home() {
     const [isOtpStep, setIsOtpStep] = useState(false);
     const [isResetStep, setIsResetStep] = useState(false);
 
-    const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
     const [branches, setBranches] = useState<Branch[]>([]);
@@ -116,48 +115,47 @@ export default function Home() {
     // Login
     const handleLogin = async () => {
         setIsLoading(true);
-        setError("");
         try {
             const data = await login(username, password);
             if (data.ok) {
                 setIsVerificationStep(true);
                 toast.info(`Te enviamos un codigo a tu correo. ${data.message}`);
             } else {
-                setError(data.message || "Respuesta inesperada del servidor");
             }
-        } catch (e: any) {
-            const errorMsg = e.message || "Error al iniciar sesion";
-            setError(errorMsg);
+        } catch (e: unknown) {
+            if (e instanceof Error) {
+                const errorMsg = e.message || "Error al iniciar sesion";
 
-            // Check if it's a rate limit block message
-            if (errorMsg.includes("bloqueada") || errorMsg.includes("bloqueado")) {
-                // Extract time if present in message
-                const timeMatch = errorMsg.match(/(\d+)\s*minutos?/);
-                if (timeMatch) {
-                    toast.error(`Cuenta bloqueada. Debe esperar ${timeMatch[1]} minutos antes de intentar nuevamente.`, {
-                        autoClose: 8000
-                    });
-                } else {
+                // Verificar si es un mensaje de bloqueo por rate limit
+                if (errorMsg.includes("bloqueada") || errorMsg.includes("bloqueado")) {
+                    // Extraer tiempo si está presente en el mensaje
+                    const timeMatch = errorMsg.match(/(\d+)\s*minutos?/);
+                    if (timeMatch) {
+                        toast.error(`Cuenta bloqueada. Debe esperar ${timeMatch[1]} minutos antes de intentar nuevamente.`, {
+                            autoClose: 8000
+                        });
+                    } else {
+                        toast.error(errorMsg, { autoClose: 8000 });
+                    }
+                } else if (errorMsg.includes("Demasiados intentos")) {
                     toast.error(errorMsg, { autoClose: 8000 });
-                }
-            } else if (errorMsg.includes("Demasiados intentos")) {
-                toast.error(errorMsg, { autoClose: 8000 });
-            } else if (errorMsg.includes("Le quedan")) {
-                // Extract remaining attempts
-                const attemptsMatch = errorMsg.match(/Le quedan (\d+) intentos?/);
-                if (attemptsMatch) {
-                    toast.error(errorMsg);
-                    toast.warning(`Atencion: solo le quedan ${attemptsMatch[1]} intentos antes de ser bloqueado por 30 minutos.`, {
-                        autoClose: 6000
-                    });
+                } else if (errorMsg.includes("Le quedan")) {
+                    // Extraer intentos restantes
+                    const attemptsMatch = errorMsg.match(/Le quedan (\d+) intentos?/);
+                    if (attemptsMatch) {
+                        toast.error(errorMsg);
+                        toast.warning(`Atencion: solo le quedan ${attemptsMatch[1]} intentos antes de ser bloqueado por 30 minutos.`, {
+                            autoClose: 6000
+                        });
+                    } else {
+                        toast.error(errorMsg);
+                    }
                 } else {
                     toast.error(errorMsg);
+                    toast.warning("Recuerde: tiene un maximo de 5 intentos antes de ser bloqueado por 30 minutos.", {
+                        autoClose: 5000
+                    });
                 }
-            } else {
-                toast.error(errorMsg);
-                toast.warning("Recuerde: tiene un maximo de 5 intentos antes de ser bloqueado por 30 minutos.", {
-                    autoClose: 5000
-                });
             }
         } finally {
             setIsLoading(false);
@@ -172,7 +170,6 @@ export default function Home() {
             return;
         }
         setIsLoading(true);
-        setError("");
 
         try {
             const result: LoginSuccessResponse = await verifyOtp(username, trimmedCode);
@@ -188,38 +185,39 @@ export default function Home() {
             } else {
                 toast.error("Codigo invalido o error al verificar.");
             }
-        } catch (e: any) {
-            const errorMsg = e.message || "Error al verificar codigo";
-            setError(errorMsg);
+        } catch (e: unknown) {
+            if (e instanceof Error) {
+                const errorMsg = e.message || "Error al verificar codigo";
 
-            // Check if it's a rate limit block message
-            if (errorMsg.includes("bloqueada") || errorMsg.includes("bloqueado")) {
-                const timeMatch = errorMsg.match(/(\d+)\s*minutos?/);
-                if (timeMatch) {
-                    toast.error(`Cuenta bloqueada. Debe esperar ${timeMatch[1]} minutos antes de intentar nuevamente.`, {
-                        autoClose: 8000
-                    });
-                } else {
+                // Verificar si es un mensaje de bloqueo por rate limit
+                if (errorMsg.includes("bloqueada") || errorMsg.includes("bloqueado")) {
+                    const timeMatch = errorMsg.match(/(\d+)\s*minutos?/);
+                    if (timeMatch) {
+                        toast.error(`Cuenta bloqueada. Debe esperar ${timeMatch[1]} minutos antes de intentar nuevamente.`, {
+                            autoClose: 8000
+                        });
+                    } else {
+                        toast.error(errorMsg, { autoClose: 8000 });
+                    }
+                } else if (errorMsg.includes("Demasiados intentos")) {
                     toast.error(errorMsg, { autoClose: 8000 });
-                }
-            } else if (errorMsg.includes("Demasiados intentos")) {
-                toast.error(errorMsg, { autoClose: 8000 });
-            } else if (errorMsg.includes("Le quedan")) {
-                // Extract remaining attempts
-                const attemptsMatch = errorMsg.match(/Le quedan (\d+) intentos?/);
-                if (attemptsMatch) {
-                    toast.error(errorMsg);
-                    toast.warning(`Atencion: solo le quedan ${attemptsMatch[1]} intentos antes de ser bloqueado por 15 minutos.`, {
-                        autoClose: 6000
-                    });
+                } else if (errorMsg.includes("Le quedan")) {
+                    // Extraer intentos restantes
+                    const attemptsMatch = errorMsg.match(/Le quedan (\d+) intentos?/);
+                    if (attemptsMatch) {
+                        toast.error(errorMsg);
+                        toast.warning(`Atencion: solo le quedan ${attemptsMatch[1]} intentos antes de ser bloqueado por 15 minutos.`, {
+                            autoClose: 6000
+                        });
+                    } else {
+                        toast.error(errorMsg);
+                    }
                 } else {
                     toast.error(errorMsg);
+                    toast.warning("Recuerde: tiene un maximo de 3 intentos antes de ser bloqueado por 15 minutos.", {
+                        autoClose: 5000
+                    });
                 }
-            } else {
-                toast.error(errorMsg);
-                toast.warning("Recuerde: tiene un maximo de 3 intentos antes de ser bloqueado por 15 minutos.", {
-                    autoClose: 5000
-                });
             }
         } finally {
             setIsLoading(false);
@@ -237,8 +235,10 @@ export default function Home() {
             const res = await forgotPassword(recoveryEmail);
             toast.info(res.message);
             setIsOtpStep(true); // paso OTP
-        } catch (e: any) {
-            toast.error(e.message || "Error enviando correo de recuperación.");
+        } catch (e: unknown) {
+            if (e instanceof Error) {
+                toast.error(e.message || "Error enviando correo de recuperación.");
+            }
         } finally {
             setIsLoading(false);
         }
@@ -257,36 +257,38 @@ export default function Home() {
                 setIsOtpStep(false);
                 setIsResetStep(true);
             }
-        } catch (e: any) {
-            const errorMsg = e.message || "Error verificando codigo OTP.";
+        } catch (e: unknown) {
+            if (e instanceof Error) {
+                const errorMsg = e.message || "Error verificando codigo OTP.";
 
-            // Check if it's a rate limit block message
-            if (errorMsg.includes("bloqueada") || errorMsg.includes("bloqueado")) {
-                const timeMatch = errorMsg.match(/(\d+)\s*minutos?/);
-                if (timeMatch) {
-                    toast.error(`Cuenta bloqueada. Debe esperar ${timeMatch[1]} minutos antes de intentar nuevamente.`, {
-                        autoClose: 8000
-                    });
-                } else {
+                // Verificar si es un mensaje de bloqueo por rate limit
+                if (errorMsg.includes("bloqueada") || errorMsg.includes("bloqueado")) {
+                    const timeMatch = errorMsg.match(/(\d+)\s*minutos?/);
+                    if (timeMatch) {
+                        toast.error(`Cuenta bloqueada. Debe esperar ${timeMatch[1]} minutos antes de intentar nuevamente.`, {
+                            autoClose: 8000
+                        });
+                    } else {
+                        toast.error(errorMsg, { autoClose: 8000 });
+                    }
+                } else if (errorMsg.includes("Demasiados intentos")) {
                     toast.error(errorMsg, { autoClose: 8000 });
-                }
-            } else if (errorMsg.includes("Demasiados intentos")) {
-                toast.error(errorMsg, { autoClose: 8000 });
-            } else if (errorMsg.includes("Le quedan")) {
-                const attemptsMatch = errorMsg.match(/Le quedan (\d+) intentos?/);
-                if (attemptsMatch) {
-                    toast.error(errorMsg);
-                    toast.warning(`Atencion: solo le quedan ${attemptsMatch[1]} intentos antes de ser bloqueado por 15 minutos.`, {
-                        autoClose: 6000
-                    });
+                } else if (errorMsg.includes("Le quedan")) {
+                    const attemptsMatch = errorMsg.match(/Le quedan (\d+) intentos?/);
+                    if (attemptsMatch) {
+                        toast.error(errorMsg);
+                        toast.warning(`Atencion: solo le quedan ${attemptsMatch[1]} intentos antes de ser bloqueado por 15 minutos.`, {
+                            autoClose: 6000
+                        });
+                    } else {
+                        toast.error(errorMsg);
+                    }
                 } else {
                     toast.error(errorMsg);
+                    toast.warning("Recuerde: tiene un maximo de 3 intentos antes de ser bloqueado por 15 minutos.", {
+                        autoClose: 5000
+                    });
                 }
-            } else {
-                toast.error(errorMsg);
-                toast.warning("Recuerde: tiene un maximo de 3 intentos antes de ser bloqueado por 15 minutos.", {
-                    autoClose: 5000
-                });
             }
         } finally {
             setIsLoading(false);
@@ -311,8 +313,10 @@ export default function Home() {
                 setIsRecovery(false);
                 setIsModalOpen(false);
             }
-        } catch (e: any) {
-            toast.error(e.message || "Error al cambiar la contraseña.");
+        } catch (e: unknown) {
+            if (e instanceof Error) {
+                toast.error(e.message || "Error al cambiar la contraseña.");
+            }
         } finally {
             setIsLoading(false);
         }
@@ -435,7 +439,6 @@ export default function Home() {
                                             setIsVerificationStep(false);
                                             setIsRecovery(false);
                                             setVerificationCode("");
-                                            setError("");
                                         }}
                                     >
                                         Cerrar
@@ -473,7 +476,6 @@ export default function Home() {
                                             setIsModalOpen(false);
                                             setIsVerificationStep(false);
                                             setVerificationCode("");
-                                            setError("");
                                         }}
                                     >
                                         Cerrar
@@ -512,7 +514,6 @@ export default function Home() {
                                                 setIsModalOpen(false);
                                                 setIsRecovery(false);
                                                 setRecoveryEmail("");
-                                                setError("");
                                             }}
                                         >
                                             Cerrar
@@ -549,7 +550,6 @@ export default function Home() {
                                                 setIsOtpStep(false);
                                                 setRecoveryEmail("");
                                                 setOtpCode("");
-                                                setError("");
                                             }}
                                         >
                                             Cerrar
@@ -592,7 +592,6 @@ export default function Home() {
                                                 setOtpCode("");
                                                 setNewPassword("");
                                                 setConfirmPassword("");
-                                                setError("");
                                             }}
                                         >
                                             Cerrar

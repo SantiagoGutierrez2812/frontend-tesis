@@ -101,12 +101,12 @@ const Dashboard = () => {
             setUserData(refreshed);
             setUserName(refreshed.name.trim());
 
-            // Update localStorage if the edited user is the current logged-in user
+            // Actualizar localStorage si el usuario editado es el usuario actualmente logueado
             const currentUserId = localStorage.getItem("user_id");
             if (currentUserId && String(updatedUser.id) === currentUserId) {
                 if (updatedUser.branch_id) {
                     localStorage.setItem("branch_id", String(updatedUser.branch_id));
-                    // Dispatch custom event to notify other components
+                    // Despachar evento personalizado para notificar a otros componentes
                     window.dispatchEvent(new Event("branchChanged"));
                 }
             }

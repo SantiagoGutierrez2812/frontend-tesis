@@ -61,7 +61,7 @@ export async function verifyOtp(username: string, token: string): Promise<LoginS
     const response = await fetch(`${API_URL}/auth/verify-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, token }), // ✅ siempre string
+        body: JSON.stringify({ username, token }), // siempre string
     });
 
     if (!response.ok) {
@@ -126,7 +126,7 @@ export async function verifyOtpPassword(email: string, token: string): Promise<{
     const response = await fetch(`${API_URL}/auth/verify-otp-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, token }), // ✅ siempre string
+        body: JSON.stringify({ email, token }), // siempre string
     });
 
     if (!response.ok) {

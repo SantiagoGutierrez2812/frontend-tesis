@@ -18,7 +18,7 @@ export type CreateTransactionData = {
   description: string;
   quantity: number;
   unit_price: number;
-  transaction_date: string; // formato "YYYY-MM-DD"
+  transaction_date: string; // formato YYYY-MM-DD
   product_id: number;
   branch_id: number;
   transaction_type_id: number;

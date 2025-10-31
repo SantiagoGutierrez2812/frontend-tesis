@@ -77,7 +77,7 @@ export default function AddTransactionForm({
 
   // Estado del modal de confirmación
   const [confirmOpen, setConfirmOpen] = useState(false);
-  const [confirmAction, setConfirmAction] = useState<() => void>(() => {});
+  const [confirmAction, setConfirmAction] = useState<() => void>(() => { });
 
   /* -------- Cargar datos -------- */
   useEffect(() => {
@@ -207,17 +207,19 @@ export default function AddTransactionForm({
       const newTx = await createTransaction(newTxData);
       toast.success("Transaccion creada correctamente");
       onTransactionCreated(newTx);
-      // Close modal after a small delay to allow toast to show
+      // Cerrar modal después de un pequeño delay para permitir que se muestre el toast
       setTimeout(() => onClose(), 100);
-    } catch (err: any) {
-      console.error("Error:", err);
-      const errorMessage = err.message || "Error al crear la transaccion";
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error("Error:", err);
+        const errorMessage = err.message || "Error al crear la transaccion";
 
-      // Check if error is about insufficient stock
-      if (errorMessage.includes("stock") || errorMessage.includes("suficiente")) {
-        toast.error(errorMessage);
-      } else {
-        toast.error("Error al crear la transaccion");
+        // Verificar si el error es sobre stock insuficiente
+        if (errorMessage.includes("stock") || errorMessage.includes("suficiente")) {
+          toast.error(errorMessage);
+        } else {
+          toast.error("Error al crear la transaccion");
+        }
       }
     } finally {
       setLoading(false);

@@ -53,7 +53,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
   const handleSave = async () => {
     if (!userData) return;
 
-    // Validate passwords if provided
+    // Validar contraseñas si se proporcionan
     if (newPassword || confirmPassword) {
       if (newPassword !== confirmPassword) {
         toast.error("Las contraseñas no coinciden");
@@ -82,10 +82,10 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
         newPassword || undefined
       );
 
-      // Update localStorage if branch changed
+      // Actualizar localStorage si cambió la sucursal
       if (updatedUser.branch_id) {
         localStorage.setItem("branch_id", String(updatedUser.branch_id));
-        // Dispatch custom event to notify other components
+        // Despachar evento personalizado para notificar a otros componentes
         window.dispatchEvent(new Event("branchChanged"));
       }
 

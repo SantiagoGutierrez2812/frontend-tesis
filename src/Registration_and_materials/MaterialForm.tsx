@@ -28,7 +28,7 @@ export default function MaterialForm() {
     return Number(localStorage.getItem("branch_id")) || 0;
   });
 
-  // Listen for branch_id changes in localStorage
+  // Escuchar cambios de branch_id en localStorage
   useEffect(() => {
     const handleBranchChange = () => {
       const newBranchId = Number(localStorage.getItem("branch_id"));
@@ -37,10 +37,10 @@ export default function MaterialForm() {
       }
     };
 
-    // Listen for custom branchChanged event
+    // Escuchar evento personalizado branchChanged
     window.addEventListener("branchChanged", handleBranchChange);
 
-    // Also check on component focus (when navigating back to this page)
+    // También verificar cuando el componente recupera el foco (al navegar de regreso a esta página)
     window.addEventListener("focus", handleBranchChange);
 
     return () => {
