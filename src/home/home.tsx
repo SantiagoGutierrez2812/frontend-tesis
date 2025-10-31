@@ -120,7 +120,6 @@ export default function Home() {
             if (data.ok) {
                 setIsVerificationStep(true);
                 toast.info(`Te enviamos un codigo a tu correo. ${data.message}`);
-            } else {
             }
         } catch (e: unknown) {
             if (e instanceof Error) {
@@ -227,7 +226,7 @@ export default function Home() {
     // 🔹 Recuperación de contraseña
     const handleSendRecoveryEmail = async () => {
         if (!recoveryEmail) {
-            toast.error("❌ Ingresa un correo válido.");
+            toast.error("Ingresa un correo válido.");
             return;
         }
         setIsLoading(true);
