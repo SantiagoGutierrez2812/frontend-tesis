@@ -9,7 +9,7 @@ import type { product_id_record } from "../../services/types/product/product";
 import { getSuppliers } from "../../services/supplier/supplier_service";
 import type { Proveedor } from "../../services/types/supplier_interface";
 import "./AddProductForm.css";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 /* ---------- MODAL DE CONFIRMACIÓN ---------- */
@@ -177,6 +177,13 @@ export default function AddTransactionForm({
     setConfirmOpen(false);
     setLoading(true);
 
+    const userId = localStorage.getItem("user_id");
+    if (!userId) {
+      toast.error("Error de autenticacion. Por favor, inicie sesion nuevamente");
+      setLoading(false);
+      return;
+    }
+
     const currentDate = new Date().toISOString().split("T")[0];
     const newTxData: CreateTransactionData & {
       total_price?: number;
@@ -188,9 +195,9 @@ export default function AddTransactionForm({
       total_price: totalNumber,
       transaction_date: currentDate,
       product_id: selectedProductId!,
-      branch_id: branchId || Number(localStorage.getItem("branch_id") || 1),
+      branch_id: branchId || Number(localStorage.getItem("branch_id")),
       transaction_type_id: transactionTypeId!,
-      app_user_id: Number(localStorage.getItem("user_id") || 1),
+      app_user_id: Number(userId),
     };
 
     if ((transactionTypeId === 1 || transactionTypeId === 4) && supplierId !== null)
@@ -198,12 +205,20 @@ export default function AddTransactionForm({
 
     try {
       const newTx = await createTransaction(newTxData);
+      toast.success("Transaccion creada correctamente");
       onTransactionCreated(newTx);
-      toast.success("Transacción creada correctamente");
-      onClose();
-    } catch (err) {
+      // Close modal after a small delay to allow toast to show
+      setTimeout(() => onClose(), 100);
+    } catch (err: any) {
       console.error("Error:", err);
-      toast.error("Error al crear la transacción");
+      const errorMessage = err.message || "Error al crear la transaccion";
+
+      // Check if error is about insufficient stock
+      if (errorMessage.includes("stock") || errorMessage.includes("suficiente")) {
+        toast.error(errorMessage);
+      } else {
+        toast.error("Error al crear la transaccion");
+      }
     } finally {
       setLoading(false);
     }
@@ -211,7 +226,6 @@ export default function AddTransactionForm({
 
   return (
     <>
-      <ToastContainer />
       <div className="product-form">
         <h2 className="form-title">Registrar nueva transacción</h2>
 

@@ -85,7 +85,7 @@ const Dashboard = () => {
         }
         setLoading(true);
         try {
-            await updateUser(
+            const updatedUser = await updateUser(
                 editedData.document_id,
                 {
                     name: editedData.name,
@@ -100,6 +100,17 @@ const Dashboard = () => {
             const refreshed = await getCurrentUser();
             setUserData(refreshed);
             setUserName(refreshed.name.trim());
+
+            // Update localStorage if the edited user is the current logged-in user
+            const currentUserId = localStorage.getItem("user_id");
+            if (currentUserId && String(updatedUser.id) === currentUserId) {
+                if (updatedUser.branch_id) {
+                    localStorage.setItem("branch_id", String(updatedUser.branch_id));
+                    // Dispatch custom event to notify other components
+                    window.dispatchEvent(new Event("branchChanged"));
+                }
+            }
+
             toast.success("Información actualizada correctamente");
             setShowModal(false);
             setNewPassword("");
@@ -197,9 +208,9 @@ const Dashboard = () => {
                                 <label>Documento de Identidad</label>
                                 <input type="text" name="document_id" value={editedData?.document_id || ""} onChange={handleInputChange} required />
                                 <label>Nueva Contraseña (opcional)</label>
-                                <input type="password" name="new_password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="Dejar en blanco para no cambiar" />
+                                <input type="password" name="new_password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="Dejar en blanco para no cambiar" autoComplete="new-password" />
                                 <label>Confirmar Nueva Contraseña</label>
-                                <input type="password" name="confirm_password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="Confirmar nueva contraseña" disabled={!newPassword} />
+                                <input type="password" name="confirm_password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="Confirmar nueva contraseña" disabled={!newPassword} autoComplete="new-password" />
                                 <label>Teléfono</label>
                                 <input type="text" name="phone_number" value={editedData?.phone_number || ""} onChange={handleInputChange} required />
                                 <label>Rol</label>

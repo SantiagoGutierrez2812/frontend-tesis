@@ -15,7 +15,7 @@ import {
 import { getBranches } from "../services/branchService/branchService";
 import type { Branch } from "../services/types/branch/branchService";
 import { getInventories } from "../services/inventory/app_inventario";
-import { FaFacebook, FaTwitter, FaInstagram } from "react-icons/fa";
+import { FaInstagram } from "react-icons/fa";
 
 export default function Home() {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -113,7 +113,7 @@ export default function Home() {
         return () => window.removeEventListener("resize", resizeCanvas);
     }, []);
 
-    // 🧠 Login
+    // Login
     const handleLogin = async () => {
         setIsLoading(true);
         setError("");
@@ -121,23 +121,54 @@ export default function Home() {
             const data = await login(username, password);
             if (data.ok) {
                 setIsVerificationStep(true);
-                toast.info(`🔐 Te enviamos un código a tu correo. ${data.message}`);
+                toast.info(`Te enviamos un codigo a tu correo. ${data.message}`);
             } else {
                 setError(data.message || "Respuesta inesperada del servidor");
             }
         } catch (e: any) {
-            setError(e.message || "Error al iniciar sesión");
-            toast.error(`❌ ${e.message || "Error al iniciar sesión"}`);
+            const errorMsg = e.message || "Error al iniciar sesion";
+            setError(errorMsg);
+
+            // Check if it's a rate limit block message
+            if (errorMsg.includes("bloqueada") || errorMsg.includes("bloqueado")) {
+                // Extract time if present in message
+                const timeMatch = errorMsg.match(/(\d+)\s*minutos?/);
+                if (timeMatch) {
+                    toast.error(`Cuenta bloqueada. Debe esperar ${timeMatch[1]} minutos antes de intentar nuevamente.`, {
+                        autoClose: 8000
+                    });
+                } else {
+                    toast.error(errorMsg, { autoClose: 8000 });
+                }
+            } else if (errorMsg.includes("Demasiados intentos")) {
+                toast.error(errorMsg, { autoClose: 8000 });
+            } else if (errorMsg.includes("Le quedan")) {
+                // Extract remaining attempts
+                const attemptsMatch = errorMsg.match(/Le quedan (\d+) intentos?/);
+                if (attemptsMatch) {
+                    toast.error(errorMsg);
+                    toast.warning(`Atencion: solo le quedan ${attemptsMatch[1]} intentos antes de ser bloqueado por 30 minutos.`, {
+                        autoClose: 6000
+                    });
+                } else {
+                    toast.error(errorMsg);
+                }
+            } else {
+                toast.error(errorMsg);
+                toast.warning("Recuerde: tiene un maximo de 5 intentos antes de ser bloqueado por 30 minutos.", {
+                    autoClose: 5000
+                });
+            }
         } finally {
             setIsLoading(false);
         }
     };
 
-    // 🧩 OTP Login
+    // OTP Login
     const handleVerifyCode = async () => {
         const trimmedCode = verificationCode.trim();
         if (trimmedCode.length < 4) {
-            toast.error("❌ El código debe tener al menos 4 dígitos.");
+            toast.error("El codigo debe tener al menos 4 digitos.");
             return;
         }
         setIsLoading(true);
@@ -146,7 +177,7 @@ export default function Home() {
         try {
             const result: LoginSuccessResponse = await verifyOtp(username, trimmedCode);
             if (result.ok && result) {
-                toast.success("✅ Código verificado y sesión iniciada");
+                toast.success("Codigo verificado y sesion iniciada");
                 setIsModalOpen(false);
                 setIsVerificationStep(false);
 
@@ -155,11 +186,41 @@ export default function Home() {
                 else if (role === "2") navigate("/registro");
                 else navigate("/no-autorizado");
             } else {
-                toast.error("❌ Código inválido o error al verificar.");
+                toast.error("Codigo invalido o error al verificar.");
             }
         } catch (e: any) {
-            setError(e.message || "Error al verificar código");
-            toast.error(`❌ ${e.message || "Error al verificar código"}`);
+            const errorMsg = e.message || "Error al verificar codigo";
+            setError(errorMsg);
+
+            // Check if it's a rate limit block message
+            if (errorMsg.includes("bloqueada") || errorMsg.includes("bloqueado")) {
+                const timeMatch = errorMsg.match(/(\d+)\s*minutos?/);
+                if (timeMatch) {
+                    toast.error(`Cuenta bloqueada. Debe esperar ${timeMatch[1]} minutos antes de intentar nuevamente.`, {
+                        autoClose: 8000
+                    });
+                } else {
+                    toast.error(errorMsg, { autoClose: 8000 });
+                }
+            } else if (errorMsg.includes("Demasiados intentos")) {
+                toast.error(errorMsg, { autoClose: 8000 });
+            } else if (errorMsg.includes("Le quedan")) {
+                // Extract remaining attempts
+                const attemptsMatch = errorMsg.match(/Le quedan (\d+) intentos?/);
+                if (attemptsMatch) {
+                    toast.error(errorMsg);
+                    toast.warning(`Atencion: solo le quedan ${attemptsMatch[1]} intentos antes de ser bloqueado por 15 minutos.`, {
+                        autoClose: 6000
+                    });
+                } else {
+                    toast.error(errorMsg);
+                }
+            } else {
+                toast.error(errorMsg);
+                toast.warning("Recuerde: tiene un maximo de 3 intentos antes de ser bloqueado por 15 minutos.", {
+                    autoClose: 5000
+                });
+            }
         } finally {
             setIsLoading(false);
         }
@@ -185,7 +246,7 @@ export default function Home() {
 
     const handleVerifyOtpRecovery = async () => {
         if (!otpCode || otpCode.length < 4) {
-            toast.error("❌ Ingresa un código válido.");
+            toast.error("Ingresa un codigo valido.");
             return;
         }
         setIsLoading(true);
@@ -194,10 +255,39 @@ export default function Home() {
             if (res.ok) {
                 toast.success(res.message);
                 setIsOtpStep(false);
-                setIsResetStep(true); // paso cambiar contraseña
+                setIsResetStep(true);
             }
         } catch (e: any) {
-            toast.error(e.message || "Error verificando código OTP.");
+            const errorMsg = e.message || "Error verificando codigo OTP.";
+
+            // Check if it's a rate limit block message
+            if (errorMsg.includes("bloqueada") || errorMsg.includes("bloqueado")) {
+                const timeMatch = errorMsg.match(/(\d+)\s*minutos?/);
+                if (timeMatch) {
+                    toast.error(`Cuenta bloqueada. Debe esperar ${timeMatch[1]} minutos antes de intentar nuevamente.`, {
+                        autoClose: 8000
+                    });
+                } else {
+                    toast.error(errorMsg, { autoClose: 8000 });
+                }
+            } else if (errorMsg.includes("Demasiados intentos")) {
+                toast.error(errorMsg, { autoClose: 8000 });
+            } else if (errorMsg.includes("Le quedan")) {
+                const attemptsMatch = errorMsg.match(/Le quedan (\d+) intentos?/);
+                if (attemptsMatch) {
+                    toast.error(errorMsg);
+                    toast.warning(`Atencion: solo le quedan ${attemptsMatch[1]} intentos antes de ser bloqueado por 15 minutos.`, {
+                        autoClose: 6000
+                    });
+                } else {
+                    toast.error(errorMsg);
+                }
+            } else {
+                toast.error(errorMsg);
+                toast.warning("Recuerde: tiene un maximo de 3 intentos antes de ser bloqueado por 15 minutos.", {
+                    autoClose: 5000
+                });
+            }
         } finally {
             setIsLoading(false);
         }
@@ -291,9 +381,14 @@ export default function Home() {
             {/* Footer */}
             <footer className={styles.footer}>
                 <div className={styles.socialIcons}>
-                    <FaFacebook className={styles.icon} />
-                    <FaTwitter className={styles.icon} />
-                    <FaInstagram className={styles.icon} />
+                    <a
+                        href="https://www.instagram.com/improexpresspublicidad/?hl=es"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="Instagram"
+                    >
+                        <FaInstagram className={styles.icon} />
+                    </a>
                 </div>
             </footer>
 
@@ -327,7 +422,6 @@ export default function Home() {
                                     >
                                         {isLoading ? "Cargando..." : "Entrar"}
                                     </button>
-                                    {error && <p style={{ color: "red" }}>{error}</p>}
                                     <button
                                         className={styles.linkButton}
                                         onClick={() => setIsRecovery(true)}
@@ -336,7 +430,13 @@ export default function Home() {
                                     </button>
                                     <button
                                         className={styles.closeButton}
-                                        onClick={() => setIsModalOpen(false)}
+                                        onClick={() => {
+                                            setIsModalOpen(false);
+                                            setIsVerificationStep(false);
+                                            setIsRecovery(false);
+                                            setVerificationCode("");
+                                            setError("");
+                                        }}
                                     >
                                         Cerrar
                                     </button>
@@ -367,10 +467,14 @@ export default function Home() {
                                     >
                                         {isLoading ? "Verificando..." : "Verificar código"}
                                     </button>
-                                    {error && <p style={{ color: "red" }}>{error}</p>}
                                     <button
                                         className={styles.closeButton}
-                                        onClick={() => setIsModalOpen(false)}
+                                        onClick={() => {
+                                            setIsModalOpen(false);
+                                            setIsVerificationStep(false);
+                                            setVerificationCode("");
+                                            setError("");
+                                        }}
                                     >
                                         Cerrar
                                     </button>
@@ -402,6 +506,17 @@ export default function Home() {
                                         >
                                             Volver al login
                                         </button>
+                                        <button
+                                            className={styles.closeButton}
+                                            onClick={() => {
+                                                setIsModalOpen(false);
+                                                setIsRecovery(false);
+                                                setRecoveryEmail("");
+                                                setError("");
+                                            }}
+                                        >
+                                            Cerrar
+                                        </button>
                                     </>
                                 )}
 
@@ -425,6 +540,19 @@ export default function Home() {
                                             disabled={isLoading || otpCode.length < 4}
                                         >
                                             {isLoading ? "Verificando..." : "Verificar código"}
+                                        </button>
+                                        <button
+                                            className={styles.closeButton}
+                                            onClick={() => {
+                                                setIsModalOpen(false);
+                                                setIsRecovery(false);
+                                                setIsOtpStep(false);
+                                                setRecoveryEmail("");
+                                                setOtpCode("");
+                                                setError("");
+                                            }}
+                                        >
+                                            Cerrar
                                         </button>
                                     </>
                                 )}
@@ -452,6 +580,22 @@ export default function Home() {
                                             disabled={isLoading || !newPassword || !confirmPassword}
                                         >
                                             {isLoading ? "Cambiando..." : "Cambiar contraseña"}
+                                        </button>
+                                        <button
+                                            className={styles.closeButton}
+                                            onClick={() => {
+                                                setIsModalOpen(false);
+                                                setIsRecovery(false);
+                                                setIsOtpStep(false);
+                                                setIsResetStep(false);
+                                                setRecoveryEmail("");
+                                                setOtpCode("");
+                                                setNewPassword("");
+                                                setConfirmPassword("");
+                                                setError("");
+                                            }}
+                                        >
+                                            Cerrar
                                         </button>
                                     </>
                                 )}

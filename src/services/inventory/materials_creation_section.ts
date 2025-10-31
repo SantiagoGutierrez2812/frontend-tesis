@@ -10,9 +10,15 @@ export async function get_read_from(branchId?: number): Promise<inventory_materi
     endpoint += `?branch_id=${branchId}`;
   }
 
+  const token = localStorage.getItem("token");
+  const headers: HeadersInit = { "Content-Type": "application/json" };
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+
   const res = await fetch(endpoint, {
     method: "GET",
-    headers: { "Content-Type": "application/json" },
+    headers,
   });
 
   if (!res.ok) {

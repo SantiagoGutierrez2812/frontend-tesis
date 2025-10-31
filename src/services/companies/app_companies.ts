@@ -15,9 +15,15 @@ export interface CompaniesResponse {
 const API_URL = import.meta.env.VITE_API_URL
 
 export async function getCompanyName(): Promise<CompaniesResponse> {
+    const token = localStorage.getItem("token");
+    const headers: HeadersInit = { "Content-Type": "application/json" };
+    if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+    }
+
     const res = await fetch(`${API_URL}/companies`, {
         method: "GET",
-        headers: { "Content-Type": "application/json" },
+        headers,
     });
 
     if (!res.ok) {

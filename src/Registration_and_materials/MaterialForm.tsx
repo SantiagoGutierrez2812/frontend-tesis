@@ -1,6 +1,7 @@
 import  { useEffect, useState, useMemo } from "react";
 import Modal from "./Modal/Modal";
 import TopControl from "../TopControl/TopControl";
+import ProfileModal from "./ProfileModal/ProfileModal";
 import { get_read_from } from "../services/inventory/materials_creation_section";
 import { getBranches } from "../services/branchService/branchService";
 import type { Branch } from "../services/types/branch/branchService";
@@ -16,16 +17,37 @@ export default function MaterialForm() {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
 
   // Control de sedes para administradores
   const userRole = localStorage.getItem("role");
-  const userBranchId = Number(localStorage.getItem("branch_id"));
   const isAdmin = userRole === "1";
 
   const [branches, setBranches] = useState<Branch[]>([]);
-  const [selectedBranchId, setSelectedBranchId] = useState<number>(
-    isAdmin ? 0 : userBranchId || 0
-  );
+  const [selectedBranchId, setSelectedBranchId] = useState<number>(() => {
+    return Number(localStorage.getItem("branch_id")) || 0;
+  });
+
+  // Listen for branch_id changes in localStorage
+  useEffect(() => {
+    const handleBranchChange = () => {
+      const newBranchId = Number(localStorage.getItem("branch_id"));
+      if (newBranchId && newBranchId !== selectedBranchId) {
+        setSelectedBranchId(newBranchId);
+      }
+    };
+
+    // Listen for custom branchChanged event
+    window.addEventListener("branchChanged", handleBranchChange);
+
+    // Also check on component focus (when navigating back to this page)
+    window.addEventListener("focus", handleBranchChange);
+
+    return () => {
+      window.removeEventListener("branchChanged", handleBranchChange);
+      window.removeEventListener("focus", handleBranchChange);
+    };
+  }, [selectedBranchId]);
 
   // Cargar sedes si es administrador
   useEffect(() => {
@@ -34,8 +56,9 @@ export default function MaterialForm() {
         try {
           const branchList = await getBranches();
           setBranches(branchList);
-          // Seleccionar la primera sede por defecto
-          if (branchList.length > 0 && selectedBranchId === 0) {
+          // Si no tiene branch asignado, seleccionar la primera sede
+          const currentBranchId = Number(localStorage.getItem("branch_id"));
+          if (!currentBranchId && branchList.length > 0 && selectedBranchId === 0) {
             setSelectedBranchId(branchList[0].id);
           }
         } catch (error) {
@@ -53,7 +76,8 @@ export default function MaterialForm() {
         setLoading(true);
       }
       // Filtrar por sede: admin usa la seleccionada, usuario usa la suya
-      const branchId = isAdmin ? (selectedBranchId || undefined) : userBranchId;
+      const currentBranchId = Number(localStorage.getItem("branch_id"));
+      const branchId = isAdmin ? (selectedBranchId || undefined) : currentBranchId;
       const data: inventory_material_record[] = await get_read_from(branchId);
       setInventories(data);
     } catch (error) {
@@ -107,7 +131,14 @@ export default function MaterialForm() {
 
   return (
     <div className="Overview">
-      <TopControl title="📦 Inventario de Productos" />
+      <TopControl
+        title="📦 Inventario de Productos"
+        extraMenuOption={{
+          label: "Perfil",
+          icon: "👤",
+          onClick: () => setShowProfileModal(true)
+        }}
+      />
       <div className="content">
         <div className="titele">Registro de Inventario</div>
 
@@ -120,7 +151,7 @@ export default function MaterialForm() {
               onChange={(e) => setSelectedBranchId(Number(e.target.value))}
               style={{ marginRight: "10px" }}
             >
-              <option value={0}>Seleccione una sede</option>
+              <option value={0} disabled>Seleccione una sede</option>
               {branches.map((branch) => (
                 <option key={branch.id} value={branch.id}>
                   {branch.name}
@@ -190,7 +221,7 @@ export default function MaterialForm() {
         <Modal onClose={() => setShowModal(false)}>
           <AddTransactionForm
             onClose={() => setShowModal(false)}
-            branchId={isAdmin ? selectedBranchId : userBranchId}
+            branchId={isAdmin ? selectedBranchId : Number(localStorage.getItem("branch_id")) || 0}
             onTransactionCreated={(newTx: Transaction) => {
               setTransactions((prev: Transaction[]) => [newTx, ...prev]);
               fetchInventoryData(false);
@@ -198,6 +229,11 @@ export default function MaterialForm() {
           />
         </Modal>
       )}
+
+      <ProfileModal
+        isOpen={showProfileModal}
+        onClose={() => setShowProfileModal(false)}
+      />
     </div>
   );
 }

@@ -10,9 +10,15 @@ export async function post_create_product(product: product_id_record) {
       is_active: product.is_active ?? true,
     };
 
+    const token = localStorage.getItem("token");
+    const headers: HeadersInit = { "Content-Type": "application/json" };
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+
     const response = await fetch(`${API_URL}/products/`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers,
       body: JSON.stringify(formattedProduct),
     });
 
@@ -29,9 +35,15 @@ export async function post_create_product(product: product_id_record) {
 }
 
 export async function get_all_products(): Promise<product_id_record[]> {
+  const token = localStorage.getItem("token");
+  const headers: HeadersInit = { "Content-Type": "application/json" };
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+
   const response = await fetch(`${API_URL}/products/`, {
     method: "GET",
-    headers: { "Content-Type": "application/json" },
+    headers,
   });
 
   if (!response.ok) {
@@ -46,8 +58,15 @@ export async function get_all_products(): Promise<product_id_record[]> {
 
 export async function delete_product(productId: number) {
   try {
+    const token = localStorage.getItem("token");
+    const headers: HeadersInit = {};
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+
     const response = await fetch(`${API_URL}/products/${productId}`, {
       method: "DELETE",
+      headers,
     });
 
     if (!response.ok) {
@@ -63,9 +82,15 @@ export async function delete_product(productId: number) {
 
 export async function patch_product(productId: number, data: Partial<product_id_record>) {
   try {
+    const token = localStorage.getItem("token");
+    const headers: HeadersInit = { "Content-Type": "application/json" };
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+
     const response = await fetch(`${API_URL}/products/${productId}`, {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers,
       body: JSON.stringify(data),
     });
 

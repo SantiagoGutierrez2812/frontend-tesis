@@ -3,11 +3,17 @@ import type { Branch, BranchesResponse } from "../types/branch/branchService";
 const API_URL = import.meta.env.VITE_API_URL 
 
 export async function getBranches(): Promise<Branch[]> {
-    const endpoint = `${API_URL}/branches/`; 
+    const endpoint = `${API_URL}/branches/`;
+
+    const token = localStorage.getItem("token");
+    const headers: HeadersInit = { "Content-Type": "application/json" };
+    if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+    }
 
     const res = await fetch(endpoint, {
         method: "GET",
-        headers: { "Content-Type": "application/json" },
+        headers,
     });
 
     if (!res.ok) {

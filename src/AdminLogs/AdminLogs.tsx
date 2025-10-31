@@ -121,6 +121,8 @@ export default function AdminLogs() {
       try {
         const txs = await getTransactions();
         const mappedTxs = txs.map(mapTransactionRecord);
+        // Sort by transaction_date descending (newest first)
+        mappedTxs.sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
         setTransactions(mappedTxs);
       } catch (err) {
         console.error("Error al cargar transacciones:", err);
@@ -145,6 +147,8 @@ export default function AdminLogs() {
             role: user?.role ? String(user.role) : undefined,
           };
         });
+        // Sort by created_at descending (newest first)
+        loginsWithUser.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
         setUserLogins(loginsWithUser);
       } catch (err) {
         console.error("Error al cargar logins de usuarios:", err);
