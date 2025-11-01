@@ -10,10 +10,10 @@ import {
 } from "../services/product/materials_creation_section";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import ProfileModal from "../components/ProfileModal"; // ✅ Import del modal de perfil
+import ProfileModal from "../components/ProfileModal"; // ✅ Modal de perfil
 
 interface Material {
-  id: number;
+  id: number; // id real del backend (no se muestra)
   nombre: string;
   tamaño: string;
   precio: number;
@@ -30,12 +30,11 @@ interface NewMaterialState {
 export default function Materialcreation() {
   const [showModal, setShowModal] = useState(false);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
-  const [showProfileModal, setShowProfileModal] = useState(false); // ✅ Modal de perfil
+  const [showProfileModal, setShowProfileModal] = useState(false);
   const [materials, setMaterials] = useState<Material[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<number | null>(null);
-  const [nextId, setNextId] = useState(1);
 
   const [newMaterial, setNewMaterial] = useState<NewMaterialState>({
     nombre: "",
@@ -44,7 +43,7 @@ export default function Materialcreation() {
     descripcion: "",
   });
 
-  const [searchTerm, setSearchTerm] = useState(""); // <- NUEVO ESTADO para buscar
+  const [searchTerm, setSearchTerm] = useState(""); // búsqueda
 
   const showToast = (message: string, type: "success" | "error" | "info" | "delete") => {
     const icon =
@@ -64,16 +63,13 @@ export default function Materialcreation() {
       try {
         const products = await get_all_products();
         const mappedMaterials: Material[] = products.map((p) => ({
-          id: (p as any).id ?? nextId,
+          id: (p as any).id,
           nombre: p.name,
           tamaño: p.size,
           precio: Number(p.price),
           descripcion: p.description,
         }));
-
         setMaterials(mappedMaterials);
-        const maxId = mappedMaterials.reduce((max, m) => Math.max(max, m.id), 0);
-        setNextId(maxId + 1);
         setError(null);
       } catch {
         setError("Error al cargar los materiales.");
@@ -209,7 +205,7 @@ export default function Materialcreation() {
           type="text"
           placeholder="🔍 Buscar material..."
           className="search-input"
-          value={searchTerm} // <- vinculamos
+          value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
         <button
@@ -246,10 +242,10 @@ export default function Materialcreation() {
               materials
                 .filter((mat) =>
                   mat.nombre.toLowerCase().includes(searchTerm.toLowerCase())
-                ) // <- FILTRADO POR NOMBRE
-                .map((mat) => (
+                )
+                .map((mat, index) => (
                   <tr key={mat.id}>
-                    <td>{mat.id}</td>
+                    <td>{index + 1}</td> {/* ✅ ID autogenerado */}
                     <td>{mat.nombre}</td>
                     <td>{mat.tamaño}</td>
                     <td>{mat.descripcion}</td>

@@ -62,6 +62,7 @@ body {
 
 /* Tabla Principal */
 .logs-table-container {
+    height: 401px;
     max-height: 500px;
     overflow-y: auto;
     border: 1px solid var(--border-color);

@@ -456,6 +456,7 @@ export const VisualStaff = () => {
             {showModal && (
                 <div className={styles.modalOverlay}>
                     <div className={styles.modal}>
+                    <p className={styles.qualification}>Registro de empleado</p>
                         <form onSubmit={handleSubmit} className={styles.form}>
                             <input
                                 type="text"

@@ -47,6 +47,38 @@ const ConfirmModal = ({
 };
 // ===============================================================
 
+// ✅ Lista de ciudades de Colombia
+const ciudadesColombia = [
+  "Bogotá",
+  "Medellín",
+  "Cali",
+  "Barranquilla",
+  "Cartagena",
+  "Bucaramanga",
+  "Cúcuta",
+  "Manizales",
+  "Pereira",
+  "Armenia",
+  "Santa Marta",
+  "Ibagué",
+  "Neiva",
+  "Villavicencio",
+  "Sincelejo",
+  "Montería",
+  "Popayán",
+  "Tunja",
+  "Valledupar",
+  "Pasto",
+];
+
+function normalizeCity(city: string): string {
+  return city
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim();
+}
+
 function sanitizeSupplier(supplier: Proveedor) {
   const allowed = [
     "name",
@@ -114,7 +146,7 @@ export default function GestionProveedores() {
   }, []);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
 
@@ -158,7 +190,9 @@ export default function GestionProveedores() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!nuevoProveedor.name.trim()) return toast.warn("El nombre es obligatorio");
+    if (nuevoProveedor.name.trim().length < 3)
+      return toast.warn("El nombre debe tener al menos 3 caracteres");
+
     if (!/^\d{9}$/.test(String(nuevoProveedor.nit)))
       return toast.warn("El NIT debe tener exactamente 9 dígitos");
     if (!nuevoProveedor.email.includes("@"))
@@ -169,6 +203,9 @@ export default function GestionProveedores() {
       return toast.warn("El teléfono solo debe contener números");
     if (!nuevoProveedor.description || nuevoProveedor.description.length < 9)
       return toast.warn("La descripción debe tener al menos 9 caracteres");
+
+    if (!ciudadesColombia.includes(nuevoProveedor.city ?? ""))
+      return toast.warn("Debe seleccionar una ciudad válida de Colombia");
 
     const nitDuplicado = proveedores.some(
       (p) => p.nit === nuevoProveedor.nit && (!editando || p.id !== editando.id)
@@ -224,12 +261,14 @@ export default function GestionProveedores() {
     p.name?.toLowerCase().includes(filtro.toLowerCase())
   );
 
-  const ciudades = [...new Set(proveedores.map((p) => p.city))];
-  const data = ciudades.map((c) => ({
-    name: c,
-    value: proveedores.filter((p) => p.city === c).length,
+  const data = [...new Set(proveedores.map((p) => normalizeCity(p.city ?? "")))].map((city) => ({
+    name: city,
+    value: proveedores.filter(
+      (p) => normalizeCity(p.city ?? "") === city
+    ).length,
   }));
-  const COLORS = ["#0070ff", "#00c49f", "#ffb400", "#e74c3c"];
+
+  const COLORS = ["#0070ff", "#00c49f", "#ffb400", "#e74c3c", "#9b59b6"];
 
   return (
     <div className="proveedores-container">
@@ -252,7 +291,7 @@ export default function GestionProveedores() {
           </div>
           <div className="stat-card">
             <h3>🏙️ Ciudades</h3>
-            <p>{ciudades.length}</p>
+            <p>{data.length}</p>
           </div>
           <div className="stat-card">
             <h3>Distribución por ciudad</h3>
@@ -289,6 +328,7 @@ export default function GestionProveedores() {
                 <th>Teléfono</th>
                 <th>Dirección</th>
                 <th>Descripción</th>
+                <th>Ciudad</th>
                 <th>Acciones</th>
               </tr>
             </thead>
@@ -303,6 +343,7 @@ export default function GestionProveedores() {
                   <td>{p.phone_number}</td>
                   <td>{p.address}</td>
                   <td>{p.description}</td>
+                  <td>{p.city}</td>
                   <td className="acciones">
                     <button className="btn-editar" onClick={() => abrirModalEditar(p)}>✏️</button>
                     <button className="btn-eliminar" onClick={() => eliminarProveedor(p.id)}>🗑️</button>
@@ -322,20 +363,41 @@ export default function GestionProveedores() {
             <form onSubmit={handleSubmit}>
               <label>Nombre</label>
               <input name="name" value={nuevoProveedor.name} onChange={handleChange} required />
+
               <label>NIT</label>
               <input name="nit" value={nuevoProveedor.nit} onChange={handleChange} required />
+
               <label>Email</label>
               <input name="email" type="email" value={nuevoProveedor.email} onChange={handleChange} required />
+
               <label>Nombre de contacto</label>
               <input name="contact_name" value={nuevoProveedor.contact_name} onChange={handleChange} required />
+
               <label>Teléfono</label>
               <input name="phone_number" value={nuevoProveedor.phone_number} onChange={handleChange} required />
+
               <label>Dirección</label>
               <input name="address" value={nuevoProveedor.address} onChange={handleChange} required />
+
               <label>Ciudad</label>
-              <input name="city" value={nuevoProveedor.city} onChange={handleChange} required />
+              <select
+                name="city"
+                value={nuevoProveedor.city}
+                onChange={handleChange}
+                className="select-ciudad"
+                required
+              >
+                <option value="">Selecciona una ciudad</option>
+                {ciudadesColombia.map((c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
+              </select>
+
               <label>Descripción</label>
               <textarea name="description" value={nuevoProveedor.description} onChange={handleChange} required />
+
               <div className="modal-buttons">
                 <button type="submit" className="btn-guardar">
                   {editando ? "Actualizar" : "Guardar"}

@@ -246,3 +246,10 @@
 .closeBtn:hover {
   background: #0f3460;
 }
+.qualification{
+  display: flex;
+  justify-content: center;
+  font-size: 25px;
+  color: rgb(10, 10, 10);
+  padding: 20px;
+}
