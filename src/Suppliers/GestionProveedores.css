@@ -514,14 +514,18 @@
   font-size: 15px;
   outline: none;
   transition: all 0.2s ease-in-out;
-  appearance: none; /* oculta la flecha por defecto */
+  appearance: none;
+  cursor: pointer;
+
+  /* Flecha personalizada */
   background-image: linear-gradient(45deg, transparent 50%, #0070ff 50%),
     linear-gradient(135deg, #0070ff 50%, transparent 50%);
-  background-position: calc(100% - 20px) calc(1.2em), calc(100% - 15px) calc(1.2em);
+  background-position: calc(100% - 18px) 55%, calc(100% - 13px) 55%;
   background-size: 5px 5px, 5px 5px;
   background-repeat: no-repeat;
 }
 
+/* Hover y focus */
 .select-ciudad:hover {
   border-color: #0070ff;
   background-color: #f1f8ff;
@@ -529,11 +533,39 @@
 
 .select-ciudad:focus {
   border-color: #0070ff;
-  box-shadow: 0 0 5px rgba(0, 112, 255, 0.3);
+  box-shadow: 0 0 4px rgba(0, 112, 255, 0.3);
   background-color: #fff;
 }
 
+/* Opciones dentro del select */
 .select-ciudad option {
-  background-color: white;
+  padding: 6px 10px;
+  font-size: 14px;
+  background-color: #fff;
   color: #333;
+}
+
+/* --- ESTILO PERSONALIZADO PARA EL MENÚ DESPLEGABLE --- */
+select.select-ciudad::-webkit-scrollbar {
+  width: 6px;
+}
+select.select-ciudad::-webkit-scrollbar-thumb {
+  background-color: #6b6e72;
+  border-radius: 10px;
+}
+
+/* Forzar apertura hacia abajo */
+.select-ciudad {
+  position: relative;
+  overflow: hidden;
+}
+
+.select-ciudad:focus option {
+  max-height: 150px;
+}
+
+/* En algunos navegadores */
+.select-ciudad option:checked {
+
+  color: #fff;
 }

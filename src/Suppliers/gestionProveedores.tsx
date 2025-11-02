@@ -15,6 +15,7 @@ import {
   updateSupplier,
 } from "../services/supplier/supplier_service";
 import type { Proveedor } from "../services/types/supplier_interface";
+import CustomSelect from "../components/Custom/CustomSelect";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -47,7 +48,6 @@ const ConfirmModal = ({
 };
 // ===============================================================
 
-// ✅ Lista de ciudades de Colombia
 const ciudadesColombia = [
   "Bogotá",
   "Medellín",
@@ -103,7 +103,7 @@ export default function GestionProveedores() {
   const [filtro, setFiltro] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
-  const [onConfirmAction, setOnConfirmAction] = useState<() => void>(() => {});
+  const [onConfirmAction, setOnConfirmAction] = useState<() => void>(() => { });
   const [editando, setEditando] = useState<Proveedor | null>(null);
   const [nuevoProveedor, setNuevoProveedor] = useState<Proveedor>({
     id: 0,
@@ -273,7 +273,6 @@ export default function GestionProveedores() {
   return (
     <div className="proveedores-container">
       <TopControl title="🚀 Panel de Gestión de Proveedores" />
-
       <ToastContainer position="top-right" autoClose={3000} />
 
       <div className="proveedores-card">
@@ -380,20 +379,14 @@ export default function GestionProveedores() {
               <input name="address" value={nuevoProveedor.address} onChange={handleChange} required />
 
               <label>Ciudad</label>
-              <select
+              <CustomSelect
                 name="city"
-                value={nuevoProveedor.city}
+                value={nuevoProveedor.city || ""}
                 onChange={handleChange}
-                className="select-ciudad"
+                options={ciudadesColombia}
+                placeholder="Selecciona una ciudad"
                 required
-              >
-                <option value="">Selecciona una ciudad</option>
-                {ciudadesColombia.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
-                ))}
-              </select>
+              />
 
               <label>Descripción</label>
               <textarea name="description" value={nuevoProveedor.description} onChange={handleChange} required />
