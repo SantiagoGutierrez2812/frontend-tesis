@@ -1,3 +1,8 @@
+/* Asegurar que el ToastContainer esté por encima del modal */
+.Toastify__toast-container {
+  z-index: 9999 !important;
+}
+
 .Toastify__toast {
   border-radius: 10px;
   font-family: "Poppins", sans-serif;

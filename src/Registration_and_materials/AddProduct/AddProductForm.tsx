@@ -205,8 +205,7 @@ export default function AddTransactionForm({
       const newTx = await createTransaction(newTxData);
       onTransactionCreated(newTx);
       toast.success("Transaccion creada correctamente");
-      // Cerrar modal después de permitir que se muestre el toast
-      setTimeout(() => onClose(), 500);
+      onClose();
     } catch (err: unknown) {
       if (err instanceof Error) {
         console.error("Error:", err);
@@ -219,6 +218,7 @@ export default function AddTransactionForm({
           toast.error("Error al crear la transaccion");
         }
       }
+    } finally {
       setLoading(false);
     }
   };
