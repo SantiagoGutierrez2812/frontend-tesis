@@ -81,7 +81,18 @@ export default function Home() {
         console.error("Error cargando datos:", err);
       }
     }
+
+    // Cargar datos inmediatamente
     fetchData();
+
+    // Configurar actualización automática cada 30 segundos
+    const intervalId = setInterval(() => {
+      fetchData();
+      console.log("[Auto-refresh] Inventario actualizado");
+    }, 30000); // 30 segundos
+
+    // Limpiar intervalo cuando el componente se desmonte
+    return () => clearInterval(intervalId);
   }, []);
 
   // Fondo de partículas
