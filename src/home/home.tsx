@@ -85,11 +85,11 @@ export default function Home() {
     // Cargar datos inmediatamente
     fetchData();
 
-    // Configurar actualización automática cada 30 segundos
+    // Configurar actualización automática cada minuto
     const intervalId = setInterval(() => {
       fetchData();
       console.log("[Auto-refresh] Inventario actualizado");
-    }, 30000); // 30 segundos
+    }, 60000); // 1 minuto
 
     // Limpiar intervalo cuando el componente se desmonte
     return () => clearInterval(intervalId);
