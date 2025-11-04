@@ -8,6 +8,7 @@ import { get_all_products } from "../../services/product/materials_creation_sect
 import type { product_id_record } from "../../services/types/product/product";
 import { getSuppliers } from "../../services/supplier/supplier_service";
 import type { Proveedor } from "../../services/types/supplier_interface";
+import { fetchWithAuth } from "../../utils/fetchWithAuth";
 import "./AddProductForm.css";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -86,12 +87,9 @@ export default function AddTransactionForm({
         const productsData = await get_all_products();
         setProducts(productsData);
 
-        const API_URL = import.meta.env.VITE_API_URL;
-        const token = localStorage.getItem("token");
-        const res = await fetch(`${API_URL}/transaction_types/`, {
+        const res = await fetchWithAuth("/transaction_types/", {
           headers: {
             "Content-Type": "application/json",
-            ...(token && { Authorization: `Bearer ${token}` }),
           },
         });
 

@@ -176,3 +176,51 @@ export async function resetPassword(
 
     return response.json();
 }
+
+// ----------------------------
+// Reenviar OTP para login
+// ----------------------------
+export async function resendOtpLogin(username: string): Promise<{ ok: boolean; message: string }> {
+    const response = await fetch(`${API_URL}/auth/resend-otp-login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username }),
+    });
+
+    if (!response.ok) {
+        let errorMessage = "No se pudo reenviar el código.";
+        try {
+            const errorData = await response.json();
+            errorMessage = errorData.error || errorData.message || errorMessage;
+        } catch {
+            errorMessage = `Error HTTP: ${response.status}`;
+        }
+        throw new Error(errorMessage);
+    }
+
+    return response.json();
+}
+
+// ----------------------------
+// Reenviar OTP para recuperación de contraseña
+// ----------------------------
+export async function resendOtpPassword(email: string): Promise<{ ok: boolean; message: string }> {
+    const response = await fetch(`${API_URL}/auth/resend-otp-password`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+    });
+
+    if (!response.ok) {
+        let errorMessage = "No se pudo reenviar el código.";
+        try {
+            const errorData = await response.json();
+            errorMessage = errorData.error || errorData.message || errorMessage;
+        } catch {
+            errorMessage = `Error HTTP: ${response.status}`;
+        }
+        throw new Error(errorMessage);
+    }
+
+    return response.json();
+}

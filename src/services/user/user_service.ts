@@ -1,19 +1,11 @@
 import type { UserTransformed } from "../types/user/user";
-
-const API_URL = import.meta.env.VITE_API_URL;
+import { fetchWithAuth } from "../../utils/fetchWithAuth";
 
 export async function getCurrentUser(): Promise<UserTransformed> {
-    const token = localStorage.getItem("token");
-
-    if (!token) {
-        throw new Error("No hay token de autenticación");
-    }
-
-    const res = await fetch(`${API_URL}/user/me`, {
+    const res = await fetchWithAuth("/user/me", {
         method: 'GET',
         headers: {
             "Content-Type": "application/json",
-            'Authorization': `Bearer ${token}`
         }
     });
 
@@ -33,18 +25,15 @@ export async function getCurrentUser(): Promise<UserTransformed> {
 }
 
 export async function updateUser(documentId: string, user: Partial<UserTransformed>, newPassword?: string): Promise<UserTransformed> {
-    const token = localStorage.getItem("token");
-
     const body: any = { ...user };
     if (newPassword) {
         body.new_password = newPassword;
     }
 
-    const res = await fetch(`${API_URL}/user/${documentId}`, {
+    const res = await fetchWithAuth(`/user/${documentId}`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify(body),
     });

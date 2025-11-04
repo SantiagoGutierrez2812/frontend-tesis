@@ -1,27 +1,13 @@
 // services/log/log.ts
 import type { LogRecord } from "../types/log/log";
-
-const API_URL = import.meta.env.VITE_API_URL;
+import { fetchWithAuth } from "../../utils/fetchWithAuth";
 
 export async function get_all_logs(): Promise<LogRecord[]> {
-  if (!API_URL) {
-    console.error("VITE_API_URL no está definido. Revisa tu archivo .env");
-    return [];
-  }
-
-  const token = localStorage.getItem("token");
-
-  if (!token) {
-    console.warn("⚠️ No hay token. No se puede acceder a los logs.");
-    return [];
-  }
-
   try {
-    const response = await fetch(`${API_URL}/logs`, {
+    const response = await fetchWithAuth("/logs", {
       method: "GET",
-      headers: { 
+      headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`,
       },
     });
 

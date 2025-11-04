@@ -1,19 +1,13 @@
-import type { Branch, BranchesResponse } from "../types/branch/branchService"; 
-
-const API_URL = import.meta.env.VITE_API_URL 
+import type { Branch, BranchesResponse } from "../types/branch/branchService";
+import { fetchWithAuth } from "../../utils/fetchWithAuth";
 
 export async function getBranches(): Promise<Branch[]> {
-    const endpoint = `${API_URL}/branches/`;
-
-    const token = localStorage.getItem("token");
-    const headers: HeadersInit = { "Content-Type": "application/json" };
-    if (token) {
-        headers["Authorization"] = `Bearer ${token}`;
-    }
-
-    const res = await fetch(endpoint, {
+    const res = await fetchWithAuth("/branches/", {
         method: "GET",
-        headers,
+        headers: {
+            "Content-Type": "application/json"
+        },
+        requiresAuth: false, // Esta API puede no requerir auth, mantener el comportamiento anterior
     });
 
     if (!res.ok) {
@@ -25,6 +19,6 @@ export async function getBranches(): Promise<Branch[]> {
     if (!result.ok || !result.branches) {
         throw new Error("La API devolvió un estado 'ok: false' o no hay lista de sedes.");
     }
-    
+
     return result.branches;
 }

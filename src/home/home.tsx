@@ -10,6 +10,8 @@ import {
   verifyOtpPassword,
   resetPassword,
   type LoginSuccessResponse,
+  resendOtpLogin,
+  resendOtpPassword,
 } from "../services/authservice/authService";
 
 import { getBranches } from "../services/branchService/branchService";
@@ -41,10 +43,11 @@ export default function Home() {
   const navigate = useNavigate();
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  // 🕒 CONTADOR OTP (Login y Recuperación)
+  // Contador de tiempo de expiración OTP (compartido)
   const [timeLeft, setTimeLeft] = useState(600); // 10 minutos
   const [isTimerActive, setIsTimerActive] = useState(false);
 
+  // Temporizador de expiración OTP
   useEffect(() => {
     if (!isTimerActive) return;
     if (timeLeft <= 0) {
@@ -56,13 +59,14 @@ export default function Home() {
     return () => clearInterval(timer);
   }, [timeLeft, isTimerActive]);
 
+  // Función para formatear el tiempo
   const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60);
     const s = seconds % 60;
     return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
   };
 
-  // 🧩 Datos iniciales
+  // Cargar datos iniciales
   useEffect(() => {
     async function fetchData() {
       try {
@@ -80,7 +84,7 @@ export default function Home() {
     fetchData();
   }, []);
 
-  // 🪶 Fondo partículas
+  // Fondo de partículas
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -136,17 +140,19 @@ export default function Home() {
       if (data.ok) {
         setIsVerificationStep(true);
         setIsTimerActive(true);
-        setTimeLeft(600); // reiniciar contador
+        setTimeLeft(600);
         toast.info(`Te enviamos un código a tu correo. ${data.message}`);
       }
-    } catch (e: any) {
-      toast.error(e.message || "Error al iniciar sesión.");
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        toast.error(e.message || "Error al iniciar sesión.");
+      }
     } finally {
       setIsLoading(false);
     }
   };
 
-  // OTP Login
+  // Verificar código OTP de login
   const handleVerifyCode = async () => {
     if (timeLeft <= 0) {
       toast.error("El código ha expirado, solicita uno nuevo.");
@@ -170,14 +176,16 @@ export default function Home() {
         else if (role === "2") navigate("/registro");
         else navigate("/no-autorizado");
       } else toast.error("Código inválido o error al verificar.");
-    } catch (e: any) {
-      toast.error(e.message || "Error al verificar código.");
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        toast.error(e.message || "Error al verificar código.");
+      }
     } finally {
       setIsLoading(false);
     }
   };
 
-  // 🔹 Recuperación
+  // Solicitar recuperación de contraseña
   const handleSendRecoveryEmail = async () => {
     if (!recoveryEmail) return toast.error("Ingresa un correo válido.");
     setIsLoading(true);
@@ -187,13 +195,16 @@ export default function Home() {
       setIsOtpStep(true);
       setIsTimerActive(true);
       setTimeLeft(600);
-    } catch (e: any) {
-      toast.error(e.message || "Error enviando correo de recuperación.");
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        toast.error(e.message || "Error enviando correo de recuperación.");
+      }
     } finally {
       setIsLoading(false);
     }
   };
 
+  // Verificar código OTP de recuperación
   const handleVerifyOtpRecovery = async () => {
     if (timeLeft <= 0) {
       toast.error("El código ha expirado, solicita uno nuevo.");
@@ -212,13 +223,16 @@ export default function Home() {
         setIsResetStep(true);
         setIsTimerActive(false);
       }
-    } catch (e: any) {
-      toast.error(e.message || "Error verificando código OTP.");
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        toast.error(e.message || "Error verificando código OTP.");
+      }
     } finally {
       setIsLoading(false);
     }
   };
 
+  // Resetear contraseña
   const handleResetPassword = async () => {
     if (!newPassword || newPassword.length < 6)
       return toast.error("❌ La contraseña debe tener al menos 6 caracteres.");
@@ -233,8 +247,48 @@ export default function Home() {
         setIsRecovery(false);
         setIsModalOpen(false);
       }
-    } catch (e: any) {
-      toast.error(e.message || "Error al cambiar la contraseña.");
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        toast.error(e.message || "Error al cambiar la contraseña.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Reenviar código OTP para login
+  const handleResendOtpLogin = async () => {
+    setIsLoading(true);
+    try {
+      const res = await resendOtpLogin(username);
+      if (res.ok) {
+        toast.success(res.message);
+        setTimeLeft(600);
+        setIsTimerActive(true);
+      }
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        toast.error(e.message || "Error al reenviar el código.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Reenviar código OTP para recuperación
+  const handleResendOtpPassword = async () => {
+    setIsLoading(true);
+    try {
+      const res = await resendOtpPassword(recoveryEmail);
+      if (res.ok) {
+        toast.success(res.message);
+        setTimeLeft(600);
+        setIsTimerActive(true);
+      }
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        toast.error(e.message || "Error al reenviar el código.");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -254,7 +308,7 @@ export default function Home() {
         </button>
       </header>
 
-      {/* Contenido principal */}
+      {/* Main Content */}
       <main className={styles.mainContent}>
         <div className={styles.loaderWrapper}>
           <p className={styles.loader}>
@@ -302,6 +356,7 @@ export default function Home() {
         </div>
       </main>
 
+      {/* Footer */}
       <footer className={styles.footer}>
         <div className={styles.socialIcons}>
           <a
@@ -315,7 +370,7 @@ export default function Home() {
         </div>
       </footer>
 
-      {/* MODAL LOGIN / OTP / RECUPERACIÓN */}
+      {/* Modal Login / OTP / Recuperación */}
       {isModalOpen && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
@@ -368,7 +423,6 @@ export default function Home() {
                   <p>
                     Ingresa el código recibido para <b>{username}</b>:
                   </p>
-                  {/* 🕒 TIMER LOGIN */}
                   <p style={{ fontSize: "14px", color: "#0070ff" }}>
                     Tiempo restante: {formatTime(timeLeft)}
                   </p>
@@ -396,13 +450,10 @@ export default function Home() {
                   {timeLeft <= 0 && (
                     <button
                       className={styles.secondaryButton}
-                      onClick={() => {
-                        setTimeLeft(600);
-                        setIsTimerActive(true);
-                        toast.info("Nuevo código reenviado 📩");
-                      }}
+                      onClick={handleResendOtpLogin}
+                      disabled={isLoading}
                     >
-                      Reenviar código
+                      {isLoading ? "Reenviando..." : "Reenviar código"}
                     </button>
                   )}
                   <button
@@ -411,6 +462,7 @@ export default function Home() {
                       setIsModalOpen(false);
                       setIsVerificationStep(false);
                       setVerificationCode("");
+                      setIsTimerActive(false);
                     }}
                   >
                     Cerrar
@@ -419,7 +471,7 @@ export default function Home() {
               )
             ) : (
               <>
-                {/* Recuperación */}
+                {/* Recuperación de contraseña */}
                 {!isOtpStep && !isResetStep && (
                   <>
                     <h2>Recuperar Contraseña</h2>
@@ -443,13 +495,25 @@ export default function Home() {
                     >
                       Volver al login
                     </button>
+                    <button
+                      className={styles.closeButton}
+                      onClick={() => {
+                        setIsModalOpen(false);
+                        setIsRecovery(false);
+                        setRecoveryEmail("");
+                      }}
+                    >
+                      Cerrar
+                    </button>
                   </>
                 )}
 
                 {isOtpStep && !isResetStep && (
                   <>
                     <h2>Verificar Código</h2>
-                    <p>Revisa tu correo <b>{recoveryEmail}</b> e ingresa el código:</p>
+                    <p>
+                      Revisa tu correo <b>{recoveryEmail}</b> e ingresa el código:
+                    </p>
                     <p style={{ fontSize: "14px", color: "#0070ff" }}>
                       Tiempo restante: {formatTime(timeLeft)}
                     </p>
@@ -474,15 +538,25 @@ export default function Home() {
                     {timeLeft <= 0 && (
                       <button
                         className={styles.secondaryButton}
-                        onClick={() => {
-                          setTimeLeft(600);
-                          setIsTimerActive(true);
-                          toast.info("Nuevo código reenviado 📩");
-                        }}
+                        onClick={handleResendOtpPassword}
+                        disabled={isLoading}
                       >
-                        Reenviar código
+                        {isLoading ? "Reenviando..." : "Reenviar código"}
                       </button>
                     )}
+                    <button
+                      className={styles.closeButton}
+                      onClick={() => {
+                        setIsModalOpen(false);
+                        setIsRecovery(false);
+                        setIsOtpStep(false);
+                        setRecoveryEmail("");
+                        setOtpCode("");
+                        setIsTimerActive(false);
+                      }}
+                    >
+                      Cerrar
+                    </button>
                   </>
                 )}
 
@@ -509,6 +583,21 @@ export default function Home() {
                       disabled={isLoading || !newPassword || !confirmPassword}
                     >
                       {isLoading ? "Cambiando..." : "Cambiar contraseña"}
+                    </button>
+                    <button
+                      className={styles.closeButton}
+                      onClick={() => {
+                        setIsModalOpen(false);
+                        setIsRecovery(false);
+                        setIsOtpStep(false);
+                        setIsResetStep(false);
+                        setRecoveryEmail("");
+                        setOtpCode("");
+                        setNewPassword("");
+                        setConfirmPassword("");
+                      }}
+                    >
+                      Cerrar
                     </button>
                   </>
                 )}

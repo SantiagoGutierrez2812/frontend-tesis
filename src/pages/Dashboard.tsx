@@ -1,4 +1,4 @@
-    import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../utils/auth';
 import PowerWidget from '../widget/stores/PowerWidget';
@@ -10,6 +10,7 @@ import Loader from '../widget/supplier/supplier';
 import MaterialWidget from '../widget/material/material';
 import { getCurrentUser, updateUser } from '../services/user/user_service';
 import { getBranches } from '../services/branchService/branchService';
+import { fetchWithAuth } from '../utils/fetchWithAuth';
 import type { UserTransformed } from '../services/types/user/user';
 import type { Branch } from '../services/types/branch/branchService';
 import { toast, ToastContainer } from 'react-toastify';
@@ -124,18 +125,8 @@ const Dashboard = () => {
 
     const handleDownloadReport = async () => {
         try {
-            const token = localStorage.getItem("token");
-            if (!token) {
-                toast.error("No hay token de autenticación");
-                return;
-            }
-
-            const API_BASE_URL = import.meta.env.VITE_API_URL;
-            const response = await fetch(`${API_BASE_URL}/product-transactions/report/excel`, {
+            const response = await fetchWithAuth("/product-transactions/report/excel", {
                 method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                },
             });
 
             if (!response.ok) {
@@ -153,7 +144,7 @@ const Dashboard = () => {
             document.body.removeChild(a);
 
             toast.success("Reporte descargado correctamente");
-        } catch (error) {
+        } catch {
             toast.error("Error al descargar el reporte");
         }
     };
@@ -181,7 +172,7 @@ const Dashboard = () => {
                         <span className={styles.menuIcon}>👤</span>
                         <span className={styles.menuText}>{userName}</span>
                     </div>
-                       <div className={styles.menuItem} onClick={handleDownloadReport} role="button" tabIndex={0}>
+                    <div className={styles.menuItem} onClick={handleDownloadReport} role="button" tabIndex={0}>
                         <span className={styles.menuIcon}>📊</span>
                         <span className={styles.menuText}>Reporte </span>
                     </div>

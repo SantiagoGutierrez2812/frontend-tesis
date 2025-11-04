@@ -1,20 +1,14 @@
 import type { UserFromAPI, ApiResponse } from "../types/types";
 import type { UserTransformed, NewUserPayload } from "../types/user/user";
-
-// 1. Definir la URL base de la API usando variables de entorno
-const API_BASE_URL = import.meta.env.VITE_API_URL ;
+import { fetchWithAuth } from "../../utils/fetchWithAuth";
 
 // --- Funciones del API Service ---
 
 export async function get_users(): Promise<UserTransformed[]> {
-    const token = localStorage.getItem("token");
-    if (!token) throw new Error("No hay token de autenticación disponible.");
-
-    const res = await fetch(`${API_BASE_URL}/users`, {
+    const res = await fetchWithAuth("/users", {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
         },
     });
 
@@ -53,14 +47,10 @@ export async function get_users(): Promise<UserTransformed[]> {
 
 
 export async function post_user(user: NewUserPayload): Promise<Response> {
-    const token = localStorage.getItem("token");
-    if (!token) throw new Error("No hay token de autenticación disponible.");
-
-    const res = await fetch(`${API_BASE_URL}/user_registration`, {
+    const res = await fetchWithAuth("/user_registration", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(user),
     });
@@ -73,19 +63,10 @@ export async function post_user(user: NewUserPayload): Promise<Response> {
     return res;
 }
 
-export async function delete_user(documentId :string) {
-    const token = localStorage.getItem("token");
-    if (!token) {
-        throw new Error("No hay token de autenticación. Inicia sesión primero.");
-    }
-
-    // Usar la URL base
-    const url = `${API_BASE_URL}/user/${documentId}?eliminate=true`;
-    
-    const res = await fetch(url, {
+export async function delete_user(documentId: string) {
+    const res = await fetchWithAuth(`/user/${documentId}?eliminate=true`, {
         method: "DELETE",
-        headers: { 
-            "Authorization": `Bearer ${token}`,
+        headers: {
             "Content-Type": "application/json"
         },
     });
@@ -95,7 +76,7 @@ export async function delete_user(documentId :string) {
         try {
             errorBody = await res.text();
         } catch (e) {
-            
+            // Ignorar error al leer respuesta
         }
         throw new Error(`Error ${res.status}: ${errorBody}`);
     }
@@ -109,18 +90,9 @@ export async function delete_user(documentId :string) {
 
 
 export async function update_user(documentId: string, payload: any) {
-    const token = localStorage.getItem("token");
-    if (!token) {
-        throw new Error("No hay token de autenticación. Inicia sesión primero.");
-    }
-
-    // Usar la URL base
-    const url = `${API_BASE_URL}/user/${documentId}`;
-
-    const res = await fetch(url, {
-        method: "PUT", 
+    const res = await fetchWithAuth(`/user/${documentId}`, {
+        method: "PUT",
         headers: {
-            "Authorization": `Bearer ${token}`,
             "Content-Type": "application/json"
         },
         body: JSON.stringify(payload)
@@ -130,7 +102,9 @@ export async function update_user(documentId: string, payload: any) {
         let errorBody = "Error desconocido al actualizar el usuario.";
         try {
             errorBody = await res.text();
-        } catch (e) {}
+        } catch (e) {
+            // Ignorar error al leer respuesta
+        }
         throw new Error(`Error ${res.status}: ${errorBody}`);
     }
 

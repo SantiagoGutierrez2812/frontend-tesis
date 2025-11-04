@@ -1,12 +1,11 @@
 import type { Transaction } from "../types/Product_Transactions/transaction";
-
-const API_URL = import.meta.env.VITE_API_URL;
+import { fetchWithAuth } from "../../utils/fetchWithAuth";
 
 export type CreateTransactionData = {
   description: string;
   quantity: number;
   unit_price: number;
-  total_price?: number; // <-- agregar
+  total_price?: number;
   transaction_date: string;
   product_id: number;
   branch_id: number;
@@ -30,13 +29,9 @@ interface CreateTransactionResponse {
  * Obtiene todas las transacciones del backend
  */
 export async function getTransactions(): Promise<Transaction[]> {
-  const endpoint = `${API_URL}/product-transactions/`;
-  const token = localStorage.getItem("token");
-  if (!token) throw new Error("No hay token de autenticación en localStorage.");
-
-  const res = await fetch(endpoint, {
+  const res = await fetchWithAuth("/product-transactions/", {
     method: "GET",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+    headers: { "Content-Type": "application/json" },
   });
 
   if (!res.ok) throw new Error(`Error HTTP al obtener transacciones: ${res.status}`);
@@ -45,7 +40,6 @@ export async function getTransactions(): Promise<Transaction[]> {
 
   if (!result.ok) throw new Error(result.error || "Error desconocido del backend");
 
-  // Aseguramos que sea un array
   return Array.isArray(result.product_transactions)
     ? result.product_transactions
     : [];
@@ -55,13 +49,9 @@ export async function getTransactions(): Promise<Transaction[]> {
  * Crea una nueva transacción
  */
 export async function createTransaction(data: CreateTransactionData): Promise<Transaction> {
-  const endpoint = `${API_URL}/product-transactions/`;
-  const token = localStorage.getItem("token");
-  if (!token) throw new Error("No hay token de autenticación en localStorage.");
-
-  const res = await fetch(endpoint, {
+  const res = await fetchWithAuth("/product-transactions/", {
     method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   });
 

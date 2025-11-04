@@ -1,16 +1,11 @@
 import type { Proveedor } from "../types/supplier_interface";
-
-const API_URL = import.meta.env.VITE_API_URL
+import { fetchWithAuth } from "../../utils/fetchWithAuth";
 
 export async function getSuppliers(): Promise<Proveedor[]> {
-
-    const token = localStorage.getItem("token");
-
-    const res = await fetch(`${API_URL}/suppliers/`, {
+    const res = await fetchWithAuth("/suppliers/", {
         method: 'GET',
         headers: {
             "Content-Type": "application/json",
-            'Authorization': `Bearer ${token}`
         }
     });
 
@@ -28,35 +23,27 @@ export async function getSuppliers(): Promise<Proveedor[]> {
 }
 
 export async function createSupplier(supplier: Proveedor) {
-    const token = localStorage.getItem("token");
-
-    const res = await fetch(`${API_URL}/suppliers/`, {
+    const res = await fetchWithAuth("/suppliers/", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify(supplier),
-    },);
+    });
 
     if (!res.ok) {
         const errorText = await res.text();
-        throw new Error(errorText || "Error en login");
+        throw new Error(errorText || "Error al crear proveedor");
     }
 
-    if (!res.ok) throw new Error("Error al crear proveedor");
     return await res.json();
 }
 
 export async function updateSupplier(id: number, supplier: Proveedor): Promise<Proveedor> {
-
-    const token = localStorage.getItem("token");
-
-    const res = await fetch(`${API_URL}/suppliers/${id}`, {
+    const res = await fetchWithAuth(`/suppliers/${id}`, {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify(supplier),
     });
@@ -71,13 +58,10 @@ export async function updateSupplier(id: number, supplier: Proveedor): Promise<P
 }
 
 export async function deleteSupplier(id: number) {
-    const token = localStorage.getItem("token");
-
-    const res = await fetch(`${API_URL}/suppliers/${id}`, {
+    const res = await fetchWithAuth(`/suppliers/${id}`, {
         method: "DELETE",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
         }
     });
 

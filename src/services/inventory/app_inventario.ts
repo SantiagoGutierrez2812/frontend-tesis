@@ -1,4 +1,5 @@
 import type { InventoriesResponse } from "../types/types";
+import { fetchWithAuth } from "../../utils/fetchWithAuth";
 
 export interface inventory_material_record {
   id: number;
@@ -11,21 +12,16 @@ export interface inventory_material_record {
   created_at: string;
 }
 
-const API_URL = import.meta.env.VITE_API_URL;
-
 export async function getInventories(branchId?: number): Promise<InventoriesResponse> {
-  let endpoint = `${API_URL}/inventories/`;
+  let endpoint = "/inventories/";
   if (branchId) endpoint += `?branch_id=${branchId}`;
 
-  const token = localStorage.getItem("token");
-  const headers: HeadersInit = { "Content-Type": "application/json" };
-  if (token) {
-    headers["Authorization"] = `Bearer ${token}`;
-  }
-
-  const res = await fetch(endpoint, {
+  const res = await fetchWithAuth(endpoint, {
     method: "GET",
-    headers,
+    headers: {
+      "Content-Type": "application/json"
+    },
+    requiresAuth: false, // Endpoint público
   });
 
   if (!res.ok) throw new Error(`Error al obtener inventarios. Status: ${res.status}`);
@@ -55,15 +51,11 @@ export async function post_create_inventory(data: { product_id: number; branch_i
         cantidad: data.quantity
     };
 
-  const token = localStorage.getItem("token");
-  const headers: HeadersInit = { "Content-Type": "application/json" };
-  if (token) {
-    headers["Authorization"] = `Bearer ${token}`;
-  }
-
-  const response = await fetch(`${API_URL}/inventories/`, {
+  const response = await fetchWithAuth("/inventories/", {
     method: "POST",
-    headers,
+    headers: {
+      "Content-Type": "application/json"
+    },
     body: JSON.stringify(payload),
   });
 

@@ -1,3 +1,5 @@
+import { fetchWithAuth } from "../../utils/fetchWithAuth";
+
 export interface Company {
     id: number;
     name: string;
@@ -12,18 +14,12 @@ export interface CompaniesResponse {
     companies: Company[];
 }
 
-const API_URL = import.meta.env.VITE_API_URL
-
 export async function getCompanyName(): Promise<CompaniesResponse> {
-    const token = localStorage.getItem("token");
-    const headers: HeadersInit = { "Content-Type": "application/json" };
-    if (token) {
-        headers["Authorization"] = `Bearer ${token}`;
-    }
-
-    const res = await fetch(`${API_URL}/companies`, {
+    const res = await fetchWithAuth("/companies", {
         method: "GET",
-        headers,
+        headers: {
+            "Content-Type": "application/json"
+        },
     });
 
     if (!res.ok) {
@@ -32,7 +28,6 @@ export async function getCompanyName(): Promise<CompaniesResponse> {
     }
 
     const responseData = await res.json();
-
 
     if (responseData && Array.isArray(responseData.companies)) {
         return responseData as CompaniesResponse;

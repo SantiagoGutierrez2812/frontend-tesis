@@ -1,6 +1,5 @@
 import type { product_id_record } from "../types/product/product";
-
-const API_URL = import.meta.env.VITE_API_URL;
+import { fetchWithAuth } from "../../utils/fetchWithAuth";
 
 export async function post_create_product(product: product_id_record) {
   try {
@@ -10,15 +9,11 @@ export async function post_create_product(product: product_id_record) {
       is_active: product.is_active ?? true,
     };
 
-    const token = localStorage.getItem("token");
-    const headers: HeadersInit = { "Content-Type": "application/json" };
-    if (token) {
-      headers["Authorization"] = `Bearer ${token}`;
-    }
-
-    const response = await fetch(`${API_URL}/products/`, {
+    const response = await fetchWithAuth("/products/", {
       method: "POST",
-      headers,
+      headers: {
+        "Content-Type": "application/json"
+      },
       body: JSON.stringify(formattedProduct),
     });
 
@@ -35,15 +30,11 @@ export async function post_create_product(product: product_id_record) {
 }
 
 export async function get_all_products(): Promise<product_id_record[]> {
-  const token = localStorage.getItem("token");
-  const headers: HeadersInit = { "Content-Type": "application/json" };
-  if (token) {
-    headers["Authorization"] = `Bearer ${token}`;
-  }
-
-  const response = await fetch(`${API_URL}/products/`, {
+  const response = await fetchWithAuth("/products/", {
     method: "GET",
-    headers,
+    headers: {
+      "Content-Type": "application/json"
+    },
   });
 
   if (!response.ok) {
@@ -52,21 +43,13 @@ export async function get_all_products(): Promise<product_id_record[]> {
   }
 
   const data = await response.json();
-  // Suponemos que data es un array de productos
   return Array.isArray(data.products) ? data.products : [];
 }
 
 export async function delete_product(productId: number) {
   try {
-    const token = localStorage.getItem("token");
-    const headers: HeadersInit = {};
-    if (token) {
-      headers["Authorization"] = `Bearer ${token}`;
-    }
-
-    const response = await fetch(`${API_URL}/products/${productId}`, {
+    const response = await fetchWithAuth(`/products/${productId}`, {
       method: "DELETE",
-      headers,
     });
 
     if (!response.ok) {
@@ -82,15 +65,11 @@ export async function delete_product(productId: number) {
 
 export async function patch_product(productId: number, data: Partial<product_id_record>) {
   try {
-    const token = localStorage.getItem("token");
-    const headers: HeadersInit = { "Content-Type": "application/json" };
-    if (token) {
-      headers["Authorization"] = `Bearer ${token}`;
-    }
-
-    const response = await fetch(`${API_URL}/products/${productId}`, {
+    const response = await fetchWithAuth(`/products/${productId}`, {
       method: "PATCH",
-      headers,
+      headers: {
+        "Content-Type": "application/json"
+      },
       body: JSON.stringify(data),
     });
 
