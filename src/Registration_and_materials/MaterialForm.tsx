@@ -1,4 +1,4 @@
-import  { useEffect, useState, useMemo } from "react";
+import  { useEffect, useState, useMemo, useCallback } from "react";
 import Modal from "./Modal/Modal";
 import TopControl from "../TopControl/TopControl";
 import ProfileModal from "./ProfileModal/ProfileModal";
@@ -8,6 +8,8 @@ import type { Branch } from "../services/types/branch/branchService";
 import AddTransactionForm from "./AddProduct/AddProductForm";
 import type { inventory_material_record } from "../services/types/inventory/inventory";
 import type { Transaction } from "../services/types/Product_Transactions/transaction";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./MaterialForm.css";
 
 export default function MaterialForm() {
@@ -67,10 +69,10 @@ export default function MaterialForm() {
       };
       loadBranches();
     }
-  }, [isAdmin]);
+  }, [isAdmin, selectedBranchId]);
 
   // Función para cargar inventario (extraída para reutilizar)
-  const fetchInventoryData = async (showLoadingState = true) => {
+  const fetchInventoryData = useCallback(async (showLoadingState = true) => {
     try {
       if (showLoadingState) {
         setLoading(true);
@@ -87,14 +89,14 @@ export default function MaterialForm() {
         setLoading(false);
       }
     }
-  };
+  }, [isAdmin, selectedBranchId]);
 
   // Fetch inventario al montar el componente y cuando cambie la sede seleccionada
   useEffect(() => {
     if (selectedBranchId > 0) {
       fetchInventoryData();
     }
-  }, [selectedBranchId]);
+  }, [selectedBranchId, fetchInventoryData]);
 
   // Filtro y ordenamiento
   const filteredInventories = useMemo(() => {
@@ -131,6 +133,7 @@ export default function MaterialForm() {
 
   return (
     <div className="Overview">
+      <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop closeOnClick pauseOnHover={true} draggable theme="colored" />
       <TopControl
         title="📦 Inventario de Productos"
         extraMenuOption={{
