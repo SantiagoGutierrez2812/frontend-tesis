@@ -71,13 +71,13 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
         userData.document_id,
         isAdmin
           ? {
-              name: userData.name,
-              email: userData.email,
-              document_id: userData.document_id,
-              phone_number: userData.phone_number,
-              username: userData.username,
-              branch_id: userData.branch_id,
-            }
+            name: userData.name,
+            email: userData.email,
+            document_id: userData.document_id,
+            phone_number: userData.phone_number,
+            username: userData.username,
+            branch_id: userData.branch_id,
+          }
           : {},
         newPassword || undefined
       );
@@ -145,7 +145,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
               type="text"
               value={userData.document_id}
               onChange={(e) => setUserData({ ...userData, document_id: e.target.value })}
-              disabled={isEmployee}
+              disabled
             />
           </div>
 

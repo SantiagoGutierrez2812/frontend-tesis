@@ -197,7 +197,7 @@ const Dashboard = () => {
                                 <label>Correo Electrónico</label>
                                 <input type="email" name="email" value={editedData?.email || ""} onChange={handleInputChange} required />
                                 <label>Documento de Identidad</label>
-                                <input type="text" name="document_id" value={editedData?.document_id || ""} onChange={handleInputChange} required />
+                                <input type="text" readOnly name="document_id" value={editedData?.document_id || ""} onChange={handleInputChange} required />
                                 <label>Nueva Contraseña (opcional)</label>
                                 <input type="password" name="new_password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="Dejar en blanco para no cambiar" autoComplete="new-password" />
                                 <label>Confirmar Nueva Contraseña</label>
