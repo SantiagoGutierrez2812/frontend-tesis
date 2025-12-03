@@ -50,10 +50,10 @@ export default function Materialcreation() {
       type === "success"
         ? "✅"
         : type === "error"
-        ? "❌"
-        : type === "info"
-        ? "ℹ️"
-        : "🗑️";
+          ? "❌"
+          : type === "info"
+            ? "ℹ️"
+            : "🗑️";
     toast(message, { icon: <span>{icon}</span>, className: `toast-${type}`, autoClose: 3000 });
   };
 

@@ -105,7 +105,7 @@ export const VisualStaff = () => {
             } catch (err: any) {
                 setError(
                     err.message ||
-                        "Error cargando datos esenciales (usuarios, roles o sucursales)."
+                    "Error cargando datos esenciales (usuarios, roles o sucursales)."
                 );
             } finally {
                 setLoading(false);
@@ -456,7 +456,7 @@ export const VisualStaff = () => {
             {showModal && (
                 <div className={styles.modalOverlay}>
                     <div className={styles.modal}>
-                    <p className={styles.qualification}>Registro de empleado</p>
+                        <p className={styles.qualification}>Registro de empleado</p>
                         <form onSubmit={handleSubmit} className={styles.form}>
                             <input
                                 type="text"
@@ -469,6 +469,8 @@ export const VisualStaff = () => {
                                 type="text"
                                 name="document_id"
                                 placeholder="Documento"
+                                readOnly
+                                style={{ cursor: "not-allowed" }}
                                 value={formData.document_id}
                                 onChange={handleChange}
                                 maxLength={10}
