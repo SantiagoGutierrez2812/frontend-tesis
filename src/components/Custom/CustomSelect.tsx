@@ -7,7 +7,6 @@ interface CustomSelectProps {
   options: string[];
   placeholder?: string;
   onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-  required?: boolean;
 }
 
 const CustomSelect: React.FC<CustomSelectProps> = ({
@@ -16,7 +15,6 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
   options,
   placeholder,
   onChange,
-  required,
 }) => {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);

@@ -386,7 +386,6 @@ export default function GestionProveedores() {
                 onChange={handleChange}
                 options={ciudadesColombia}
                 placeholder="Selecciona una ciudad"
-                required
               />
 
               <label>Descripción</label>
