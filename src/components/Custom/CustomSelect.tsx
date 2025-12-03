@@ -63,7 +63,6 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
         name={name}
         value={value}
         onChange={onChange}
-        required={required}
         style={{ display: "none" }}
       >
         <option value="">{placeholder || "Selecciona una opción"}</option>

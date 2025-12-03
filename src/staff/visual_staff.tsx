@@ -469,8 +469,8 @@ export const VisualStaff = () => {
                                 type="text"
                                 name="document_id"
                                 placeholder="Documento"
-                                readOnly
-                                style={{ cursor: "not-allowed" }}
+                                readOnly={editIndex !== null}
+                                style={editIndex !== null ? { cursor: "not-allowed" } : {}}
                                 value={formData.document_id}
                                 onChange={handleChange}
                                 maxLength={10}

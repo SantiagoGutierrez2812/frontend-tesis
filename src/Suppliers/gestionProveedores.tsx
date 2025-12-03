@@ -204,7 +204,7 @@ export default function GestionProveedores() {
     if (!nuevoProveedor.description || nuevoProveedor.description.length < 9)
       return toast.warn("La descripción debe tener al menos 9 caracteres");
 
-    if (!ciudadesColombia.includes(nuevoProveedor.city ?? ""))
+    if (!nuevoProveedor.city || nuevoProveedor.city.trim() === "" || !ciudadesColombia.includes(nuevoProveedor.city))
       return toast.warn("Debe seleccionar una ciudad válida de Colombia");
 
     const nitDuplicado = proveedores.some(
