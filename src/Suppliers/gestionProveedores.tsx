@@ -233,8 +233,9 @@ export default function GestionProveedores() {
         }
         setShowModal(false);
         setEditando(null);
-      } catch {
-        toast.error("Hubo un error al guardar");
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : "Hubo un error al guardar";
+        toast.error(errorMessage);
       } finally {
         setShowConfirm(false);
       }

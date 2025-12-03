@@ -31,12 +31,13 @@ export async function createSupplier(supplier: Proveedor) {
         body: JSON.stringify(supplier),
     });
 
-    if (!res.ok) {
-        const errorText = await res.text();
-        throw new Error(errorText || "Error al crear proveedor");
+    const data = await res.json();
+
+    if (!res.ok || !data.ok) {
+        throw new Error(data.error || "Error al crear proveedor");
     }
 
-    return await res.json();
+    return data;
 }
 
 export async function updateSupplier(id: number, supplier: Proveedor): Promise<Proveedor> {

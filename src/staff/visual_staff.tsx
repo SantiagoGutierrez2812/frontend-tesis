@@ -472,6 +472,7 @@ export const VisualStaff = () => {
                                 value={formData.document_id}
                                 onChange={handleChange}
                                 maxLength={10}
+                                disabled={editIndex !== null}
                             />
                             <input
                                 type="email"
